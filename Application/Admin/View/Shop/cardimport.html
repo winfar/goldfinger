@@ -1,0 +1,75 @@
+<extend name="Public/base" />
+<block name="style">
+</block>
+<block name="body">
+    <div>
+        <div class="page-head">
+            <h2>虚拟商品导入</h2>
+        </div>
+        <div class="cl-mcont">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="block-flat">
+                        <div class="header">
+                            <h3 class="hthin">{$meta_title}</h3>
+                        </div>
+                        <div class="content">
+                            <div class="tab-container">
+                                <form id="defaultForm" action="{:U()}" class="form-horizontal" method="post" enctype="multipart/form-data">
+                                    <input type="hidden" name="id" value="{$info.id|default=''}">
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">导入的xls或者xlsx文件 <span class="text-danger">*</span></label>
+                                        <div class="col-xs-4">
+                                            <input type="file" name="import"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">说明<span class="text-danger">*</span></label>
+                                        <div class="col-xs-4">
+                                            1.文件是xls和xlsx文件的表格文件
+                                            2.<a href="Template/Shop/doc/cardimport.xls">文件模板下载</a>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-2 col-sm-10">
+                                            <button class="btn btn-primary" type="submit" target-form="form-horizontal">提 交
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script type="text/javascript">
+        $(document).ready(function() {
+            highlight_subnav('{:U('Shop/cardimport')}');
+            $('#defaultForm').bootstrapValidator({
+                message: 'This value is not valid',
+                /*输入框不同状态，显示图片的样式*/
+                feedbackIcons: {
+                    valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                },
+                /*验证*/
+                fields: {
+                    /*键名username和input name值对应*/
+                    import: {
+                        message: '上传文件不能为空',
+                        validators: {
+                            notEmpty: { /*非空提示*/
+                                message: '上传文件不能为空'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</block>

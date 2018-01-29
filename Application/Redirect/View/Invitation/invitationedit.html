@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>填写邀请码拿大奖</title>
+    <style>
+        html,body,div,p,header,ul,li{margin:0;padding:0;border:0;font:inherit;font-size:100%;vertical-align:baseline}
+        ul li{list-style:none;}
+        input[type=button], input[type=submit], input[type=file], button { cursor: pointer; -webkit-appearance: none; }
+        html{line-height:1;font-family:Helvetica,sans-serif}
+        @media screen and (min-width: 640px) and (max-width: 1023px){html{font-size:32px}}
+        @media screen and (max-width: 423px) and (min-width: 414px){html{font-size:20.7px}}
+        @media screen and (max-width: 413px) and (min-width: 384px){html{font-size:19.2px}}
+        @media screen and (max-width: 383px) and (min-width: 375px){html{font-size:18.75px}}
+        @media screen and (max-width: 374px) and (min-width: 360px){html{font-size:18px}}
+        @media screen and (max-width: 359px) and (min-width: 320px){html{font-size:16px}}
+        html,body{ height:100%;}
+        body{background: #000;}
+        section{background: url(./Public/Redirect/images/invite.jpg) center 0 no-repeat;background-size:100% auto; padding-top:20rem;overflow:hiddren;}
+        #form{width:100%;height:180px; position:relative;top:0rem;}
+        #num,#code{color:#f6afff;}
+
+        #mobileNum,#regist,#inviteCode {height:40px;width:90%;margin:0 auto;border-radius:20px; outline:none;}
+        #inviteCode,#regist {margin-top:20px;}
+        #mobileNum input,#inviteCode input,#regist input {width:100%;height:40px;border:none;border-radius:20px; font-size:20px; outline:none;}
+        #mobileNum input,#inviteCode input {text-indent:1em; color:#938a70;}
+        #regist input {background-color:#e9c25a; font-size:20px; line-height:40px;color:#000;}
+        /*
+        #mobileNum,#regist,#inviteCode {height:40px;width:18rem;margin:0 auto;}
+        #inviteCode,#regist {margin-top:20px;}
+        #mobileNum input,#inviteCode input {width:17rem;height:40px;border:none; font-size:20px;border-radius:20px; text-indent:1em; }
+        #regist input{width:18rem;height:45px;border:none;background-color:#f03cff;font-size:20px;border-radius:20px; }
+        */
+
+        .popOut{height:100%;width:100%;min-height:568px;background-color:rgba(0, 0, 0, 0.7);position:absolute;left:0;top:0;z-index:100; display:none;}
+        .warn_detail{width:16rem;height:9rem;position:absolute;top:10rem;left:50%;margin-left:-8rem;border-radius:5px; background-color:#fff;overflow:hidden;}
+        .warn_detail img{width:20%;display:block;margin:0 auto;margin-top:2rem;}
+        .warn_detail p{color:#d500ff; text-align:center;line-height:40px; font-size:14px;}
+
+    </style>
+</head>
+<body class="keBody">
+<section class="pan">
+
+    <form id="form" action="{:U('')}" class="form-horizontal" method="post">
+        <div id="mobileNum"><input id="num" name="num" type="text" value="请输入手机号" /></div>
+        <div id="inviteCode"><input id="code" name="code" type="text" value="请输入邀请码" /></div>
+        <div id="regist"><input   type="button" value="提交" /></div>
+    </form>
+
+</section>
+<!--warn info B-->
+<div class="popOut">
+    <div class="warn_detail">
+        <img src="./Public/Redirect/images/wrong.png"/>   <!-- 对应icon：right.png/warn.png/wrong.png-->
+        <p>邀请码不存在</p>              <!--提示：验证成功、手机号码不存在/手机号有误、验证码不存在-->
+    </div>
+</div>
+<!--warn info E-->
+<script type="text/javascript" src="./Public/Static/jquery.js"></script>
+<!--<script src="http://1.busonline.com/Template/Web/js/jquery.min.js" type="text/javascript"></script>-->
+<script type="text/javascript">
+    $(function(){
+
+        var browser={
+            versions:function(){
+                var u = navigator.userAgent, app = navigator.appVersion;
+                return {
+                    ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/),
+                    android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1,
+                    weiXin:u.match(/MicroMessenger/i) == "MicroMessenger"
+                };
+            }(),
+        }
+        if(browser.versions.ios){
+            $("#mobileNum,#regist,#inviteCode").css({'width':'18rem'});
+            $("#mobileNum input,#inviteCode input").css({'width':'17rem'});
+            $("#regist input").css({'width':'18rem','height':'50px'});
+        }
+
+        $("#num").focus(function(){
+            if(this.value=="请输入手机号"){
+                this.value="";
+                this.style.color="#000";
+            }}).blur(function(){
+            var val = this.value;
+            val = val.trim();
+            this.value = val;
+            if(val==""){
+                this.value="请输入手机号";
+                this.style.color="#938a70";
+            }else if(!(/^1[34578]\d{9}$/.test(val))){
+                pop(0);
+            }
+        });
+        $("#code").focus(function(){
+            if(this.value="请输入邀请码"){
+                this.value="";
+                this.style.color="#000";
+            }}).blur(function(){
+            if(this.value==""){
+                this.value="请输入邀请码";
+                this.style.color="#938a70";
+            }
+        });
+
+        $("#regist").click(function(){
+            if ($.trim($('#num').val())=="请输入手机号"){
+                pop(4);
+                return false;
+            }
+            if ($.trim($('#code').val())=="请输入邀请码"){
+                pop(5);
+                return false;
+            }
+            if(!(/^1[34578]\d{9}$/.test($.trim($('#num').val())))){
+                pop(0);
+                return false;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "?s=/Invitation/InvitationUpdate",
+                async:false,
+                data: {
+                    code: $('#code').val(),
+                    num: $('#num').val()
+                },
+                dataType: "json",
+                success: function (result) {
+                    pop(result.result);
+					
+                }
+            });
+
+            // pop(1); //提交后处理....0,1,2,3对应状态
+        });
+
+        function pop(m){
+            var $popOut= $('.popOut');
+            var $warn_detail = $('.warn_detail');
+            switch(m)
+            {
+                case 0:
+                    $warn_detail.children('img').attr('src','./Public/Redirect/images/wrong.png');
+                    $warn_detail.children('p').text('手机号格式不正确');
+                    break;
+                case 1:
+                    $warn_detail.children('img').attr('src','./Public/Redirect/images/warn.png');
+                    $warn_detail.children('p').text('手机号未注册');
+                    break;
+                case 2:
+                    $warn_detail.children('img').attr('src','./Public/Redirect/images/wrong.png');
+                    $warn_detail.children('p').text('邀请码不存在');
+                    break;
+                case 3:
+                    $warn_detail.children('img').attr('src','./Public/Redirect/images/right.png');
+                    $warn_detail.children('p').text('已收到您的绑定请求，正在审核中！');
+                    break;
+                case  4:
+                    $warn_detail.children('img').attr('src','./Public/Redirect/images/warn.png');
+                    $warn_detail.children('p').text('请输入手机号');
+                    break;
+                case  5:
+                    $warn_detail.children('img').attr('src','./Public/Redirect/images/warn.png');
+                    $warn_detail.children('p').text('请输入邀请码');
+                    break;
+                case  6:
+                    $warn_detail.children('img').attr('src','./Public/Redirect/images/warn.png');
+                    $warn_detail.children('p').text('此手机号已绑定过');
+                    break;
+            }
+            $popOut.css("display","block");
+
+        }
+
+        $(".popOut").click(function(){
+            $(".popOut").css("display","none");
+        });
+    });
+
+</script>
+<!--效果html结束-->
+
+</body>
+</html>

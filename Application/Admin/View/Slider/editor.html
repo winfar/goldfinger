@@ -1,0 +1,168 @@
+<extend name="Public/base"/>
+<block name="style">
+	<css href="__JS__/jquery.icheck/skins/square/blue.css"/>
+	<css href="__JS__/bootstrap.datetimepicker/css/bootstrap-datetimepicker.min.css" />
+</block>
+<block name="body">
+<div>
+<div class="page-head">
+	<h2>启动图设置</h2>
+</div>
+<div class="cl-mcont">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="block-flat">
+				<div class="header">							
+					<h3 class="hthin">{$meta_title}</h3>
+				</div>
+				<div class="content">
+					<form action="{:U()}" class="form-horizontal"  method="post">
+						<table class="no-border blue" style="border: 1px solid #dadada;width: 60%">
+						<tbody>
+						<tr>
+							<td style="width: 10%;font-size: 16px;font-weight: bold;text-align: center;"></td>
+							<td style="width: 40%;font-size: 16px;font-weight: bold;text-align: center;">系统默认图</td>
+							<td style="width: 40%;font-size: 16px;font-weight: bold;text-align: center;">广告图</td>
+						</tr>
+						<tr>
+							<td>图片</td>
+							<td>
+								<div id="shop-pic1">
+									<empty name="default_item.value">
+									<img src="" class="img-thumbnail" style="width:100%;min-height: 100px;"/>
+									<else />
+										<img src="__ROOT__{$default_item.value}" class="img-thumbnail" style="width:100%;min-height: 100px;"/>
+									</empty>
+								</div>
+								<input type="file" id="upload_picture">
+								<input type="hidden" name="picture1" id="picture1" value="{$info.cover_id|default=''}"/>
+							</td>
+							<td>
+								<div id="shop-pic2">
+									<empty name="item.value">
+									<img src="" class="img-thumbnail" style="width:100%;min-height: 100px;"/>
+									<else />
+										<img src="__ROOT__{$item.value}" class="img-thumbnail" style="width:100%;min-height: 100px;"/>
+									</empty>
+									
+								</div>
+								<input type="file" id="upload_picture1">
+								<input type="hidden" name="picture2" id="picture2" value="{$info.cover_id|default=''}"/>
+							</td>
+						</tr>
+						<tr>
+							<td>链接</td>
+							<td>
+							</td>
+							<td><input type="text" name="url" style="width: 100%;" value="{$item.extra|default=''}"></td>
+						</tr>
+						<tr>
+							<td>是否启用</td>
+							<td>
+							</td>
+							<td>
+							<if condition="$item.display eq 0">
+							当前状态为:关闭状态 您可以
+							<a id="status" data-placement="left" data-toggle="tooltip" data-original-title="开启" class="label label-success ajax-get" href="javascript:void(0);" onclick="setStatus(1)"><i class="fa fa-eye"></i>开启</a>
+							<else />
+							当前状态为:开启状态 您可以
+							<a id="status" data-placement="left" data-toggle="tooltip" data-original-title="关闭" class="label label-default ajax-get" href="javascript:void(0);" onclick="setStatus(0)"><i class="fa fa-eye-slash"></i>关闭</a>
+							</if>	
+							</td>
+						</tr>
+						<tr colspan='3'>
+							<td colspan='3' style="text-align: center;"><button class="btn btn-primary" type="submit" target-form="form-horizontal">提 交
+                                            </button><span style="color: red;font-size: 16px;margin-left: 20px;">图片格式:JPG,JPG</span></td>
+						</tr>			
+						</tbody>
+						</table>
+					</form>
+				</div>
+			</div>			
+		</div>
+	</div>
+</div>
+</block>
+<block name="script">
+	<js href="__STATIC__/uploadify/jquery.uploadify.min.js" />
+	<js href="__JS__/jquery.icheck/icheck.min.js"/>
+	<js href="__JS__/bootstrap.datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" />
+	<script type="text/javascript">
+	    function setStatus(status) {
+	    	$.ajax({
+			    type: "POST",
+			    url: "{:u('pictureDisplay')}",
+			    data: {status: status},
+                dataType: "json",
+                success: function (result) {
+                	if (result==200) {
+                                location.reload();
+                    } else {
+                    	alert("失败");
+                    }
+                }
+			});
+	    }
+		$(document).ready(function(){	
+			highlight_subnav('{:U('Slider/update')}');
+			$("#upload_picture").uploadify({
+				"height"          : 35,
+				"swf"             : "__STATIC__/uploadify/uploadify.swf",
+				"fileObjName"     : "download",
+				"buttonClass"     :  "btn btn-success fa fa-upload no-padding",
+				"buttonText"      : " 上传图片",
+				"uploader"        : "{:U('Slider/editPicture',array('session_id'=>session_id()))}",
+				"width"           : 100,
+				'removeTimeout'	  : 1,
+				'fileTypeExts'	  : '*.jpg; *.png; *.gif;',
+				"onUploadSuccess" : uploadPicture,
+				'onFallback' : function() {
+					alert('未检测到兼容版本的Flash.');
+				}
+			});
+			function uploadPicture(file, data){
+				var data = $.parseJSON(data);
+				var src = '';
+				if(data.status){
+					$("#picture1").val(data.path);
+					src = data.url || '__ROOT__' + data.path
+					$("#shop-pic1").html(
+						'<img src="__ROOT__' + src + '" class="img-thumbnail" style="width:100%;"/>'
+					);
+				} else {
+					layer.msg(data.info, {icon: 2});
+				}
+			}
+			$("#upload_picture1").uploadify({
+				"height"          : 35,
+				"swf"             : "__STATIC__/uploadify/uploadify.swf",
+				"fileObjName"     : "download",
+				"buttonClass"     :  "btn btn-success fa fa-upload no-padding",
+				"buttonText"      : " 上传图片",
+				"uploader"        : "{:U('Slider/editPicture',array('session_id'=>session_id()))}",
+				"width"           : 100,
+				'removeTimeout'	  : 1,
+				'fileTypeExts'	  : '*.jpg; *.png; *.gif;',
+				"onUploadSuccess" : uploadPicture1,
+				'onFallback' : function() {
+					alert('未检测到兼容版本的Flash.');
+				}
+			});
+			function uploadPicture1(file, data){
+				var data = $.parseJSON(data);
+				var src = '';
+				if(data.status){
+					$("#picture2").val(data.path);
+					src = data.url || '__ROOT__' + data.path
+					$("#shop-pic2").html(
+						'<img src="__ROOT__' + src + '" class="img-thumbnail" style="width:100%"/>'
+					);
+				} else {
+					layer.msg(data.info, {icon: 2});
+				}
+			}
+
+			$("#type").val({$info.type});
+		});
+	</script>
+</block>

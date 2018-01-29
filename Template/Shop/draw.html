@@ -1,0 +1,200 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <include file="{$web_tplpath}head.html" />
+</head>
+
+<body>
+
+    <div class="wrap">
+
+        <div class="header header_get">
+            <div class="user_own">持有的黄金</div>
+            <div class="user_dia"><i>{$user.gold_balance}</i>克</div>
+            <div class="dia_price">当前金价：<i>{:getGoldprice()}</i></div>
+            <div class="dia_operate"><a class="gold_fee"><em></em><i>提金费用：{$gold_fee_1}{:C("WEB_CURRENCY")}/克</i></a><a class="gold_weight"><em></em><i>起提克数：{$channel_info.cash_first_gold}克/笔</i></a></div>
+        </div>
+
+        <div class="get_num">
+            <span class="gt_tit">请选择提金克数</span>
+            <div class="select_num">
+                <volist name="channel_info['cash_list']" id="vo">
+                    <span class="cash_g cash{$vo}" gid="{$vo}">{$vo}克</span>
+                </volist>
+                <input type="hidden" id="cash_number" value="">
+                <input type="hidden" id="total_cash_gold" value="">
+            </div>
+            <div class="gt_periods">
+                <span>提金费用总需<i class="cash_gold"></i>{:C("WEB_CURRENCY")}</span><a class="dia_total" href="javascript:;">当前{:C("WEB_CURRENCY")}余额{$gold}</a>
+            </div>
+        </div>
+        <div class="gt_info">
+            <div class="gt_periods">
+                <a href="{:U('address')}"><span>收货地址</span><em>选择/添加收货地址</em></a>
+            </div>
+            <div class="gt_periods">
+                <a href="{:U('goldlist')}"><span>提金明细</span><em>往期提取黄金记录</em></a>
+            </div>
+            <div class="gt_periods">
+                <a href="{:U('explain')}"><span>提金说明</span><em>安全便捷保价</em></a>
+            </div>
+        </div>
+        <!--	<div class="gt_explain">提金即表示同意<a href="{:U('agreement')}">《提金协议》</a></div>-->
+        <div class="gt_btn cash_sub"><a href="javascript:;">确认提金</a></div>
+    </div>
+    <div class="tips_box" style="display: none;">
+        <div class="tpb_con">
+            <p class="content"></p>
+        </div>
+    </div>
+    <div class="tbox">
+        <div class="dg_fee">
+            <span class="close">×</span>
+            <!-- <p>提金费用</p> -->
+            <p>服务费每克为：申请提金实时金价的{$channel_info.extract_gold_persent}% ，另加顺丰邮费(含保价费)。</p>
+            <p>小提示：</p>
+            <p>服务费消耗金券，金券兑换人民币比例{$channel_info.proportion}:1；</p>
+            <p>费用会根据黄金交易所实时金价而变动。</p>
+        </div>
+        <div class="dg_w">
+            <span class="close">×</span>
+            <!-- <p> 提金克数</p> -->
+            <p> 单笔{$channel_info.cash_first_gold}克实物黄金起提。</p>
+            <p> 小提示：起提克数会根据黄金克数商品库存量而变动。</p>
+        </div>
+
+    </div>
+
+    <script type="text/javascript">
+        $(function() {
+
+            //提取费用tips
+            $(".gold_fee").click(function() {
+                $(".tbox").css("display", "block");
+                $(".dg_fee").css("display", "block");
+            })
+
+            //起提克数tips
+            $(".gold_weight").click(function() {
+                $(".tbox").css("display", "block");
+                $(".dg_w").css("display", "block");
+            })
+
+            //起提克数
+            var gold = "{$channel_info.cash_first_gold}";
+            //提取费用,实时金价
+            var gold_price = parseFloat("{:getGoldprice()}");
+            //提金百分比
+            var extract_gold_persent = parseFloat("{$channel_info.extract_gold_persent}");
+            //额外费用
+            var extract_gold_extra_expenses = parseFloat("{$channel_info.extract_gold_extra_expenses}");
+
+            var proportion = "{$channel_info.proportion}";
+
+            // var cost = "{$channel_info.extract_cost}";
+            // var total_gold = gold * cost;
+
+            var total_gold = Math.ceil(gold * gold_price * extract_gold_persent / 100 + extract_gold_extra_expenses) * proportion;
+
+            //增加on高亮
+            $(".cash" + gold).addClass("on");
+            //总钻石数展示
+            $('.cash_gold').html(total_gold);
+            //提金g
+            $('#cash_number').val(gold);
+            //手续费
+            $('#total_cash_gold').val(total_gold);
+            //点击提金效果
+            $('.cash_g').on("click", function() {
+                $('.cash_g').removeClass('on');
+                $(this).addClass('on');
+
+                var gid = $(this).attr("gid");
+
+                $.ajax({
+                    type: "GET",
+                    url: "{:U('ajaxGetGoldPrice')}",
+                    data: {},
+                    dataType: "text",
+                    success: function(data) {
+
+                        var gold_price_latest = parseFloat(data);
+
+                        var total = Math.ceil(gid * gold_price_latest * extract_gold_persent / 100 + extract_gold_extra_expenses) * proportion;
+                        //总钻石数展示
+                        $('.cash_gold').html(total);
+                        //提金g
+                        $('#cash_number').val(gid);
+                        //手续费
+                        $('#total_cash_gold').val(total);
+                    }
+                });
+            });
+            //提现
+            $('.cash_sub').on("click", function() {
+                //提金克数
+                var cash_number = parseFloat($('#cash_number').val());
+                //花费钻石数
+                var total_cash_gold = parseFloat($('#total_cash_gold').val());
+                //钻石数
+                var gold_balance = parseFloat("{$gold}");
+                //拥有的钻石克数
+                var balance = parseFloat("{$user.gold_balance}");
+                //收货地址
+                var address_info = "{$address_info}";
+                if (balance < cash_number) {
+                    $('.content').html("拥有的黄金不足");
+                    $('.tips_box').show();
+                    setTimeout(function() {
+                        $(".tips_box").hide();
+                    }, 1000);
+                } else if (total_cash_gold > gold_balance) {
+                    $('.content').html("提取费用不足");
+                    $('.tips_box').show();
+                    setTimeout(function() {
+                        $(".tips_box").hide();
+                    }, 1000);
+                } else if (address_info == "") {
+                    $('.content').html("请选择/添加收货地址");
+                    $('.tips_box').show();
+                    setTimeout(function() {
+                        $(".tips_box").hide();
+                    }, 1000);
+                    setTimeout(function() {
+                        window.location = "{:U('address')}";
+                    }, 1000);
+                } else {
+                    //提金操作
+                    var url = "{:U('ajaxdraw')}";
+                    $.post(
+                        url, {
+                            cash_number: cash_number
+                        },
+                        function(data) {
+                            if (data.code == 200) {
+                                $('.content').html("提金成功!");
+                                $('.tips_box').show();
+                                setTimeout(function() {
+                                    $(".tips_box").hide();
+                                }, 1000);
+                                setTimeout(function() {
+                                    window.location = "{:U('drawsuc')}";
+                                }, 1000);
+                            } else {
+                                $('.content').html(data.msg);
+                                $('.tips_box').show();
+                                setTimeout(function() {
+                                    $(".tips_box").hide();
+                                }, 1000);
+                            }
+                        },
+                        'json'
+                    );
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

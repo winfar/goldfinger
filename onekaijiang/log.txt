@@ -1,0 +1,5 @@
+update hx_shop_period set kaijang_num="10000090",uid=101605,state=2,kaijiang_ssc=96050 where id=440 
+ pid | time: 440,2016-07-29 18:58:36.295000 
+ update hx_shop_period set kaijang_num="10000001",uid=101605,state=2,kaijiang_ssc=96050 where id=444 
+ pid | time: 444,2016-07-29 18:58:36.313000 
+ 

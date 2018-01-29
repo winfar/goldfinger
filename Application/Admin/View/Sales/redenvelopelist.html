@@ -1,0 +1,154 @@
+<extend name="Public/base" />
+
+<block name="style">
+</block>
+
+<block name="body">
+    <div>
+        <div class="page-head">
+            <h2>促销管理 - 红包列表</h2>
+        </div>
+        <div class="cl-mcont">
+            <div class="row">
+                <div class="col-md-12">
+                    <form class="shop-form form-inline" method="post" action="{:U()}">
+                        <div class="block-flat">
+                            <div class="pull-right">
+                                    <a class="btn btn-success" href="{:U('redenvelopedetails')}" ><i class="fa fa-plus-square"></i> 红包生成</a>
+                                </div>
+                            <div class="header">
+                                <h3 class="hthin">{$meta_title}</h3>
+                                
+                            </div>
+                            <div class="content">
+                                <div class="col-sm-12">
+                                    <!--<div class="form-group">
+                                        <label class="sr-only" for="exampleInputEmail2">Email address</label>
+                                        <input type="email" class="form-control" id="exampleInputEmail2" placeholder="Enter email">
+                                    </div>-->
+                                    <div class="form-group col-sm-2">
+                                        <label class="" for="category">商品限制</label>
+                                        <select class="form-control" id="category" name="category" onchange="" value="{$Think.get.category|default='0'}">
+                                            <option value="0" >全部商品</option>
+                                            <!--<option value="101" >部分分类</option>
+                                            <option value="102" >部分品牌</option>
+                                            <option value="103" >实物商品</option>
+                                            <option value="104" >虚拟商品</option>-->
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-sm-2">
+                                        <label class="pull-left" style="padding: 5px" for="starttime">开始日期</label>
+                                        <div class="input-group date starttime" data-min-view="2" data-date-format="yyyy-mm-dd">
+                                            <input type="text" id="starttime" name="starttime" class="form-control" value="{$Think.get.starttime|default=time_format(NOW_TIME-24*60*60*30,'Y-m-d')}"/>
+                                            <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-sm-2" >
+                                        <label class="pull-left" style="padding: 5px" for="endtime">结束日期</label>
+                                        <div class="input-group date endtime" data-min-view="2" data-date-format="yyyy-mm-dd">
+                                            <input type="text" id="endtime" name="endtime" class="form-control" value="{$Think.get.endtime|default=time_format(NOW_TIME,'Y-m-d')}"/>
+                                            <span class="input-group-addon btn btn-primary" ><span class="glyphicon glyphicon-th"></span></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-sm-2">
+                                        <label class="" for="keyword">关键字搜索</label>
+                                        <input type="text" name="keyword" id="keyword" class="form-control" placeholder="输入关键字搜索" value="{$Think.get.keyword|default=''}" onkeypress="if(event.keyCode==13) {search.click();return false;} "/>
+                                    </div>
+                                    <div class="form-group col-sm-2">
+                                        <button type="button" id="search" url="{:U()}" class="btn btn-success">查询</button>
+                                    </div>
+                                </div>
+                                <div class="pull-right">
+                                    <!--<div style="color:green;">用户总数：{$_totalcount}</div>-->
+                                </div>
+                                <table class="no-border blue">
+                                    <thead class="no-border">
+                                        <tr>
+                                            <th style="width:5%;">红包编号</th>
+                                            <th style="width:auto;">红包名称</th>
+                                            <th style="width:5%;">商品限制</th>
+                                            <th style="width:10%;">资金池金额</th>
+                                            <th style="width:5%;">金额下限</th>
+                                            <th style="width:5%;">减少金额</th>
+                                            <th style="width:5%;">生成数量</th>
+                                            <th style="width:10%;">添加时间</th>
+                                            <th style="width:5%;">发放数量</th>
+                                            <th style="width:auto;">用户领取后有效期(天)</th>
+                                            <th style="width:auto;">有效时长</th>
+                                            <th style="width:auto;">操作</th>
+                                        </tr>
+                                    </thead>
+                                    <notempty name="_list">
+                                        <tbody class="no-border-y">
+                                            <volist name="_list" id="vo">
+                                                <tr>
+                                                    <td>{$vo.id}</td>
+                                                    <td>{$vo.name}</td>
+                                                    <td>{:get_redenvelope_category($vo['category'])}</td>
+                                                    <td>{$vo.total_amount}</td>
+                                                    <td>{$vo.min_amount}</td>
+                                                    <td>{$vo.amount}</td>
+                                                    <td>{$vo.quantity}</td>
+                                                    <td>{$vo.create_time|time_formats=###,"Y-m-d H:i:s"}</td>
+                                                    <td>{:getRedEnvelopeCountById($vo['id'])}</td>
+                                                    <td>{$vo.effective}</td>
+                                                    <td>
+                                                        {$vo.begin_time|time_formats=###,"Y-m-d H:i:s"}~{$vo.end_time|time_formats=###,"Y-m-d H:i:s"} 
+                                                        <br> (共计<php>echo intval(($vo['end_time']-$vo['begin_time'])/86400);</php>天 <php> echo time()>$vo['end_time']?"<span class='text-danger'>已过期</span>":"<span class='text-success'>未过期</span>"</php>) 
+                                                    </td>
+                                                    <td>
+                                                        <a id="status" data-placement="left" data-toggle="tooltip" data-original-title="状态" class="label <eq name="vo.status" value="0">label-default<else/>label-success</eq>" href="{:U('redEnvelopeStatus?id='.$vo['id'].'&status='.abs(1-$vo['status']))}"><i class="fa <eq name="vo.status" value="0">fa-eye-slash<else/>fa-eye</eq>"></i></a>
+                                                        <a data-placement="left" data-toggle="tooltip" data-original-title="查看" class="label label-primary" href="{:U('redenvelopedetails?id='.$vo['id'])}"><i class="fa fa-pencil"></i></a>
+                                                    </td>
+                                                </tr>
+                                            </volist>
+                                        </tbody>
+                                        <else/>
+                                        <td colspan="6"> aOh! 暂时还没有内容! </td>
+                                    </notempty>
+                                </table>
+                                <div class="content col-lg-12 pull-left">
+                                    <div class="panel-footer text-center">
+                                        <div class="page">{$_page}</div>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script type="text/javascript">
+        $(document).ready(function() {
+            highlight_subnav("{:U('Sales/redenvelopelist')}");
+
+            $(".starttime").datetimepicker({
+                autoclose: true,
+                language: 'zh-CN'
+            });
+            $(".endtime").datetimepicker({
+                autoclose: true,
+                language: 'zh-CN'
+            });
+
+            //搜索功能
+			$("#search").click(function () {
+				var url = $(this).attr('url');
+                var category= $('#category').val();
+				var keyword= $('input[name=keyword]').val();
+				var starttime= $('input[name=starttime]').val();
+				var endtime= $('input[name=endtime]').val();
+				var query="keyword/"+keyword+"/category/"+category+"/starttime/"+starttime+"/endtime/"+endtime;
+				url += '/' + query;
+				window.location.href = url;
+			});
+
+            // $("#channel_id").val({$channel_id});
+
+        });
+    </script>
+</block>

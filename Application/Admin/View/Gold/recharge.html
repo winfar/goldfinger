@@ -1,0 +1,122 @@
+<extend name="Public/base"/>
+<block name="style">
+    <css href="__JS__/jquery.icheck/skins/square/blue.css"/>
+</block>
+
+<block name="body">
+    <div>
+        <div class="page-head">
+            <h2>充值送金币</h2>
+        </div>
+        <div class="cl-mcont">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="block-flat">
+                        <form class="form-horizontal"  method="POST" action="{:U('rechargeSave')}" >
+                            <div class="tab-content">
+                                <div class="header">
+                                    <h3 class="hthin">{$meta_title}</h3>
+                                </div>
+                                <div class="content">
+                                    <div style="float: left;width: 100%;">
+                                        <label class="pull-left control-label">金币充值</label>
+                                        <div class="btn-group col-sm-2">
+                                            <label class="btn btn-default active">
+                                                <input type="radio" id="state1" name="status" autocomplete="off" value="1"  <eq name="status" value="1"> checked </eq> /> 启用
+                                            </label>
+                                            <label class="btn btn-default">
+                                                <input type="radio" id="state0" name="status" autocomplete="off" value="0"  <eq name="status" value="0"> checked </eq>  /> 禁用
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div style="float: right;width: 100%;">
+                                        <div  class="pull-right">
+                                             <a data-placement="right" data-toggle="tooltip" data-original-title="添加" id="addBrand"  class="btn btn-success   ajax-get" href="{:U('addRecharge')}" ><i class="fa fa-plus-square"></i>添加</a>
+                                        </div>
+                                    </div>
+                                    <table class="no-border blue">
+                                        <thead class="no-border">
+                                        <tr>
+                                            <th style="width:10%;">充值金额(下限)</th>
+                                            <th style="width:10%;">充值金额(上限)</th>
+                                            <th style="width:10%;">赠送金币数量</th>
+                                            <th style="width:10%;">赠送积分数量</th>
+                                            <th style="width:10%;">赠送红包(红包ID)</th>
+                                            <th class="text-right">操作</th>
+                                        </tr>
+                                        </thead>
+                                        <notempty name="_list">
+                                            <tbody class="no-border-y">
+                                            <volist name="_list" id="vo">
+                                                <tr>
+                                                    <td><input id="min{$key}" name="min{$vo['id']}" value="{$vo['min']}"  > </input></td>
+                                                    <td><input id="max{$key}" name="max{$vo['id']}" value="{$vo['max']}"  > </input></td>
+                                                    <td><input id="gold{$key}" name="gold{$vo['id']}" value="{$vo['gold']}"  > </input></td>
+                                                    <td><input id="point{$key}" name="point{$vo['id']}" value="{$vo['point']}"  > </input></td>
+                                                    <td><input id="red_packet{$key}" name="red_packet{$vo['id']}" value="{$vo['red_packet']}" placeholder="红包ID，多个以逗号分隔"  > </input></td>
+                                                    <input name="id[]" value="{$vo['id']}" type="hidden"/>
+                                                    <td class="text-right">
+                                                        <!-- <a data-placement="left" data-toggle="tooltip" data-original-title="保存" id="btnsave{$key}" class="label label-danger ajax-get" onfocus="setSaveURL({$key},{$vo['id']},{$vo['min']},{$vo['max']},{$vo['gold']},{$vo['point']})" href="{:U('rechargeSave?id='.$vo['id'])}"><i class="fa fa-chain"></i></a> -->
+                                                        <a data-placement="left" data-toggle="tooltip" data-original-title="删除" class="label label-danger confirm ajax-get" href="{:U('rechargeRemove?id='.$vo['id'])}"><i class="fa fa-times"></i></a>
+                                                    </td>
+                                                </tr>
+                                            </volist>
+                                            </tbody>
+                                            <else/>
+                                            <td colspan="3"> aOh! 暂时还没有内容!</td>
+                                        </notempty>
+                                    </table>
+
+                                    <div class="content col-lg-12 pull-left">
+                                        <div class="panel-foot text-center">
+                                            <div class="page">{$_page}</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-offset-2 col-sm-2 pull-right">
+                                    <!-- 新增 -->
+                                	<button class="btn btn-primary ajax-post" type="submit" target-form="form-horizontal">保存</button>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <js href="__JS__/jquery.icheck/icheck.min.js"/>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            highlight_subnav('{:U('Gold/recharge')}');
+			
+            $("#state1").click(function(){
+                $.get("{:U('setConfigState')}", { name: "bo_exchange_recharge", status: "1" },
+                        function(data){
+//                            alert("Data Loaded: " + data);
+                        });
+            });
+
+            $("#state0").click(function(){
+                $.get("{:U('setConfigState')}", { name: "bo_exchange_recharge", status: "0" },
+                        function(data){
+//                            alert("Data Loaded: " + data);
+                        });
+            });
+        });
+        function setSaveURL(key,id){
+            //设置对应savebtn的url
+            var min = $("#min"+key).val();
+            var max = $("#max"+key).val();
+            var gold = $("#gold"+key).val();
+            var point = $("#point"+key).val();
+            var url ;
+            url = "admin.php?s=/Gold/rechargeSave/id/"+id+"/min/"+min+"/max/"+max+"/gold/"+gold+"/point/"+point;
+            $("#btnsave"+key).attr({
+                "href" : url,
+            });
+        }
+    </script>
+</block>

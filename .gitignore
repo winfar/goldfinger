@@ -1,0 +1,15 @@
+/sftp-config.json
+.idea
+.project
+*.html.compiled
+*.log
+.buildpath
+*.prefs
+/.vscode
+/system/caches
+/Picture
+/Resources/App/*.apk
+.settings
+.externalToolBuilders
+/Application/Runtime
+/README.txt

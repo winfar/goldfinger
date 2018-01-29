@@ -1,0 +1,124 @@
+<extend name="Public/base" />
+<block name="body">
+	<div>
+		<div class="page-head">
+			<h2>用户</h2>
+		</div>
+		<div class="cl-mcont">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="block-flat">
+						<div class="header">
+							<h3 class="hthin">{$meta_title}</h3>
+						</div>
+						<div class="content">
+							<div class="tab-container">
+								<form action="{:U('')}" class="form-horizontal" method="post">
+									<div class="form-group">
+										<label class="col-sm-2 control-label">用户名</label>
+										<div class="col-sm-6">
+											<input type="text" name="username" class="form-control" value="{$info.username|default=''}" placeholder="用户名" />
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">密码</label>
+										<div class="col-sm-6">
+											<input type="text" name="password" class="form-control" placeholder="密码" />
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">角色</label>
+										<div class="col-sm-6">
+											<select class="form-control" name="roleid">
+												<volist name="roles" id="vo">
+													<option value="{$vo.id}">{$vo.rolename}</option>
+												</volist>
+                                     		</select>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-2 control-label">渠道名称</label>
+										<div class="col-sm-6">
+											<select class="form-control" id="channel_id" name="channel_id" onchange="genChannelCode();"  <gt name="data['id']" value="0">disabled="disabled"</gt>  >
+											<option value="0"  >--请选择--</option>
+											<volist name="category" id="vo">
+												<option value="{$vo.id}" <eq name="channel_name['channel_name']" value="$vo['channel_name']">selected="selected"</eq>>{$vo.html}{$vo.channel_name}</option>
+											</volist>
+											</select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">姓名</label>
+										<div class="col-sm-6">
+											<input type="text" name="fullname" class="form-control" placeholder="" />
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">联系电话</label>
+										<div class="col-sm-6">
+											<input type="text" name="phone" class="form-control" placeholder="" />
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="col-sm-offset-2 col-sm-10">
+											<button class="btn btn-primary ajax-post" type="submit" target-form="form-horizontal">提 交</button>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+</block>
+<block name="script">
+	<script type="text/javascript">
+		$(document).ready(function(){
+//			$("button[type=submit]").on('click', function () {
+//				var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
+//				if(!myreg.test($("input[name=phone]").val()))
+//				{
+//					alert('请输入有效的手机号码！');
+//					return false;
+//				}
+//			});
+
+			highlight_subnav('{:U('Member/add')}');
+		});
+
+		//生成渠道号码,通过当前的记录Id生成渠道号码
+		function genChannelCode(){
+			var id = document.getElementById('id').value;
+			var pid = document.getElementById('parentId').value;
+			S_xmlhttprequest();
+
+			//如果id 为空，再提交前不自动生成渠道号码
+			if(!id || typeof(id)=="undefined" || id==0 ){
+				xmlHttp.open("GET","admin.php?s=/Channel/getChannelCode/pid/"+pid,true);
+				xmlHttp.onreadystatechange=setChanenlLevel;
+				xmlHttp.send(null);
+			}else{
+				xmlHttp.open("GET","admin.php?s=/Channel/getChannelCode/pid/"+pid,true);
+				xmlHttp.onreadystatechange=setChanenlCode;
+				xmlHttp.send(null);
+			}
+		}
+		//html设置渠道号码code
+		function setChanenlCode(){
+			var codePrefix = setChanenlLevel().substr(0,1);
+			codePrefix = codePrefix + '' + pad(document.getElementById('id').value.substr(1,5),5);
+			document.getElementById('channel_code_id').value= codePrefix ;
+		}
+
+		function pad(num, n) {
+			var len = num.toString().length;
+			while(len < n) {
+				num = "0" + num;
+				len++;
+			}
+			return num;
+		}
+	</script>
+</block>

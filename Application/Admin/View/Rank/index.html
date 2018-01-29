@@ -1,0 +1,135 @@
+<extend name="Public/base"/>
+
+<block name="style">
+	<css href="__CSS__/lrtk.css" />
+</block>
+
+<block name="body">
+<div>
+<div class="page-head">
+	<h2>{$meta_title}</h2>
+</div>
+<div class="cl-mcont">
+	<div class="row">
+		<div class="col-md-12">
+			<form class="shop-form" method="post" action="{:U('index')}">
+			<div class="block-flat">
+				<div class="header">							
+					<h3 class="hthin">{$meta_title}</h3>
+				</div>
+				<div class="content">
+					<div class="col-sm-12">
+						<label class="pull-left control-label">用户id：</label>
+						<div class="col-sm-2">
+							<input type="text" name="keyword" id="keyword" class="form-control" placeholder="输入用户id" />
+						</div>
+						<label class="pull-left control-label">开始日期</label>
+                        <div class="col-sm-2">
+                            <div class="input-group date starttime" data-min-view="2" data-date-format="yyyy-mm-dd">
+                                <input type="text" name="starttime" class="form-control" value="{$Think.post.starttime|default=time_format(NOW_TIME-24*60*60*30,'Y-m-d')}"/>
+                                <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                            </div>
+                        </div>
+                        <label class="pull-left control-label">结束日期</label>
+                        <div class="col-sm-2" >
+                            <div class="input-group date endtime" data-min-view="2" data-date-format="yyyy-mm-dd">
+                                <input type="text" name="endtime" class="form-control" value="{$Think.post.endtime|default=time_format(NOW_TIME,'Y-m-d')}"/>
+                                <span class="input-group-addon btn btn-primary" ><span class="glyphicon glyphicon-th"></span></span>
+                            </div>
+                        </div>
+						<div class="col-sm-3">
+							<button type="button" id="search" url="{:U('index?category='.$_GET['category'])}" class="btn btn-success">查询</button>
+							<a class="btn btn-success" href="{:U('add')}"><i class="fa fa-plus-square"></i>添加排行榜</a>
+							<a class="btn btn-success" href="{:U('rankimport')}"><i class="fa fa-plus-square"></i>导入排行榜</a>
+						</div>
+					</div>
+
+
+
+
+					<table class="no-border blue">
+						<thead class="no-border">
+						<tr>
+							<th style="width:6%;">ID</th>
+							<th style="width:10%;">用户id</th>
+							<th style="width:8%;">用户名称</th>
+							<th style="width:10%;">用户头像</th>
+							<th style="width:10%;">抽奖花费{:C("WEB_CURRENCY")}</th>
+							<th style="width:10%;">抽奖参与期数</th>
+							<th style="width:10%;">中奖次数</th>
+							<th style="width:7%;">全价兑换花费{:C("WEB_CURRENCY")}</th>
+							<th style="width:8%;">全价兑换次数</th>
+							<th style="width:8%;">添加时间</th>
+							<th style="width:15%;">操作</th>
+						</tr>
+						</thead>
+						<notempty name="_list">
+						<tbody class="no-border-y">
+						<volist name="_list" id="vo">
+						<tr>
+							<!--<td style="width:5%;">{$vo.id}</td>-->
+							<td style="width:5%;">{$vo.id}</td>
+							<td style="width:10%;">{$vo.uid}</td>
+							<td style="width:8%;">{$vo.username}</td>
+							<th style="width:10%;"><img src="{:C('WEB_URL')}{$vo.headimgurl}" style="width: 50px;height: 50px;"></th>
+							<td style="width:10%;">{$vo.draw_diamond}</td>
+							<td style="width:10%;">{$vo.draw_number}</td>
+							<td style="width:10%;" >{$vo.win_number}</td>
+							<td style="width:5%;">{$vo['full_draw']}</td>
+							<td style="width:5%;">{$vo['full_number']}</td>
+							<td style="width:5%;">{$vo.create_time|time_format=###,"Y-m-d H:i:s"}</td>
+							<td style="width:15%;">
+								<a data-placement="left" data-toggle="tooltip" data-original-title="修改" class="label label-primary" href="{:U('add?id='.$vo['id'])}"><i class="fa fa-edit"></i></a>
+                                <a data-placement="left" id="adeleteInfo" data-toggle="tooltip" data-original-title="删除" onClick="confirm('确认要删除吗？')" class="label label-danger ajax-get" href="{:U('del?id='.$vo['id'])}"><i class="fa fa-times"></i></a>
+							</td>
+						</tr>
+						</volist>
+						</tbody>
+						<else/>
+						<td colspan="6"> aOh! 暂时还没有内容! </td>
+						</notempty>
+					</table>
+					<div class="content col-lg-12 pull-left">
+                        <div class="panel-foot text-center">
+                            <div class="page">{$_page}</div>
+                        </div>
+					</div>
+					<div class="clearfix"></div>
+				</div>
+			</div>
+			</form>
+		</div>
+	</div>
+</div>
+</div>
+</block>
+<block name="script">
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$(".starttime").datetimepicker({autoclose: true,language: 'zh-CN'});
+            $(".endtime").datetimepicker({autoclose: true,language: 'zh-CN'});
+			highlight_subnav('{:U('Rank/index')}');
+			//搜索功能
+			$("#search").click(function(){
+				var url = $(this).attr('url');
+                var keyword=  $('input[name=keyword]').val();//用户id
+                var starttime=  $('input[name=starttime]').val();//开始日期
+                var endtime=    $('input[name=endtime]').val();//结束日期
+                var   query="keyword/"+keyword+"/starttime/"+starttime+"/endtime/"+endtime;
+                url += '/' + query;
+                window.location.href = url;
+			});
+
+			channelIndx.conditionarr();
+		});
+
+		var channelIndx = {
+			conditionarr: function () {
+				var conditionarr =  JSON.parse('{$conditionarr}') ;
+				$('input[name=keyword]').val(conditionarr['keyword']);
+                $("input[name=starttime]").val(conditionarr['starttime']);
+                $("input[name=endtime]").val(conditionarr['endtime']);
+			}
+		}
+	</script>
+</block>

@@ -1,0 +1,436 @@
+<extend name="Public/base" />
+<block name="style">
+</block>
+<block name="body">
+    <div>
+        <div class="page-head">
+            <h2>促销管理—生成红包</h2>
+        </div>
+        <div class="cl-mcont">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="block-flat">
+                        <div class="header">
+                            <h3 class="hthin">{$meta_title}</h3>
+                        </div>
+                        <div class="content">
+                            <div class="tab-container">
+                                <form id="defaultForm" action="{:U()}" class="form-horizontal" method="post">
+                                    <input type="hidden" name="id" value="{$info.id|default=''}">
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">红包名称 <span class="text-danger">*</span></label>
+                                        <div class="col-xs-4">
+                                            <input type="text" name="name" class="form-control" value="{$info.name|default=''}" placeholder="红包名称" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">商品专区</label>
+                                        <div class="col-xs-4">
+                                            <select class="form-control" id="specialarea" name="specialarea" onchange="">
+                                                <option value="0">全部专区</option>
+                                                <volist name="specialarea_list" id="vo">
+                                                    <option value="{$vo.id}">{$vo.title}</option>
+                                                </volist>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">可用商品</label>
+                                        <div class="col-xs-4">
+                                            <select class="form-control" id="category" name="category" onchange="">
+                                                <option value="0" >全部商品</option>
+                                                <option value="101" >部分分类</option>
+                                                <option value="102" >部分品牌</option>
+                                                <option value="103" >实物商品</option>
+                                                <option value="104" >虚拟商品</option>
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                    <label class="col-xs-2 control-label" id="cate_label"></label>
+                                        <div class="col-xs-4">
+                                            <!-- 分类列表 -->
+                                                
+                                            <select class="form-control" id="cate" name="cate" style="display: none;width: 60%;float: left;">
+                                                <volist name="type_list" id="vo">
+                                                    <option value="{$vo.id}">{$vo.title}</option>
+                                                </volist>
+
+                                            </select><span id="cate_add" style="display: none;font-size: 30px;line-height: 30px;margin-left: 10px;"><a href="javascript:void(0)">+</a></span>
+                                            <!-- 品牌列表 -->
+                                            <select class="form-control" id="brand" name="brand" style="display: none;width: 60%;float: left">
+                                                <volist name="brand_list" id="brand">
+                                                    <option value="{$brand.id}">{$brand.title}</option>
+                                                </volist>
+                                            </select></select><span id="brand_add" style="display: none;font-size: 30px;line-height: 30px;margin-left: 10px;"><a href="javascript:void(0)">+</a></span>
+                                        
+                                        </div>
+                                    </div>
+                                    <!-- 品牌分类id集合 -->
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label"></label>
+                                        <div class="col-xs-4">
+                                            <div id="cate_list" style="display: none;">
+                                            <volist name="category_data" id="list">
+                                                 <input type='checkbox' name='category_values[]' checked value="{$list['id']}" />{$list['title']}
+                                            </volist>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">金额下限 <span class="text-danger">*</span></label>
+                                        <div class="col-xs-4">
+                                            <input type="text" name="min_amount" class="form-control" value="{$info.min_amount|default=''}" placeholder="可以使用该红包的最低金额" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">减少金额 <span class="text-danger">*</span></label>
+                                        <div class="col-xs-4">
+                                            <input type="text" id="amount" name="amount" class="form-control" value="{$info.amount|default=''}" placeholder="使用后可以减少的金额" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">资金池 <span class="text-danger">*</span></label>
+                                        <div class="col-xs-4">
+                                            <input type="text" id="total_amount" name="total_amount" class="form-control" value="{$info.total_amount|default=''}" placeholder="一共可以发放的总金额" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">开始时间 <span class="text-danger">*</span></label>
+                                        <div class="col-xs-4">
+                                            <input type="text" name="begin_time" class="form-control starttime" value="{$info.begin_time|default=time()|date='Y-m-d',###}" placeholder="开始时间" />
+                                            <!--<span class="form-control-static btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>-->
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">结束时间 <span class="text-danger">*</span></label>
+                                        <div class="col-xs-4">
+                                            <input type="text" name="end_time" class="form-control endtime" value="{$info.end_time|default=time()+24*60*60*30|date='Y-m-d',###}" placeholder="结束时间" />
+                                            <!--<span class="form-control-static btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>-->
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">有效时长(天) <span class="text-danger">*</span></label>
+                                        <div class="col-xs-4">
+                                            <input type="text" id="effective" name="effective" class="form-control" value="{$info.effective|default='1'}" placeholder="数量" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">数量 <span class="text-danger">*</span></label>
+                                        <div class="col-xs-4">
+                                            <input type="text" id="quantity" name="quantity" class="form-control" value="{$info.quantity|default=''}" placeholder="数量" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">前台说明</label>
+                                        <div class="col-xs-4">
+                                            <textarea rows="8" name="remark" cols="20" class="form-control" value="{$info.remark|default=''}"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-2 col-sm-10">
+                                            <button class="btn btn-primary" type="submit" target-form="form-horizontal">提 交
+                                            </button>
+                                            <button class="btn btn-primary" type="button" id="btnRefresh" style="margin-left: 30px;" target-form="form-horizontal">重 置
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            highlight_subnav("{:U('Sales/redenvelopedetails')}");
+
+            $('#btnRefresh').click(function() {
+                $('form')[0].reset();
+            });
+
+            $(".starttime").datetimepicker({
+                autoclose: true,
+                language: 'zh-CN'
+            });
+            $(".endtime").datetimepicker({
+                autoclose: true,
+                language: 'zh-CN'
+            });
+
+            $('#defaultForm').bootstrapValidator({
+                message: 'This value is not valid',
+                /*输入框不同状态，显示图片的样式*/
+                feedbackIcons: {
+                    valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                },
+                /*验证*/
+                fields: {
+                    /*键名username和input name值对应*/
+                    name: {
+                        message: 'The username is not valid',
+                        validators: {
+                            notEmpty: { /*非空提示*/
+                                message: '红包名称不能为空'
+                            },
+                            stringLength: { /*长度提示*/
+                                min: 1,
+                                max: 32,
+                                message: '长度必须在1到32之间'
+                            }
+                        }
+                    },
+                    min_amount: {
+                        message: 'The min_amount is not valid',
+                        validators: {
+                            notEmpty: {
+                                message: '金额下限不能为空'
+                            },
+                            stringLength: {
+                                min: 1,
+                                max: 10,
+                                message: '长度必须在1到10之间'
+                            },
+                            regexp: {
+                                regexp: /^[0-9]+(.[0-9]{2})?$/,
+                                message: '请输入正确的数字，小数点保留两位'
+                            }
+                        }
+                    },
+                    amount: {
+                        message: 'The amount is not valid',
+                        validators: {
+                            notEmpty: {
+                                message: '减少金额不能为空'
+                            },
+                            stringLength: {
+                                min: 1,
+                                max: 10,
+                                message: '长度必须在1到10之间'
+                            },
+                            regexp: {
+                                regexp: /^[0-9]+(.[0-9]{2})?$/,
+                                message: '请输入正确的数字，小数点保留两位'
+                            }
+                        }
+                    },
+                    total_amount: {
+                        message: 'The total_amount is not valid',
+                        validators: {
+                            notEmpty: {
+                                message: '资金池不能为空'
+                            },
+                            stringLength: {
+                                min: 1,
+                                max: 10,
+                                message: '长度必须在1到10之间'
+                            },
+                            regexp: {
+                                regexp: /^[0-9]+(.[0-9]{2})?$/,
+                                message: '请输入正确的数字，小数点保留两位'
+                            }
+                        }
+                    },
+                    begin_time: {
+                        message: 'The begin_time is not valid',
+                        validators: {
+                            notEmpty: {
+                                message: '开始时间不能为空'
+                            },
+                            regexp: {
+                                regexp: /^\d{4}-\d{2}-\d{2}|\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}$/,
+                                message: '时间格式不匹配'
+                            }
+                        }
+                    },
+                    end_time: {
+                        message: 'The end_time is not valid',
+                        validators: {
+                            notEmpty: {
+                                message: '结束时间不能为空'
+                            },
+                            regexp: {
+                                regexp: /^\d{4}-\d{2}-\d{2}|\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}$/,
+                                message: '时间格式不匹配'
+                            }
+                        }
+                    },
+                     effective: {
+                        message: 'The quantity is not valid',
+                        validators: {
+                            notEmpty: {
+                                message: '数量不能为空'
+                            },
+                            stringLength: {
+                                min: 1,
+                                max: 11,
+                                message: '长度必须在1到6之间'
+                            },
+                            regexp: {
+                                regexp: /^\d+$/,
+                                message: '必须为整数'
+                            }
+                            // ,
+                            // between: {
+                            //     min: 1,
+                            //     max: Math.floor($("#total_amount").val()/$("#amount").val()),
+                            //     message: '数量不能大于资金池与减少金额相除的值'
+                            // }
+                        }
+                    },
+                    quantity: {
+                        message: 'The quantity is not valid',
+                        validators: {
+                            notEmpty: {
+                                message: '数量不能为空'
+                            },
+                            stringLength: {
+                                min: 1,
+                                max: 6,
+                                message: '长度必须在1到6之间'
+                            },
+                            regexp: {
+                                regexp: /^\d+$/,
+                                message: '必须为整数'
+                            }
+                            // ,
+                            // between: {
+                            //     min: 1,
+                            //     max: Math.floor($("#total_amount").val()/$("#amount").val()),
+                            //     message: '数量不能大于资金池与减少金额相除的值'
+                            // }
+                        }
+                    }
+                }
+            });
+
+            $("#amount").on("blur",function(){
+                if($("#amount").val()!="" && $(this).val()!=""){
+                    $("#quantity").val(Math.floor($("#total_amount").val()/$("#amount").val()));
+                }
+            });
+
+            $("#total_amount").on("blur",function(){
+                if($("#amount").val()!="" && $(this).val()!=""){
+                    $("#quantity").val(Math.floor($("#total_amount").val()/$("#amount").val()));
+                }
+            });
+            $("#category").change(function(){
+                var type_id = $('#category option:selected').val();
+                if (type_id==101) {
+                    $("#cate_label").html('商品分类');
+                    $("#cate").show();
+                    $("#brand").hide();
+                    $("#cate_add").show();
+                    $("#brand_add").hide();
+                    $("#cate_list").show();
+                    $('#cate_list').html("");
+                } else if (type_id==102) {
+                    $("#cate_label").html('商品品牌');
+                    $("#brand").show();
+                    $("#cate").hide();
+                    $("#brand_add").show();
+                    $("#cate_add").hide();
+                    $("#cate_list").show();
+                    $('#cate_list').html("");
+                } else {
+                     $("#cate_label").html('');
+                    $("#brand").hide();
+                    $("#cate").hide();
+                    $("#brand_add").hide();
+                    $("#cate_add").hide();
+                    $("#cate_list").hide(); 
+                    $('#cate_list').html("");
+                }
+            });
+            $("#cate_add").click(function(){
+                var category=''; 
+                $('input[name="category_values[]"]:checked').each(function(){ 
+                    category+=$(this).val()+','; 
+                });
+                var cate_id = $("#cate  option:selected").val();//要添加的cate_id集合
+                var html = "";//要插入的内容
+                var type_id = $('#category option:selected').val();
+                $.ajax({
+                    type: "POST",
+                    url: "{:U('cateInfo')}",
+                    data: {cate_id: cate_id,category:category},
+                    dataType: "json",
+                    success: function (result) {
+                        if (result.code==200) {
+                                var data = result.data;
+                                html += "<input type='checkbox' name='category_values[]' checked value='"+data.id+"' />"+data.title;
+                                $('#cate_list').append(html);
+                        } else {
+                            alert(result.msg);
+                        }
+                    }
+                });
+                
+            });
+            $("#brand_add").click(function(){
+                var category=''; 
+                $('input[name="category_values[]"]:checked').each(function(){ 
+                    category+=$(this).val()+','; 
+                });
+                var brand_id = $("#brand  option:selected").val();//要添加的cate_id集合
+                var html = "";//要插入的内容
+                $.ajax({
+                    type: "POST",
+                    url: "{:U('brandInfo')}",
+                    data: {brand_id: brand_id,brand:category},
+                    dataType: "json",
+                    success: function (result) {
+                        if (result.code==200) {
+                                var data = result.data;
+                                html += "<input type='checkbox' name='category_values[]' checked value='"+data.id+"' />"+data.title;
+                                $('#cate_list').append(html);
+                        } else {
+                            alert(result.msg);
+                        }
+                    }
+                });
+                
+            });
+
+
+            if("{$info.specialarea}"!="")
+                $('#specialarea').val("{$info.specialarea}");
+            if("{$info.category}"!="") {
+                $('#category').val("{$info.category}");
+                var type_id = "{$info.category}";
+                if (type_id==101) {
+                    $("#cate_label").html('商品分类');
+                    $("#cate").show();
+                    $("#brand").hide();
+                    $("#cate_add").show();
+                    $("#brand_add").hide();
+                    $("#cate_list").show();
+                    
+                } else if (type_id==102) {
+                    $("#cate_label").html('商品品牌');
+                    $("#brand").show();
+                    $("#cate").hide();
+                    $("#brand_add").show();
+                    $("#cate_add").hide();
+                    $("#cate_list").show();
+                } else {
+                     $("#cate_label").html('');
+                    $("#brand").hide();
+                    $("#cate").hide();
+                    $("#brand_add").hide();
+                    $("#cate_add").hide();
+                    $("#cate_list").hide(); 
+                }
+            }
+        });
+    </script>
+</block>

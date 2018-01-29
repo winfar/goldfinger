@@ -1,0 +1,177 @@
+<extend name="Public/base"/>
+<block name="style">
+	<style type="text/css">
+		.blue {
+            table-layout:fixed;
+        }
+        .blue  td {
+            word-wrap:break-word;
+        }
+	</style>
+</block>
+<block name="body">
+<div>
+	<div class="page-head">
+		<h2>pk房间列表</h2>
+	</div>
+	<div class="cl-mcont">
+
+	<div class="row">
+		<div class="col-md-12">
+			<div class="block-flat">
+				<div class="header">							
+					<h3 class="hthin">{$meta_title}</h3>
+				</div>
+				<div class="content">
+					<div class="col-sm-12 form-inline">
+						<div class="form-group col-sm-3">
+							<label class="pull-left" for="starttime">开始日期<br><span style="color: red;font-size: 10px;">(创建时间)</span></label>
+							<div class="input-group date starttime" data-min-view="2" data-date-format="yyyy-mm-dd" style="padding-left: 5px;width:150px">
+								<input type="text" id="starttime" name="starttime" class="form-control" value="{$Think.get.starttime|default=''}"/>
+								<span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+							</div>
+						</div>
+						<div class="form-group col-sm-3" >
+							<label class="pull-left" for="endtime">结束日期<br><span style="color: red;font-size: 10px;">(创建时间)</span></label>
+							<div class="input-group date endtime" data-min-view="2" data-date-format="yyyy-mm-dd" style="padding-left: 5px;width:150px">
+								<input type="text" id="endtime" name="endtime" class="form-control" value="{$Think.get.endtime|default=''}"/>
+								<span class="input-group-addon btn btn-primary" ><span class="glyphicon glyphicon-th"></span></span>
+							</div>
+						</div>
+						<div class="form-group col-sm-3">
+							<label class="" for="ispublic">是否公开</label>
+							<select class="form-control" id="ispublic" name="ispublic" onchange="" value="{$Think.get.ispublic|default=''}" style="width:150px">
+								<option value="">所有</option>
+								<option value="0">是</option>
+								<option value="1">否</option>
+							</select>
+						</div>
+						<div class="form-group col-sm-3">
+							<label class="" for="isresolving">是否解散</label>
+							<select class="form-control" id="isresolving" name="isresolving" onchange="" value="{$Think.get.isresolving|default=''}" style="width:150px">
+								<option value="">所有</option>
+								<option value="0">否</option>
+								<option value="1">是</option>
+							</select>
+						</div>
+						</div>
+						<div class="col-sm-12 form-inline">
+						<div class="form-group col-sm-3">
+							<label class="" for="peoplenum">场次</label>
+							<select class="form-control" id="peoplenum" name="peoplenum" onchange="" value="{$Think.get.peoplenum|default=''}" style="width:150px">
+								<option value="">所有场次</option>
+								<volist name="peoplenum_list" id="peoplenum">
+                                    <option value="{$peoplenum}">{$peoplenum}</option>
+                                </volist>
+							</select>
+						</div>
+						<div class="form-group col-sm-3">
+							<label class="" for="invitation_code">邀&nbsp;&nbsp;请&nbsp;&nbsp;码</label>
+							<input type="text" id="invitation_code" name="invitation_code" class="form-control" placeholder="邀请码" value="{$Think.get.invitation_code|default=''}" style="width:150px"/>
+						</div>
+						<div class="form-group col-sm-3">
+							<label class="" for="keyword">房间号</label>
+							<input type="text" id="keyword" name="keyword" class="form-control" placeholder="房间号" value="{$Think.get.keyword|default=''}"/>
+						</div>
+						<div class="form-group">
+							<button type="button" id="search" url="{:U('')}" class="btn btn-success">搜索</button>
+						</div>
+					</div>
+					<table class="no-border blue">
+						<thead class="no-border">
+						<tr>
+							<th style="width:8%;">ID</th>
+							<th style="width:8%;color: red">房间号</th>
+							<th style="width:8%;">是否公开</th>	
+							<th style="width:8%;color:green">邀请码</th>
+							<th style="width:8%;">是否解散</th>
+							<th style="width:25%;">商品名称</th>
+							<th style="width:10%;color: red">人均(元)</th>
+							<th style="width:8%;color: green">剩余库存</th>
+							<th style="width:8%;">几人场</th>
+							<th style="width:15%;">创建人者</th>
+							<!-- <th style="width:10%;">进入房间用户</th> -->
+							<th style="width:8%;">查看进程</th>
+							<th style="width:10%;">二维码图片url</th>
+							<th style="width:10%;">房间解散时间</th>
+							<th style="width:8%;">创建时间</th>
+						</tr>
+						</thead>
+						<notempty name="list">
+						<tbody class="no-border-y">
+						<volist name="list" id="pk">
+						<tr>
+							<td>{$pk['id']}</td>
+							<td style="color: red">{$pk['no']}</td>	
+							<td><if condition="$pk['ispublic'] eq 0">是<else />否</if></td>
+							<td style="color: green">{$pk['invitecode']}</td>
+							<td><if condition="$pk['isresolving'] eq 0">否<else />是</if></td>				
+							<td>{$pk.shop_name}</td>
+							<td style="color: red">{$pk.capita}</td>
+							<td style="color: green">{$pk.inventory}</td>
+							<td style="color: blue">{$pk.peoplenum}</td>
+							<td><if condition="$pk['ispublic'] eq 1">{$pk.nickname}<else />摸金达人</if></td>
+							<!-- <td><a href="javascript:;" class="opiframe" url="{:U('pk/user?no='.$pk['no'])}">查看...</a></td> -->
+							<td><a href="javascript:;" class="opiframe" url="{:U('pk/period?shopid='.$pk['shopid'].'&id='.$pk['id'].'&price='.$pk['amount'])}">查看...</a></td>
+							<td>
+								<empty name="pk.qrcode_url">
+								<else />
+									<img src="{:completion_pic_passport($pk['qrcode_url'])}" class="img-thumbnail" style="width:100%;min-height: 100px;"/>
+								</empty>
+							</td>
+							<td><if condition="$pk['end_time'] gt 0">{$pk.end_time|time_format=###,"Y-m-d H:i:s"}</if></td>
+							<td>{$pk.create_time|time_format=###,"Y-m-d H:i:s"}</td>
+						</tr>
+						</volist>
+						</tbody>
+						<else/>
+						<td colspan="4"> aOh! 暂时还没有内容! </td>
+						</notempty>
+					</table>
+					<div class="content col-lg-12 pull-left">
+                        <div class="panel-foot text-center">
+                            <div class="page">{$page}</div>
+                        </div>
+					</div>
+					<div class="clearfix"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+</block>
+<block name="script">
+	<js href="__JS__/behaviour/weixin.js" />
+	<script type="text/javascript">
+		$(document).ready(function(){
+			
+			$('#ispublic').val("{:I('ispublic')}");
+			$('#isresolving').val("{:I('isresolving')}");
+			$('#peoplenum').val("{:I('peoplenum')}");
+			highlight_subnav("{:U('Pk/index')}");//高亮
+
+			$(".starttime").datetimepicker({
+                autoclose: true,
+                language: 'zh-CN'
+            });
+            $(".endtime").datetimepicker({
+                autoclose: true,
+                language: 'zh-CN'
+            });
+
+			//搜索功能
+			$("#search").click(function(){
+				var keyword = $('#keyword').val()==""?"":encodeURIComponent($('#keyword').val());//房间号
+				var invitation_code = $("#invitation_code").val();//邀请码
+				var ispublic = $('#ispublic').val();//是否公开
+				var isresolving = $('#isresolving').val();//是否解散
+				var starttime = $('#starttime').val();//开始时间
+				var endtime = $('#endtime').val();//结束时间
+				var peoplenum = $('#peoplenum').val();//场次
+				var query="keyword/"+keyword+"/invitation_code/"+invitation_code+"/ispublic/"+ispublic+"/isresolving/"+isresolving+"/starttime/"+starttime+"/endtime/"+endtime+"/peoplenum/"+peoplenum;
+				window.location.href = $(this).attr('url') + '/' + query;
+			});
+		});
+	</script>
+</block>

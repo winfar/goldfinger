@@ -1,0 +1,177 @@
+<extend name="Public/base" />
+<block name="style">
+    <css href="__JS__/jquery.icheck/skins/square/blue.css"/>
+    <css href="__JS__/bootstrap.datetimepicker/css/bootstrap-datetimepicker.min.css" />
+    <style type="text/css">
+        .col-sm-3{
+            width:185px;
+        }
+    </style>
+</block>
+<block name="body">
+    <div>
+        <div class="page-head">
+            <h2>用户</h2>
+        </div>
+        <div class="cl-mcont">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="block-flat">
+                        <div class="header">
+                            <h3 class="hthin">{$meta_title}</h3>
+                        </div>
+                        <div class="content">
+                            <div class="col-sm-12">
+                                <div style="float: left;width: 100%;">
+                                    <label class="pull-left control-label">开始日期</label>
+                                    <div class="col-sm-3">
+                                        <div class="input-group date starttime" data-min-view="2" data-date-format="yyyy-mm-dd">
+                                            <input type="text" id="starttime" name="starttime" class="form-control" value="{$Think.post.starttime|default=''}"/>
+                                            <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                        </div>
+                                    </div>
+                                    <label class="pull-left control-label">结束日期</label>
+                                    <div class="col-sm-3" >
+                                        <div class="input-group date endtime" data-min-view="2" data-date-format="yyyy-mm-dd">
+                                            <input type="text" id="endtime" name="endtime" class="form-control" value="{$Think.post.endtime|default=''}"/>
+                                            <span class="input-group-addon btn btn-primary" ><span class="glyphicon glyphicon-th"></span></span>
+                                        </div>
+                                    </div>
+                                                                      
+                                    <label class="pull-left control-label">用户ID/用户名</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" name="keyword" class="form-control" id="keyword">
+                                    </div>
+                                    <empty name="channelId">
+                                        <label class="pull-left control-label">所属渠道</label>
+                                        <div class="col-sm-3" >
+                                            <select class="form-control" name="channel" style="width: 100px;">
+                                                <option value="">所有渠道</option>
+                                                <notempty name="_channelList">
+                                                    <volist name="_channelList" id="channel">
+                                                        <option value="{$channel.id}">{$channel.channel_name}</option>
+                                                    </volist>
+                                                </notempty>
+                                                
+                                            </select>
+                                        </div>
+                                    </empty>
+                                    
+                                </div>
+                                <div class="form-group col-sm-2">
+                                    <select name="channel" class="form-control" style="width: 150px;">
+                                        <option value="">所有渠道</option>
+                                        <volist name="_channelList" id="vo">
+                                            <option value="{$vo.id}">{$vo.channel_name}</option>
+                                        </volist>
+                                    </select>
+                                </div>
+                                <div class="form-group col-sm-2">
+                                    <!--<label class="" for="keyword">id/昵称</label>-->
+                                    <input type="text" id="keyword" name="keyword" class="form-control" placeholder="id/昵称" value="{$Think.get.keyword|default=''}" />
+                                </div>
+                                <div class="form-group">
+                                    <button type="button" id="search" url="{:U('')}" class="btn btn-success">搜索</button>
+                                </div>
+                            </div>
+                            <table class="no-border blue">
+                                <thead class="no-border">
+                                    <tr>
+                                        <th style="width:5%;">渠道ID</th>
+                                        <th style="width:5%;">渠道名称</th>
+                                        <th style="width:5%;">用户ID</th>
+                                        <th style="width:5%;">用户名</th>
+                                        <th style="width:5%;">手机号</th>
+                                        <th style="width:5%;">参与次数</th>
+                                        <th style="width:8%;">消耗{:C("WEB_CURRENCY")}总数</th>
+                                        <th style="width:8%;">剩余{:C("WEB_CURRENCY")}</th>
+                                        <th style="width:8%;">中奖次数</th>
+                                        <th style="width:8%;">黄金余额(mg)</th>
+                                        <th style="width:8%;">提取黄金(g)</th>
+                                        <th style="width:8%;">注册时间</th>
+                                        <th style="width:8%;">操作</th>
+                                    </tr>
+                                </thead>
+                                <notempty name="_list">
+                                    <tbody class="no-border-y">
+                                        <volist name="_list" id="vo">
+                                            <tr>
+                                                <td>{$vo.channelid}</td>
+                                                <td>{$vo.channel_name}</td>
+                                                <td>{$vo.id}</td>
+                                                <td>{$vo.nickname}</td>
+                                                <td>{$vo.phone}</td>
+                                                <td>{$vo.number}</td>
+                                                <td>{$vo.gold}</td>
+                                                <td>{$vo.gold_coupon}</td>
+                                                <td>{$vo.win_number}</td>
+                                                <td>{$vo.gold_balance}</td>
+                                                <td>{$vo.cash}</td>
+                                                <td>{:$vo['create_time']>0 ? date("Y-m-d H:i:s",$vo['create_time']) : ''}</td>
+                                                <td><a href="{:U('User/item?uid='.$vo['id'])}">详细信息</a></td>
+                                            </tr>
+                                        </volist>
+                                    </tbody>
+                                    <else/>
+                                    <td colspan="4"> aOh! 暂时还没有内容! </td>
+                                </notempty>
+                            </table>
+                            <div class="content col-lg-12 pull-left">
+                                <div class="panel-foot text-center">
+                                    <div class="page">{$_page}</div>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+</block>
+<block name="script">
+    <js href="__JS__/behaviour/weixin.js" />
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            $('#channel').val("{:I('channel')}")
+            highlight_subnav("{:U('User/index')}");
+
+            $(".starttime").datetimepicker({
+                autoclose: true,
+                language: 'zh-CN'
+            });
+            $(".endtime").datetimepicker({
+                autoclose: true,
+                language: 'zh-CN'
+            });
+
+            //搜索功能
+            $("#search").click(function() {
+                var keyword = $('#keyword').val() == "" ? "" : encodeURIComponent($('#keyword').val());
+                var channel = $('select[name=channel]').val();
+                var starttime = $('#starttime').val();
+                var endtime = $('#endtime').val();
+                var query = "keyword/" + keyword + "/channel/" + channel + "/starttime/" + starttime + "/endtime/" + endtime;
+                window.location.href = $(this).attr('url') + '/' + query;
+            });
+            userIndx.conditionarr();
+        });
+        var userIndx = {
+            conditionarr: function () {
+                var conditionarr =  JSON.parse('{$conditionarr}') ;
+                $('input[name=keyword]').val(  conditionarr['keyword']);
+                $("input[name=starttime]").val(conditionarr['starttime']);
+                $("input[name=endtime]").val(conditionarr['endtime']);
+                var channel=conditionarr['channel'];
+                if(channel!=undefined){
+                    $("select[name=channel]").val(channel);
+                }
+            }
+        }
+    </script>
+</block>

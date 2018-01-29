@@ -1,0 +1,162 @@
+<extend name="Public/base"/>
+
+<block name="style">
+	<css href="__CSS__/lrtk.css" />
+</block>
+
+<block name="body">
+<div>
+<div class="page-head">
+	<h2>渠道数据明细</h2>
+</div>
+<div class="cl-mcont">
+	<div class="row">
+		<div class="col-md-12">
+			<form class="shop-form" method="post" action="{:U('index')}">
+			<div class="block-flat">
+				<div class="header">							
+					<h3 class="hthin">{$meta_title}</h3>
+				</div>
+				<div class="content">
+					<div class="col-sm-12">
+						<div class="form-group col-sm-3">
+							<label class="pull-left" for="starttime">开始日期<br><span style="color: red;font-size: 10px;">(创建时间)</span></label>
+							<div class="input-group date starttime" data-min-view="2" data-date-format="yyyy-mm-dd" style="padding-left: 5px;width:150px">
+								<input type="text" id="starttime" name="starttime" class="form-control" value="{$Think.get.starttime|default=''}"/>
+								<span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+							</div>
+						</div>
+						<div class="form-group col-sm-3" >
+							<label class="pull-left" for="endtime">结束日期<br><span style="color: red;font-size: 10px;">(创建时间)</span></label>
+							<div class="input-group date endtime" data-min-view="2" data-date-format="yyyy-mm-dd" style="padding-left: 5px;width:150px">
+								<input type="text" id="endtime" name="endtime" class="form-control" value="{$Think.get.endtime|default=''}"/>
+								<span class="input-group-addon btn btn-primary" ><span class="glyphicon glyphicon-th"></span></span>
+							</div>
+						</div>
+						<div class="form-group col-sm-3">
+							<label class="pull-left" for="channelid">渠道名称</label>
+							<select class="form-control" id="channelid" name="channelid" onchange="" value="{$Think.get.channelid|default=''}" style="width:150px">
+								<option value="">所有</option>
+								<volist name="channel_list" id="channel">
+									<option value="{$channel.id}">{$channel.html}{$channel.channel_name}</option>
+								</volist>
+							</select>
+						</div>
+						<div class="form-group col-sm-3">
+							<label class="pull-left" for="channelid">邀请码</label>
+							<input type="text" id="invitationid" name="invitationid" class="form-control" value="{$Think.get.invitationid|default=''}" style="width: 150px;">
+						</div>
+						</div>
+						<div class="col-sm-12">
+						<div class="col-sm-3">
+							<button type="button" id="search" url="{:U('')}" class="btn btn-success">搜索</button>
+							<button type="button" url="{:U('exportitem')}" class="btn btn-success" id="btnExport">导出Excel</button>
+						</div>
+					</div>
+
+
+
+
+					<table class="no-border blue">
+						<thead class="no-border">
+						<tr>
+							<th style="width:10%;">渠道名称</th>
+							<th style="width:8%;">渠道邀请码</th>
+							<th style="width:8%;">用户注册数</th>
+							<th style="width:10%;">现金充值金额</th>
+							<th style="width:10%;">现金支付金额</th>
+							<th style="width:10%;">金币支付金</th>
+							<th style="width:7%;">总支付金额</th>
+						</tr>
+						</thead>
+						<notempty name="_list">
+						<tbody class="no-border-y">
+						<volist name="_list" id="vo">
+						<tr>
+							<td>{$vo.channel_name}</td>
+							<td>{$vo.invitationid}</td>
+							<td>{$vo.register_number}</td>
+							<td>{$vo.recharge_money}</td>
+							<td>{$vo.cash_money}</td>
+							<td>{$vo.gold_money}</td>
+							<td>{$vo.total_money}</td>
+						</tr>
+						</volist>
+						</tbody>
+						<else/>
+						<td colspan="6"> aOh! 暂时还没有内容! </td>
+						</notempty>
+					</table>
+					<div class="content col-lg-12 pull-left">
+                        <div class="panel-foot text-center">
+                            <div class="page">{$_page}</div>
+                        </div>
+					</div>
+					<div class="clearfix"></div>
+				</div>
+			</div>
+			</form>
+		</div>
+	</div>
+</div>
+</div>
+</block>
+<block name="script">
+	<js href="__JS__/behaviour/weixin.js" />
+	<script type="text/javascript">
+		$(document).ready(function(){
+			highlight_subnav('{:U('Channel/datalist')}');
+			$(".starttime").datetimepicker({
+                autoclose: true,
+                language: 'zh-CN'
+            });
+            $(".endtime").datetimepicker({
+                autoclose: true,
+                language: 'zh-CN'
+            });
+			$('#channelid').val("{:I('channelid')}");
+			//搜索功能
+			$("#search").click(function(){
+				var id = "{$_GET['id']}";//id
+				var starttime = $('#starttime').val();//开始时间
+				var endtime = $('#endtime').val();//结束时间
+				var channelid = $('#channelid').val();//渠道名称
+				var invitationid = $('#invitationid').val();//邀请码
+				var query="id/"+id+"/starttime/"+starttime+"/endtime/"+endtime+"/channelid/"+channelid+"/invitationid/"+invitationid;
+				window.location.href = $(this).attr('url') + '/' + query;
+			});
+			//导出功能
+			$("#btnExport").click(function () {
+				var url = $(this).attr('url');
+				var id = "{$_GET['id']}";//id
+				var starttime = $('#starttime').val();//开始时间
+				var endtime = $('#endtime').val();//结束时间
+				var channelid = $('#channelid').val();//渠道名称
+				var invitationid = $('#invitationid').val();//邀请码
+				var query="id/"+id+"/starttime/"+starttime+"/endtime/"+endtime+"/channelid/"+channelid+"/invitationid/"+invitationid;
+				url += '/' + query;
+				window.location.href = url;
+			});
+
+			channelIndx.conditionarr();
+		});
+
+		var channelIndx = {
+			conditionarr: function () {
+				var conditionarr =  JSON.parse('{$conditionarr}') ;
+				$('input[name=keyword]').val(  conditionarr['keyword']);
+
+				var span='<span class="caret"></span>';
+
+				if(conditionarr['levelname']!=undefined){
+					$('#btnchannellevel').html(conditionarr['levelname']+span);
+				}
+
+				var statusname=conditionarr['statusname']
+				if(statusname!=undefined){
+					$("#btnchannelstatus").html(statusname+span);
+				}
+			}
+		}
+	</script>
+</block>

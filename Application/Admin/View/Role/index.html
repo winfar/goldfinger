@@ -1,0 +1,100 @@
+<extend name="Public/base" />
+
+<block name="body">
+    <div>
+        <div class="page-head">
+            <h2>角色列表</h2>
+        </div>
+        <div class="cl-mcont">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="block-flat">
+                        <div class="header">
+                            <h3 class="hthin">{$meta_title}</h3>
+                        </div>
+                        <div class="content">
+                            <div class="col-sm-12">
+						<label class="pull-left control-label">角色名称：</label>
+						<div class="col-sm-3">
+							<input type="text" name="keyword" style="width: 70%" class="form-control" value="{$keyword}" placeholder="关键字搜索">
+						</div>
+						<div class="col-sm-3">
+							<button type="button" id="search" url="{:U('')}" class="btn btn-success">搜素</button>
+                            <a class="btn btn-success" href="{:U('add')}"><i class="fa fa-plus-square"></i> 添加角色</a>
+                        </div>
+					</div>
+                            <table class="no-border blue">
+                                <thead class="no-border">
+                                    <tr>
+                                        <th style="width:25%;">角色名称</th>
+                                        <th style="width:10%;">是否启用</th>
+                                        <th style="width:40%;">备注</th>
+                                        <th style="width:25%;">操作</th>
+                                    </tr>
+                                </thead>
+                                <notempty name="_list">
+                                    <tbody class="no-border-y">
+                                        <volist name="_list" id="vo">
+                                            <tr>
+                                                <td>{$vo['rolename']}</td>
+                                                <td>{$vo['status']==1?"是":"否"}</td>
+                                                <td>{$vo['note']}</td>
+                                                <td>
+                                                    <a data-placement="left" data-toggle="tooltip" data-original-title="修改" class="label label-primary" href="{:U('add?id='.$vo['id'])}"><i class="fa fa-edit"></i></a>
+                                                    <a data-placement="left" data-toggle="tooltip" data-original-title="设置权限" class="label label-primary" href="{:U('rolePrivilege/edit?roleId='.$vo['id'])}"><i class="fa fa-pencil"></i></a>
+                                                    <a id="status" data-placement="left" data-toggle="tooltip" data-original-title="状态" class="label <eq name="vo.status" value="0">label-default<else/>label-success</eq> no-refresh ajax-get" href="{:U('setStatus?Model=role&id='.$vo['id'].'&status='.abs(1-$vo['status']))}"><i class="fa <eq name="vo.status" value="0">fa-eye-slash<else/>fa-eye</eq>"></i></a>
+                                                    <a data-placement="left" id="adeleteInfo" data-toggle="tooltip" data-original-title="删除" class="label label-danger ajax-get" href="{:U('del?id='.$vo['id'])}"><i class="fa fa-times"></i></a>
+                                                    <input type="hidden" value="{:U('del?id='.$vo['id'])}" id="hidDeleteUrl" />
+                                                </td>
+                                            </tr>
+                                        </volist>
+                                    </tbody>
+                                    <else/>
+                                    <td colspan="4"> aOh! 暂时还没有内容! </td>
+                                </notempty>
+                            </table>
+                            <div class="content col-lg-12 pull-left">
+                                <div class="panel-foot text-center">
+                                    <div class="page">{$_page}</div>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script type="text/javascript">
+        $(document).ready(function(){
+            highlight_subnav('{:U('Role/index')}');
+
+           //搜索功能
+			$("#search").click(function(){
+				var url = $(this).attr('url');
+				var query = $(this).parents().prev().children('input').serialize();
+		        query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+		        query = query.replace(/^&/g,'');
+		        if( url.indexOf('?')>0 ){
+		            url += '&' + query;
+		        }else{
+		            url += '?' + query;
+		        }
+				window.location.href = url;
+			});
+
+            $("a[id=status]").click(function(){
+			var t=setTimeout(location.reload(),10000)
+		});
+
+//        $("a[id=adeleteInfo]").click(function(){
+//			if(confirm("确定要删除数据吗？"))
+//			{
+//			    window.location.href = $("#hidDeleteUrl").val();
+//			}
+//		});
+        });
+    </script>
+</block>

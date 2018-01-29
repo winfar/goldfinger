@@ -1,0 +1,357 @@
+<extend name="Public/base"/>
+<block name="style">
+    <css href="__JS__/jquery.icheck/skins/square/blue.css"/>
+    <css href="__JS__/bootstrap.datetimepicker/css/bootstrap-datetimepicker.min.css" />
+    <style type="text/css">
+        .col-sm-3{
+            width:185px;
+        }
+        .blue {
+            table-layout:fixed;
+        }
+        .blue  td {
+            word-wrap:break-word;
+        }
+    </style>
+</block>
+
+<block name="body">
+    <div>
+        <div class="page-head">
+            <h2>活动明细</h2>
+        </div>
+        <div class="cl-mcont">
+            <div class="row">
+                <div class="col-md-12">
+
+                    <form class="shop-form" method="post" action="{:U('orderlist')}">
+                        <div class="block-flat" >
+                            <div class="header">
+                                <h3 class="hthin">{$meta_title}</h3>
+                            </div>
+                                <if condition="($userInfo.exchange_type eq 0)">
+                                <div class="content" style="width: 100%;margin-bottom: 50px;display:{$display};">
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content" style="margin-top: 45%;">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                    <h4 class="modal-title" id="myModalLabel">购买号码</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    {$userInfo['allnumber']}
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div style="width: 270px;float: left;height: 64px;">
+                                        <div style="font-size: 30px;color:red;">已开奖</div>
+                                        <div style=" width: 270px;height: 30px;margin-top: 20px;">  <label class="pull-left control-label">幸运号码：</label>
+                                            <div class="col-sm-3" >
+                                       <span style="color: red; font-size: 20px;">
+                                           {$userInfo['kaijiangnum']}
+                                       </span>
+                                            </div></div>
+                                    </div>
+                                    <div style="float:left;width: 700px;">
+                                    <div class="col-sm-12">
+                                            <label class="pull-left control-label">用户ID：</label>
+                                            <div class="col-sm-2" style="overflow-x: auto;">
+                                            {$userInfo['uid']}
+                                            </div>
+                                            <label class="pull-left control-label">用户名：</label>
+                                            <div class="col-sm-3" style="overflow-x: auto;">
+                                            {$userInfo['username']}
+                                            </div>
+
+                                            <label class="pull-left control-label">支付流水号：</label>
+                                            <div class="col-sm-3" >
+                                                {$userInfo['orderid']}
+                                            </div>
+                                            </div>
+                                        <label class="pull-left control-label">购买次数：</label>
+                                        <div class="col-sm-3" >
+                                            {$userInfo['numcount']}
+                                        </div>
+
+                                    <div class="col-sm-3" >
+                                        <a href="#"  data-toggle="modal" data-target="#myModal">查看购买号码</a>
+                                    </div>
+                                    <div class="col-sm-3" >
+                                        <a href="{:U('Order/orderdetail?pid='.$userInfo['pid'].'&orderid='.$userInfo['orderid'].'&display=1')}" >查看订单详情</a>
+                                    </div>
+                                </div>
+                                </div>
+                                <else />
+                                    <div class="content" style="width: 100%;margin-bottom: 50px;display:{$display};">
+
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content" style="margin-top: 45%;">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                        <h4 class="modal-title" id="myModalLabel">购买号码</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        {$userInfo['allnumber']}
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        
+                                        <div style="float:left;width: 700px;">
+                                        <div class="col-sm-12">
+                                                <label class="pull-left control-label">用户ID：</label>
+                                                <div class="col-sm-2" style="overflow-x: auto;">
+                                                {$userInfo['uid']}
+                                                </div>
+                                                <label class="pull-left control-label">用户名：</label>
+                                                <div class="col-sm-3" style="overflow-x: auto;">
+                                                {$userInfo['username']}
+                                                </div>
+
+                                                <label class="pull-left control-label">支付流水号：</label>
+                                                <div class="col-sm-3" >
+                                                    {$userInfo['orderid']}
+                                                </div>
+                                                </div>
+                                        <div class="col-sm-3" >
+                                            <a href="{:U('Order/orderdetail?pid='.$userInfo['pid'].'&orderid='.$userInfo['orderid'].'&display=1')}" >查看订单详情</a>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </if>
+                                </div>
+
+                            <div class="content">
+                                <div class="col-sm-12">
+                                    <input type="hidden" value="{$pid}" name="pid"/>
+                                    <div style="float: left;width: 100%;">
+                                        <label class="pull-left control-label">下单开始时间</label>
+                                        <div class="col-sm-3">
+                                            <div class="input-group date starttime" data-min-view="2" data-date-format="yyyy-mm-dd">
+                                                <input type="text" name="starttime" class="form-control" />
+                                                <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                            </div>
+                                        </div>
+                                        <label class="pull-left control-label">下单结束时间</label>
+                                        <div class="col-sm-3">
+                                            <div class="input-group date endtime" data-min-view="2" data-date-format="yyyy-mm-dd">
+                                                <input type="text" name="endtime" class="form-control" />
+                                                <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                            </div>
+                                        </div>
+                                        <label class="pull-left control-label">兑换流水号</label>
+                                        <div class="col-sm-3">
+                                            <input type="text" name="keyword" class="form-control" />
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <button type="button" id="search"
+                                                    url="{:U('orderlist')}" class="btn btn-success">
+                                                搜索
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="no-border blue">
+                                <thead class="no-border">
+                                <tr>
+                                    <th style="width:15%;">兑换流水号</th>
+                                    <th style="width:15%;">支付流水号</th>
+                                    <th style="width:10%;">用户名</th>
+                                    <th style="width:5%;">购买次数</th>
+                                    <th style="width:5%;">总{:C("WEB_CURRENCY")}</th>
+                                    <th style="width:5%;color:red;">{:C("WEB_CURRENCY")}（充值）</th>
+                                    <th style="width:5%;color:green">{:C("WEB_CURRENCY")}（活动）</th>
+                                    <th style="width:10%;">下单时间</th>
+                                    <if condition="($userInfo.exchange_type eq 0)">
+                                    <th style="width:5%;">操作</th>
+                                    </if>
+                                </tr>
+                                </thead>
+                                <notempty name="shoplist">
+                                    <tbody class="no-border-y">
+                                    <volist name="shoplist" id="vo">
+                                        <tr>
+                                            <td>{$vo['exchange_transaction']}</td>
+                                            <td>{$vo['order_id']}</td>
+                                            <td>{$vo['username']}</td>
+                                            <td>{$vo['number']}</td>
+                                            <td style="color:blue;"><empty name="vo.total" >0<else/> {$vo.total}</empty></td>
+                                            <td style="color:red;"><empty name="vo.top_diamond" >0<else/> {$vo.top_diamond}</empty></td>
+                                            <td style="color:green;"><empty name="vo.recharge_activity" >0<else/> {$vo.recharge_activity}</empty></td>
+                                            
+                                            <td>{$vo.create_time|time_format=###,"Y-m-d H:i:s"}</td>
+                                        <if condition="($userInfo.exchange_type eq 0)">    
+                                          <td>
+                                              <!-- Modal -->
+                                              <div class="modal fade" id="myModals{$vo['order_id']}" tabindex="-1" role="dialog" aria-labelledby="myModalLabels{$vo['order_id']}">
+                                                  <div class="modal-dialog" role="document">
+                                                      <div class="modal-content" style="margin-top: 45%;">
+                                                          <div class="modal-header">
+                                                              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                              <!--<h4 class="modal-title" id="myModalLabels">购买号码ttt</h4>-->
+                                                          </div>
+                                                          <div class="modal-body">
+                                                              {$vo['numbersinfo']}
+                                                          </div>
+                                                          <div class="modal-footer">
+                                                              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                              </div>
+
+                                              <a href="#"  data-toggle="modal" data-target="#myModals{$vo['order_id']}">查看号码</a>
+                                            </td>
+                                            </if>
+                                        </tr>
+                                    </volist>
+                                    </tbody>
+                                    <else/>
+                                    <td colspan="3"> aOh! 暂时还没有内容!</td>
+                                </notempty>
+                            </table>
+
+                            <div class="content col-lg-12 pull-left">
+                                <div class="panel-foot text-center">
+                                    <div class="page">{$_page}</div>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</block>
+<block name="script">
+    <js href="__JS__/jquery.icheck/icheck.min.js"/>
+    <js href="__JS__/bootstrap.datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" />
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".starttime").datetimepicker({autoclose: true,language: 'zh-CN'});
+            $(".endtime").datetimepicker({autoclose: true,language: 'zh-CN'});
+
+//            highlight_subnav('{:U('Shop/index')}');
+
+            $('.opiframe').click(function () {
+                layer.open({
+                    type: 2,
+                    title: $(this).attr('data-name'),
+                    shadeClose: true,
+                    maxmin: false, //开启最大化最小化按钮
+                    area: ['850px', '610px'],
+                    content: [$(this).attr('url'), 'no']
+                });
+            });
+            $('input').iCheck({
+                checkboxClass: 'icheckbox_square-blue checkbox',
+                radioClass: 'icheckbox_square-blue'
+            });
+
+            $("#check-all").on('ifChanged', function () {
+                var checkboxes = $("tr td").find(':checkbox');
+                if ($(this).is(':checked')) {
+                    checkboxes.iCheck('check');
+                } else {
+                    checkboxes.iCheck('uncheck');
+                }
+            });
+
+            //搜索功能
+            $("#search").click(function () {
+                var url = $(this).attr('url');
+                var keyword=  $('input[name=keyword]').val();//兑换流水号
+                var starttime=  $('input[name=starttime]').val();//开始时间
+                var endtime=  $('input[name=endtime]').val();//结束
+                var pid=$("input[name=pid]").val();
+                var   query="pid/"+pid+"/keyword/"+keyword+"/starttime/"+starttime+"/endtime/"+endtime;
+                url += '/' + query;
+                window.location.href = url;
+            });
+
+            shopIndx.chkAll();
+            editStatus.shelves();
+            shopIndx.conditionarr();
+        });
+
+        var shopIndx = {
+            chkAll: function () {
+                $('#chkAll').next().on('click', function () {
+                    //选择所有
+                    var chkAllVal = $(this).prev().prop('checked');
+                    if (chkAllVal) {
+                        $('input[name="id[]"]').parent().attr('aria-checked', chkAllVal).attr('class', 'icheckbox_square-blue checkbox checked');
+                    } else {
+                        $('input[name="id[]"]').parent().attr('aria-checked', chkAllVal).attr('class', 'icheckbox_square-blue checkbox');
+                    }
+                });
+            },
+            statusEdit: function (status) {
+                var text=status=="1"?"上架":"下架";
+                if (confirm("确定要"+text+"数据吗？")) {
+                    var ids = [];
+                    $('div[aria-checked="true"]').children('input').each(function (index, element) {
+                        var id = $(this).val();
+                        if(id!=""){
+                            ids.push(id);
+                        }
+                    });
+
+                    if(ids.length<=0){
+                        alert("请至少选择一个要"+text+"的数据");
+                        return false;
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: "{:U('Shop/multipleStatus')}",
+                        data: {ids: ids,status:status},
+                        dataType: "json",
+                        success: function (result) {
+
+                        }
+                    });
+
+                    location.reload();
+                }
+            },
+            conditionarr: function () {
+                var conditionarr =  JSON.parse('{$conditionarr}') ;
+                $('input[name=keyword]').val(  conditionarr['keyword']);
+                $("input[name=starttime]").val(conditionarr['create_time']);
+                $("input[name=endtime]").val(conditionarr['end_time']);
+                
+            }
+        }
+
+        var editStatus={
+            shelves: function () {
+                //上架
+                $("#btnshelves").on('click', function () {
+                    shopIndx.statusEdit(1);
+                });
+
+                //下架
+                $("#btnoffshelf").on('click', function () {
+                    shopIndx.statusEdit(0);
+                });
+            }
+        }
+
+    </script>
+</block>

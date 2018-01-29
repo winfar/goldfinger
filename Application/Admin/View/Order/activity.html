@@ -1,0 +1,265 @@
+<extend name="Public/base"/>
+<block name="style">
+    <css href="__JS__/jquery.icheck/skins/square/blue.css"/>
+    <css href="__JS__/bootstrap.datetimepicker/css/bootstrap-datetimepicker.min.css" />
+    <style type="text/css">
+        .col-sm-3{
+            width:185px;
+        }
+    </style>
+</block>
+
+<block name="body">
+    <div>
+        <div class="page-head">
+            <h2>活动汇总</h2>
+        </div>
+        <div class="cl-mcont">
+            <div class="row">
+                <div class="col-md-12">
+                    <form class="shop-form" method="get" action="{:U('activity')}">
+                    <div class="block-flat">
+                            <div class="header">
+                                <h3 class="hthin">{$meta_title}</h3>
+                            </div>
+                            <div class="content">
+                                <div class="col-sm-12">
+                                    <div style="float: left;width: 100%;">
+                                    <label class="pull-left control-label">活动状态</label>
+                                    <div class="col-sm-3" >
+                                            <select class="form-control" name="state" style="width: 150px;">
+                                                <option value="">所有状态</option>
+                                                <volist name="state_list" id="state">
+                                                    <option value="{$state.id}">{$state.name}</option>
+                                                </volist>
+                                            </select>
+                                    </div>
+                                    <label class="pull-left control-label">开始日期</label>
+                                    <div class="col-sm-3">
+                                        <div class="input-group date starttime" data-min-view="2" data-date-format="yyyy-mm-dd">
+                                            <input type="text" name="starttime" class="form-control" value="{$Think.post.starttime|default=''}"/>
+                                            <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                        </div>
+                                    </div>
+                                    <label class="pull-left control-label">结束日期</label>
+                                    <div class="col-sm-3" >
+                                        <div class="input-group date endtime" data-min-view="2" data-date-format="yyyy-mm-dd">
+                                            <input type="text" name="endtime" class="form-control" value="{$Think.post.endtime|default=''}"/>
+                                            <span class="input-group-addon btn btn-primary" ><span class="glyphicon glyphicon-th"></span></span>
+                                        </div>
+                                    </div>
+                                                                       
+                                    <empty name = "channelId">
+                                        <label class="pull-left control-label">所属渠道</label>
+                                        <div class="col-sm-3" >
+                                            <select class="form-control" name="channel" style="width: 100px;">
+                                                <option value="">所有渠道</option>
+                                                <notempty name="channelList">
+                                                    <volist name="channelList" id="channel">
+                                                        <option value="{$channel.id}">{$channel.channel_name}</option>
+                                                    </volist>
+                                                </notempty>
+                                                
+                                            </select>
+                                        </div>
+                                    </empty>
+                                    </div>
+                                    <div> 
+                                    <div>
+                                        <button type="button" id="search"
+                                                url="{:U('activity')}" class="btn btn-success">
+                                            搜索
+                                        </button>&nbsp;
+                                        <button type="button"   url="{:U('exportactivity')}"  class="btn btn-success" id="btnExport">导出</button>
+                                    </div>
+                                    </div>
+                                    </div>
+                                </div>
+                                <table class="no-border blue">
+                                    <thead class="no-border">
+                                    <if condition="($_GET['starttime']) and ($_GET['endtime']) ">
+                                    <tr colspan='10'>
+                                        <td colspan='10'>
+                                        <span style="color: green">时间为:{$_GET['starttime']}至{$_GET['endtime']}</span>
+                                        </td>
+                                    </tr>
+                                    </if>
+                                     <tr colspan='10'>
+                                        <td colspan='10'>
+                                        {:C("WEB_CURRENCY")}总额：{$total_info['total_price']}，黄金成交量：{$total_info['total_buy_gold']}g, 总期数:{$total_info['total_count']}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th style="width:10%">ID-渠道</th>
+                                        <th style="width:20%">总期数</th>
+                                        <th style="width:10%">{:C("WEB_CURRENCY")}总额</th>
+                                        <th style="width:10%">黄金总量（mg）</th>
+                                        <th style="width:10%">用户参与次数</th>
+                                        <th style="width:10%">开奖次数</th>
+                                        <th style="width:10%">预估成本（元）</th>
+                                        <th style="width:10%">实际成本（元）</th>
+                                    </tr>
+                                    </thead>
+                                    <notempty name="list">
+                                        <tbody class="no-border-y">
+                                        <volist name="list" id="vo">
+                                            <tr>
+                                                <td>{$vo.channel_id}-{$vo.channel_name}</td>
+                                                <td>{$vo.total_count}</td>
+                                                <td>{$vo.total_price}</td>
+                                                <td>{$vo.total_buy_gold}</td>
+                                                <td>{$vo.total_number}</td>
+                                                <td>{$vo.total_kaijiang_count}</td>
+                                                <td>{$vo.total_buy_price}</td>
+                                                <td>{$vo.total_actual_price}</td>
+                                            </tr>
+                                        </volist>
+                                        </tbody>
+                                        <else/>
+                                        <td colspan="3"> aOh! 暂时还没有内容!</td>
+                                    </notempty>
+                                </table>
+
+                                <div class="content col-lg-12 pull-left">
+                                    <div class="panel-foot text-center">
+                                        <div class="page">{$_page}</div>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <js href="__JS__/jquery.icheck/icheck.min.js"/>
+    <js href="__JS__/bootstrap.datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" />
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".starttime").datetimepicker({autoclose: true,language: 'zh-CN'});
+            $(".endtime").datetimepicker({autoclose: true,language: 'zh-CN'});
+
+            highlight_subnav('{:U('Order/activity')}');
+
+            $('.opiframe').click(function () {
+                layer.open({
+                    type: 2,
+                    title: $(this).attr('data-name'),
+                    shadeClose: true,
+                    maxmin: false, //开启最大化最小化按钮
+                    area: ['850px', '610px'],
+                    content: [$(this).attr('url'), 'no']
+                });
+            });
+            $('input').iCheck({
+                checkboxClass: 'icheckbox_square-blue checkbox',
+                radioClass: 'icheckbox_square-blue'
+            });
+
+            $("#check-all").on('ifChanged', function () {
+                var checkboxes = $("tr td").find(':checkbox');
+                if ($(this).is(':checked')) {
+                    checkboxes.iCheck('check');
+                } else {
+                    checkboxes.iCheck('uncheck');
+                }
+            });
+
+            //搜索功能
+            $("#search").click(function () {
+                var url = $(this).attr('url');
+                var channel=  $('select[name=channel]').val();
+                var state=  $("select[name=state]").val();
+                var starttime=  $('input[name=starttime]').val();
+                var endtime=    $('input[name=endtime]').val();
+                var   query="channel/"+channel+"/state/"+state+"/starttime/"+starttime+"/endtime/"+endtime;
+                url += '/' + query;
+                window.location.href = url;
+            });
+
+            //导出功能
+            $("#btnExport").click(function () {
+                var url = $(this).attr('url');
+                var channel=  $('select[name=channel]').val();
+                var state=  $("select[name=state]").val();
+                var starttime=  $('input[name=starttime]').val();
+                var endtime=    $('input[name=endtime]').val();
+                var   query="channel/"+channel+"/state/"+state+"/starttime/"+starttime+"/endtime/"+endtime;
+                url += '/' + query;
+                window.location.href = url;
+            });
+
+            shopIndx.chkAll();
+            editStatus.shelves();
+            shopIndx.conditionarr();
+        });
+
+        var shopIndx = {
+            chkAll: function () {
+                $('#chkAll').next().on('click', function () {
+                    //选择所有
+                    var chkAllVal = $(this).prev().prop('checked');
+                    if (chkAllVal) {
+                        $('input[name="id[]"]').parent().attr('aria-checked', chkAllVal).attr('class', 'icheckbox_square-blue checkbox checked');
+                    } else {
+                        $('input[name="id[]"]').parent().attr('aria-checked', chkAllVal).attr('class', 'icheckbox_square-blue checkbox');
+                    }
+                });
+            },
+            statusEdit: function (status) {
+                var text=status=="1"?"上架":"下架";
+                if (confirm("确定要"+text+"数据吗？")) {
+                    var ids = [];
+                    $('div[aria-checked="true"]').children('input').each(function (index, element) {
+                        var id = $(this).val();
+                        if(id!=""){
+                            ids.push(id);
+                        }
+                    });
+
+                    if(ids.length<=0){
+                        alert("请至少选择一个要"+text+"的数据");
+                        return false;
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: "{:U('Shop/multipleStatus')}",
+                        data: {ids: ids,status:status},
+                        dataType: "json",
+                        success: function (result) {
+
+                        }
+                    });
+
+                    location.reload();
+                }
+            },
+            conditionarr: function () {
+                var conditionarr =  JSON.parse('{$conditionarr}') ;
+
+                $('select[name=channel]').val(  conditionarr['channel']);
+                $("select[name=state]").val(conditionarr['state']);
+                $("input[name=starttime]").val(conditionarr['starttime']);
+                $("input[name=endtime]").val(conditionarr['endtime']);
+            }
+        }
+
+        var editStatus={
+            shelves: function () {
+                //上架
+                $("#btnshelves").on('click', function () {
+                    shopIndx.statusEdit(1);
+                });
+
+                //下架
+                $("#btnoffshelf").on('click', function () {
+                    shopIndx.statusEdit(0);
+                });
+            }
+        }
+
+    </script>
+</block>

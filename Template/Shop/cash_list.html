@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <include file="{$web_tplpath}head.html" />
+</head>
+<body>
+
+<div class="wrap">		
+		
+	<div class="notice">
+    <div class="not_top"><span id="cash_left"></span><span id="cash_right"></span></div>
+		<ul class="notice_list">
+		<ul>
+	</div>
+
+</div>
+<div class="loading" style="display: none;"></div>
+<script>
+	$(function(){
+		getdata();
+	});
+	//获取数据
+    function getdata() {
+        var url = "{:U('ajaxcashlist')}";
+        $.ajax(
+           {
+              type:"POST",//通常会用到两种：GET,POST。默认是：GET
+              url:url,//(默认: 当前页地址) 发送请求的地址
+              data:{},
+              dataType:"json",//预期服务器返回的数据类型。
+              beforeSend:function(){
+                $(".loading").show();
+              }, //发送请求
+              success:function(result) {
+                $(".loading").hide();
+                $('#cash_left').html("累积提现："+result.total_money+"元");
+                $('#cash_right').html("提现黄金："+result.total_number+"克");
+                var html = '';
+                var data  = result.list;
+                if (data != "") {
+                    for (var i in data ) {
+                    	html += '<li>';
+            					html += '<h1><span>黄金提现</span><i>'+data[i].create_date+'</i></h1>';
+            					html += '<p>您发起的提现业务已受理,系统将在24小时内转账(流水号'+data[i].order_no+')</p>';
+            					html += '</li>';
+                    }
+                	   $('.notice_list').html(html);
+
+                } else {
+	                html += '<div class="record_none">';
+	                html += '<div class="rn_con">暂无提现记录</div>';
+	                // html += '<div class="submit"><a href="{:U('index')}"><input type="button" value="立即参与" /></a></div>';
+	                html += '</div>';
+	                $('.notice_list').html(html);
+	                $('html,body').animate({scrollTop: '0px'}, 0);
+	            }
+         
+                                   
+              }
+           });
+    }
+    function formatDate(now) { 
+      var year=now.getYear(); 
+      var month=now.getMonth()+1; 
+      var date=now.getDate(); 
+      var hour=now.getHours(); 
+      var minute=now.getMinutes(); 
+      var second=now.getSeconds(); 
+      return year+"."+month+"."+date; 
+    } 
+</script>
+
+</body>
+</html>

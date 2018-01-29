@@ -1,0 +1,66 @@
+<extend name="Public/base"/>
+<block name="body">
+<div>
+<div class="page-head">
+	<h2>商品品牌</h2>
+</div>
+<div class="cl-mcont">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="block-flat">
+				<div class="header">							
+					<h3 class="hthin">{$meta_title}</h3>
+				</div>
+				<div class="content">
+					<div class="col-sm-12">
+						<div class="pull-right">
+							<button type="button" class="btn btn-success btn-rad md-trigger" url="{:U('Brand/add')}" data-modal="form-primary"><i class="fa fa-plus-square"></i> 添加品牌</button>
+						</div>
+					</div>
+					<div class="category">
+						<div class="row color-primary">
+							<div class="col-sm-2 col-md-4 col-lg-2" style="width:10%;">ID</div>
+							<div class="col-sm-3 col-md-4 col-lg-2" style="width:40%;">品牌名称</div>
+							<div class="col-sm-3 col-md-4 col-lg-2" style="width:40%;">商品数量</div>
+							<div class="col-sm-4 col-md-4 col-lg-4 text-right" style="width:10%;">操作</div>
+						</div>
+						<volist name="list" id="vo">
+					        <div class="row">
+								<div class="col-sm-2 col-md-4 col-lg-2" style="width:10%;" >{$vo['id']}</div>
+					            <div class="col-sm-2 col-md-4 col-lg-2" style="width:40%;">{$vo.title}</div>
+								<div class="col-sm-2 col-md-4 col-lg-2" style="width:40%;" >{$vo.total}</div>
+					            <div class="col-sm-4 col-md-4 col-lg-4 text-right" style="width:10%;">
+					                <a data-placement="left" data-toggle="tooltip" data-original-title="修改品牌" class="label label-primary md-trigger" url="{:U('Brand/edit?id='.$vo['id'])}" href="#"><i class="fa fa-pencil"></i></a>
+									<a id="status" data-placement="left" data-toggle="tooltip" data-original-title="状态" class="label <eq name="vo.status" value="0">label-default<else/>label-success</eq> no-refresh ajax-get" href="{:U('setStatus?Model=brand&id='.$vo['id'].'&status='.abs(1-$vo['status']))}"><i class="fa <eq name="vo.status" value="0">fa-eye-slash<else/>fa-eye</eq>"></i></a>
+					            </div>
+					        </div>
+						</volist>
+					</div>
+				</div>
+				<div class="md-overlay"></div>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+</block>
+<block name="script">
+<script type="text/javascript">
+	$(document).ready(function(){		
+		$(".md-trigger").click(function(){
+			 if (target = $(this).attr('url')) {
+				layer.open({
+					type: 2,
+					title: false,
+					closeBtn: false,
+					area: ['600px', '320px'],
+					fix: false,
+					skin: 'layui-layer-nobg',
+					content: [target,'no']
+				});
+			}
+		})
+		highlight_subnav('{:U('Brand/index')}');
+	});
+</script>
+</block>

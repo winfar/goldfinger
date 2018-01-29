@@ -1,0 +1,25 @@
+<div class="menu">
+    <ul>
+        <li class="index"><a href="{:U('index')}"><em></em><span>首页</span></a></li>
+        <li class="announced"><a href="{:U('index/announced')}"><em></em><span>最新揭晓</span></a></li>
+        <li class="rankings"><a href="{:U('index/rankings')}"><em></em><span>排行榜</span></a></li>
+        <li class="footer_result"><a href="{:U('index/result')}"><em></em><span>参与记录</span></a></li>
+    </ul>
+</div>
+<script type="text/javascript">
+var p=0,t=0;
+$(window).scroll(function(e) {
+    p = $(this).scrollTop();
+    //下滚  
+    if (t+50 < p) {
+        $(".menu").slideUp();
+    }
+    //上滚  
+    else if (t-50>p){
+        $(".menu").slideDown();
+    }
+    setTimeout(function() {
+        t = p;
+    }, 0);
+    });
+</script>

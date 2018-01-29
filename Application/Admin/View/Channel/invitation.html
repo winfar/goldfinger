@@ -1,0 +1,87 @@
+<extend name="Public/base" />
+<block name="body">
+    <div>
+        <div class="page-head">
+            <h2>渠道管理—邀请码</h2>
+        </div>
+        <div class="cl-mcont">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="block-flat">
+                        <div class="header">
+                            <h3 class="hthin">{$meta_title}</h3>
+                        </div>
+                        <div class="content">
+                            <div class="tab-container">
+                                <form action="{:U()}" class="form-horizontal" method="post">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">渠道名称</label>
+                                        <div class="col-sm-4">
+                                            <select class="form-control" id="pid" name="pid" onchange="" <gt name="data['id']" value="0">disabled="disabled"</gt>  >
+                                                <option value="-1" >==请选择==</option>
+                                                <volist name="channel_list" id="vo">
+                                                    <option value="{$vo.id}" <eq name="channel_name['channel_name']" value="$vo['channel_name']">selected="selected"</eq>>{$vo.html}{$vo.channel_name}</option>
+                                                </volist>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">生成数量</label>
+                                        <div class="col-xs-4">
+                                            <input type="text" name="counts" class="form-control" value="{$counts}" placeholder="生成数量" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">邀请码</label>
+                                        <div class="col-sm-6">
+                                            {$invitation_list}
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-2 col-sm-10">
+                                            <button class="btn btn-primary" type="submit" target-form="form-horizontal">提 交
+                                            </button>
+                                            <button class="btn btn-primary ajax-post" type="button" id="btnRefresh" style="margin-left: 30px;" target-form="form-horizontal">重 置
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script type="text/javascript">
+        $(document).ready(function() {
+            highlight_subnav("{:U('Channel/invitationlist')}");
+
+            $('#btnRefresh').click(function() {
+                $('form')[0].reset();
+            });
+
+            $("#pid").val({$channel_id});
+        });
+
+        // //生成渠道号码,通过当前的记录Id生成渠道号码
+        // function genChannelCode(){
+        // 	var id = document.getElementById('id').value;
+        // 	var pid = document.getElementById('parentId').value;
+        // 	S_xmlhttprequest();
+
+        // 	//如果id 为空，再提交前不自动生成渠道号码
+        // 	if(!id || typeof(id)=="undefined" || id==0 ){
+        // 		xmlHttp.open("GET","admin.php?s=/Channel/getChannelCode/pid/"+pid,true);
+        // 		xmlHttp.onreadystatechange=setChanenlLevel;
+        // 		xmlHttp.send(null);
+        // 	}else{
+        // 		xmlHttp.open("GET","admin.php?s=/Channel/getChannelCode/pid/"+pid,true);
+        // 		xmlHttp.onreadystatechange=setChanenlCode;
+        // 		xmlHttp.send(null);
+        // 	}
+        // }
+    </script>
+</block>

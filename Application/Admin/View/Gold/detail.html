@@ -1,0 +1,169 @@
+<extend name="Public/base"/>
+<block name="style">
+    <css href="__JS__/jquery.icheck/skins/square/blue.css"/>
+    <css href="__JS__/bootstrap.datetimepicker/css/bootstrap-datetimepicker.min.css" />
+</block>
+
+<block name="body">
+    <div>
+        <div class="page-head">
+            <h2>金币明细</h2>
+        </div>
+        <div class="cl-mcont">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="block-flat">
+                        <form class="shop-form" method="post" action="{:U('auto')}">
+                            <div class="content">
+                                <div style="float: left;width: 100%;margin-bottom:15px;">
+                                    <label class="pull-left control-label">金币来源</label>
+                                    <div class="col-sm-2" >
+                                        <select class="form-control" name="tradetype" style="width: 150px;">
+                                            <option value="">所有金币来源</option>
+                                            <volist name=":get_tradeTypearr()" id="vo">
+                                                <option value="{$vo.code}">{$vo.name}</option>
+                                            </volist>
+                                        </select>
+                                    </div>
+                                    <label class="pull-left control-label">开始日期</label>
+                                    <div class="col-sm-2">
+                                        <div class="input-group date starttime" data-min-view="2" data-date-format="yyyy-mm-dd">
+                                            <input type="text" name="starttime" class="form-control" value="{$Think.post.starttime|default=time_format(NOW_TIME-24*60*60*30,'Y-m-d')}"/>
+                                            <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                        </div>
+                                    </div>
+                                    <label class="pull-left control-label">结束日期</label>
+                                    <div class="col-sm-2" >
+                                        <div class="input-group date endtime" data-min-view="2" data-date-format="yyyy-mm-dd">
+                                            <input type="text" name="endtime" class="form-control" value="{$Think.post.endtime|default=time_format(NOW_TIME,'Y-m-d')}"/>
+                                            <span class="input-group-addon btn btn-primary" ><span class="glyphicon glyphicon-th"></span></span>
+                                        </div>
+                                    </div>
+                                    <label class="pull-left control-label">关键字搜索</label>
+                                    <div class="col-sm-2">
+                                        <input type="text" name="keyword" class="form-control" placeholder="输入用户名进行搜索">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button type="button" id="search"
+                                                url="{:U('detail')}" class="btn btn-success">
+                                            搜索&nbsp;
+                                        <button type="button"   url="{:U('export')}"  class="btn btn-success" id="btnExport">导出</button>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <table class="no-border blue">
+                                    <thead class="no-border">
+                                    <tr colspan='10'>
+                                    <th colspan='10' style="font-size: 14px;">
+                                        用户支出总数:{$gold_total['increase']}金币  ,  用户收入总数:{$gold_total['reduce']}金币  ,  用户金币总金额:{$gold_total['total']}金币
+                                    </th>
+                                </tr>
+                                    <tr>
+                                        <th style="width:auto;">用户编号</th>
+                                        <th style="width:auto;">用户名</th>
+                                        <th style="width:auto;">昵称</th>
+                                        <th style="width:auto;">手机号</th>
+                                        <th style="width:auto;">日期</th>
+                                        <th style="width:auto;">类型</th>
+                                        <th style="width:auto;">金币数量</th>
+                                        <th style="width:auto;">操作</th>
+                                    </tr>
+                                    </thead>
+                                    <notempty name="_list">
+                                        <tbody class="no-border-y">
+
+                                        <volist name="_list" id="vo">
+                                            <tr>
+                                                <td>{$vo['uid']}</td>
+                                                <td>{$vo['username']}</td>
+                                                <td>{$vo['nickname']}</td>
+                                                <td>{$vo['phone']}</td>
+                                                <td>{$vo.create_time|date="Y-m-d H:i:s",###}</td>
+                                                <td>{$vo['name']}</td>
+                                                <td><gt name="vo.gold" value="0"><b><a style="color:blue">+{$vo['gold']}</a><else/><a style="color: red;">{$vo['gold']}</a></b></gt></td>
+                                                <td><a href="#" class="opiframe" url="{:U('gold/getDetailById?id='.$vo['id'])}">查看详细</a></td>
+                                            </tr>
+                                        </volist>
+                                        </tbody>
+                                        <else/>
+                                        <td colspan="3"> aOh! 暂时还没有内容!</td>
+                                    </notempty>
+                                </table>
+
+                                <div class="content col-lg-12 pull-left">
+                                    <div class="panel-foot text-center">
+                                        <div class="page">{$_page}</div>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <js href="__JS__/jquery.icheck/icheck.min.js"/>
+    <js href="__JS__/bootstrap.datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" />
+    <script type="text/javascript">
+        $(document).ready(function () {
+            highlight_subnav("{:U('Gold/detail')}");
+
+            $(".starttime").datetimepicker({autoclose: true,language: 'zh-CN'});
+            $(".endtime").datetimepicker({autoclose: true,language: 'zh-CN'});
+
+            $('.opiframe').click(function () {
+                layer.open({
+                    type: 2,
+                    title: $(this).attr('data-name'),
+                    shadeClose: true,
+                    maxmin: false, //开启最大化最小化按钮
+                    area: ['850px', '610px'],
+                    content: [$(this).attr('url'), 'no']
+                });
+            });
+
+            //搜索功能
+            $("#search").click(function () {
+                var url = $(this).attr('url');
+                var keyword=  $('input[name=keyword]').val();
+                var tradetype=  $("select[name=tradetype]").val();
+                var starttime=  $("input[name=starttime]").val();
+                var endtime=    $("input[name=endtime]").val();
+
+                var   query="keyword/"+keyword+"/tradetype/"+tradetype+"/starttime/"+starttime+"/endtime/"+endtime;
+                url += '/' + query;
+
+                window.location.href = url;
+            });
+            //导出功能
+            $("#btnExport").click(function () {
+                var url = $(this).attr('url');
+                var keyword=  $('input[name=keyword]').val();
+                var tradetype=  $("select[name=tradetype]").val();
+                var starttime=  $("input[name=starttime]").val();
+                var endtime=    $("input[name=endtime]").val();
+
+                var   query="keyword/"+keyword+"/tradetype/"+tradetype+"/starttime/"+starttime+"/endtime/"+endtime;
+                url += '/' + query;
+                window.location.href = url;
+            });
+
+            var conditionarr =  JSON.parse('{$conditionarr}') ;
+            $('input[name=keyword]').val(  conditionarr['keyword']);
+            $("select[name=tradetype]").val(conditionarr['tradetype']);
+            $("input[name=starttime]").val(conditionarr['starttime']);
+            $("input[name=endtime]").val(conditionarr['endtime']);
+
+            document.onkeydown = function () {
+                if (window.event && window.event.keyCode == 13) {
+                    window.event.returnValue = false;
+                }
+            }
+        });
+
+    </script>
+</block>

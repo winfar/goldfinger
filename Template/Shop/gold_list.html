@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <include file="{$web_tplpath}head.html" />
+</head>
+<body>
+<div class="wrap">
+	<div class="gold_list">
+		<ul class="gold_ul_list">
+		</ul>
+	</div>
+</div>
+<div class="loading" style="display: none;"></div>
+<script type="text/javascript">
+    $(function() {
+    	getdata();
+    });
+    //获取数据
+    function getdata() {
+        var url = "{:U('ajaxgoldlist')}";
+        $.ajax(
+           {
+              type:"POST",//通常会用到两种:GET,POST。默认是:GET
+              url:url,//(默认: 当前页地址) 发送请求的地址
+              data:{},
+              dataType:"json",//预期服务器返回的数据类型。
+              beforeSend:function(){
+
+                $(".loading").show();
+              }, //发送请求
+              success:function(list) {
+                $(".loading").hide(); 
+                var html = '';
+                if (list != '') {
+                	for (var i in list ) {
+                		  html += '<li>';
+          						html += '<span class="gl_col">提现黄金<i>'+list[i].number+'克</i></span>';
+          						html += '<span class="gl_code">流水号:<i>'+list[i].order_id+'</i></span>';
+          						html += '<span class="gl_time">时间:<i>'+list[i].create_date+'</i></span>';
+                      if (list[i].order_status==101 && list[i].send_status==1) {
+                          html += '<a href="javascript:void(0);" onclick="getstatus('+list[i].id+',102)"><span class="gl_btn">确认收货</span></a>';
+                      } else {
+                          html += '<span class="gl_wei">'+list[i].msg+'</span>';
+                      }
+          						html += '</li>';
+                	}
+                	$('.gold_ul_list').html(html);
+                } else {
+                	html += '<div class="record_none">';
+                  html += '<div class="rn_con">还没有记录喔</div>';
+                  // html += '<div class="submit"><a href="{:U('index')}"><input type="button" value="立即参与" /></a></div>';
+                  html += '</div>';
+                  $('.gold_ul_list').html(html);
+                  $('html,body').animate({scrollTop: '0px'}, 0);
+                }
+                                   
+              }
+           });
+    }
+    //普通商品领取
+    function getstatus(id, status) {
+        var url = "{:U('editstatus')}"; 
+        $.post(
+            url,
+            {
+                id:id,
+                status:status,
+            },
+            function(data) {
+                if (data.code==200) {
+                    var html = data.msg;
+                    $('.content').html(html);
+                    $('.none').hide();
+                    $('.tips_box').show(); 
+                    setTimeout(function(){$(".tips_box").hide()}, 1000);
+                    setTimeout(function(){getdata();}, 1000);
+                } else {
+                    var html = data.msg;
+                    $('.content').html(html);
+                    $('.tips_box').show(); 
+                    setTimeout(function(){$(".tips_box").hide()}, 1000);
+                }
+            },
+            'json'
+        );
+    }
+</script>
+</body>
+</html>

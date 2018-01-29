@@ -1,0 +1,92 @@
+<extend name="Public/base"/>
+<block name="style">
+	<css href="__JS__/bootstrap.datetimepicker/css/bootstrap-datetimepicker.min.css" />
+</block>
+
+<block name="body">
+	<div class="page-head">
+		<h2>统计</h2>
+	</div>
+	<div class="cl-mcont">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="block-flat">
+					<div class="header">							
+						<h3 class="hthin">{$meta_title}</h3>
+					</div>
+					<div class="content">
+						<div class="col-sm-12">
+							<form action="{:U()}" class="form-horizontal"  method="post">
+							<label class="pull-left control-label">开始日期</label>
+							<div class="col-sm-3">
+								<div class="input-group date starttime" data-min-view="2" data-date-format="yyyy-mm-dd">
+									<input type="text" id="starttime" name="starttime" class="form-control" value="{$Think.post.starttime|default=time_format(NOW_TIME-24*60*60*30,'Y-m-d')}"/>
+									<span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+								</div>
+							</div>
+							<label class="pull-left control-label">结束日期</label>
+							<div class="col-sm-3">
+								<div class="input-group date endtime" data-min-view="2" data-date-format="yyyy-mm-dd">
+									<input type="text" id="endtime" name="endtime" class="form-control" value="{$Think.post.endtime|default=time_format(NOW_TIME,'Y-m-d')}"/>
+									<span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<button type="submit" class="btn btn-success">确认</button>
+								<button type="button" url="{:U('exportSku')}" class="btn btn-success" id="btnExport">导出Excel</button>
+							</div>
+							</form>
+						</div>	
+						<table class="no-border blue">
+							<thead class="no-border">
+								<tr>
+                                    <th>编号</th>
+                                    <th>ID</th>
+                                    <th>商品名称</th>
+                                    <th>实时消耗的{:C("WEB_CURRENCY")}数量</th>
+                                    <th>消耗的总{:C("WEB_CURRENCY")}数量</th>
+									<th>成本价格</th>
+									<th>商品已开奖期数</th>
+									<th>全价兑换次数</th>
+								</tr>
+							</thead>
+							<tbody class="no-border-y">
+								<volist name="_list" id="vo" key="k">
+								<tr>
+									<td style="width:5%;">{$k}</td>
+									<td style="width:5%;">{$vo['id']}</td>
+									<td style="width:40%;">{$vo['name']}</td>
+									<td style="width:15%;">{$vo['total_now']|default=0}</td>
+									<td style="width:12%;">{$vo['total']|default=0}</td>
+                                    <td style="width:10%;">￥{$vo['buy_price']}</td>
+									<td style="width:15%;">{$vo['count_exchange']|default=0}</td>
+									<td style="width:15%;">{$vo['count_full']|default=0}</td>
+								</tr>
+								</volist>
+							</tbody>
+						</table>							
+					</div>
+				</div>				
+			</div>
+		</div>
+	</div>
+</block>
+<block name="script">
+	<js href="__JS__/bootstrap.datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" />
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$(".starttime").datetimepicker({autoclose: true,language: 'zh-CN'});
+			$(".endtime").datetimepicker({autoclose: true,language: 'zh-CN'});
+			highlight_subnav("{:U('Statistics/sku')}");
+		})
+		//导出功能
+		$("#btnExport").click(function () {
+			var url = $(this).attr('url');
+			var starttime = $('#starttime').val();//开始时间
+			var endtime = $('#endtime').val();//结束时间
+			var query="starttime/"+starttime+"/endtime/"+endtime;
+			url += '/' + query;
+			window.location.href = url;
+		});
+	</script>
+</block>

@@ -1,0 +1,139 @@
+<extend name="Public/base" />
+
+<block name="style">
+</block>
+
+<block name="body">
+    <div>
+        <div class="page-head">
+            <h2>促销管理 - 红包发放/使用记录</h2>
+        </div>
+        <div class="cl-mcont">
+            <div class="row">
+                <div class="col-md-12">
+                    <form class="shop-form form-inline" method="post" action="{:U()}">
+                        <div class="block-flat">
+                            <div class="header">
+                                <h3 class="hthin">{$meta_title}</h3>
+                            </div>
+                            <div class="content">
+                                <div class="col-sm-12">
+                                    <div class="form-group pull-left">
+                                        <label class="" for="isuse">是否使用</label>
+                                        <select class="form-control" id="isuse" name="isuse" onchange="" value="{default=''}">
+                                            <option value="" >所有</option>
+                                            <option value="0" >未使用</option>
+                                            <option value="1" >已使用</option>
+                                            <option value="2" >已过期</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-sm-2">
+                                        <label class="pull-left" style="padding: 5px" for="starttime">发放开始日期</label>
+                                        <div class="input-group date starttime" data-min-view="2" data-date-format="yyyy-mm-dd">
+                                            <input type="text" id="starttime" name="starttime" class="form-control" value="{$Think.get.starttime|default=time_format(NOW_TIME-24*60*60*30,'Y-m-d')}" />
+                                            <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-sm-2">
+                                        <label class="pull-left" style="padding: 5px" for="endtime">发放结束日期</label>
+                                        <div class="input-group date endtime" data-min-view="2" data-date-format="yyyy-mm-dd">
+                                            <input type="text" id="endtime" name="endtime" class="form-control" value="{$Think.get.endtime|default=time_format(NOW_TIME,'Y-m-d')}" />
+                                            <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="" for="phone">手机号</label>
+                                        <input type="text" name="phone" id="phone" class="form-control" placeholder="输入手机号搜索" value="{$Think.get.phone|default=''}" onkeypress="if(event.keyCode==13) {search.click();return false;} " />
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="button" id="search" url="{:U()}" class="btn btn-success" style="margin-bottom: 0;">查询</button>
+                                    </div>
+                                </div>
+                                <table class="no-border blue">
+                                    <thead class="no-border">
+                                        <tr>
+                                            <th style="width:5%;">红包编号</th>
+                                            <th style="width:auto;">红包名称</th>
+                                            <th style="width:10%;">发放时间</th>
+                                            <th style="width:10%;">是否使用</th>
+                                            <th style="width:auto;">有效时长</th>
+                                            <th style="width:auto;">用户名</th>
+                                            <th style="width:auto;">操作</th>
+                                        </tr>
+                                    </thead>
+                                    <notempty name="_list">
+                                        <tbody class="no-border-y">
+                                            <volist name="_list" id="vo">
+                                                <tr>
+                                                    <td>{$vo.id}</td>
+                                                    <td>{$vo.name}</td>
+                                                    <td>{$vo.create_time|time_formats=###,"Y-m-d H:i:s"}</td>
+                                                    <td>
+                                                        <switch name="vo.status">
+                                                            <case value="0">未使用</case>
+                                                            <case value="1">已使用</case>
+                                                        </switch>
+                                                        <if condition="$vo.outdate eq 1 ">(已过期)
+                                                            <else />
+                                                        </if>
+                                                    </td>
+                                                    <td>{$vo.begin_time|time_formats=###,"Y-m-d H:i:s"}~{$vo.end_time|time_formats=###,"Y-m-d H:i:s"} <br> (
+                                                        <php>echo intval(($vo['end_time']-$vo['begin_time'])/86400);</php>天) </td>
+                                                    <td>{$vo.phone}</td>
+                                                    <td>
+                                                        <!--<a id="status" data-placement="left" data-toggle="tooltip" data-original-title="状态" class="label <eq name="vo.status" value="0">label-default<else/>label-success</eq>" href="{:U('redEnvelopeStatus?id='.$vo['id'].'&status='.abs(1-$vo['status']))}"><i class="fa <eq name="vo.status" value="0">fa-eye-slash<else/>fa-eye</eq>"></i></a>-->
+                                                        <a data-placement="left" data-toggle="tooltip" data-original-title="查看" class="label label-primary" href="javascript:;"><i class="fa fa-pencil"></i></a>
+                                                    </td>
+                                                </tr>
+                                            </volist>
+                                        </tbody>
+                                        <else/>
+                                        <td colspan="6"> aOh! 暂时还没有内容! </td>
+                                    </notempty>
+                                </table>
+                                <div class="content col-lg-12 pull-left">
+                                    <div class="panel-footer text-center">
+                                        <div class="page">{$_page}</div>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script type="text/javascript">
+        $(document).ready(function() {
+            highlight_subnav("{:U('Sales/redenveloperecord')}");
+
+            $(".starttime").datetimepicker({
+                autoclose: true,
+                language: 'zh-CN'
+            });
+            $(".endtime").datetimepicker({
+                autoclose: true,
+                language: 'zh-CN'
+            });
+
+            //搜索功能
+            $("#search").click(function() {
+                var url = $(this).attr('url');
+                //var category= $('#category').val();
+                var isuse = $('#isuse').val();
+                var phone = $('#phone').val();
+                var starttime = $('#starttime').val();
+                var endtime = $('#endtime').val();
+                var query = "phone/" + phone + "/isuse/" + isuse + "/starttime/" + starttime + "/endtime/" + endtime;
+                url += '/' + query;
+                window.location.href = url;
+            });
+
+            $('#isuse').val("{$_params['isuse']}");
+
+        });
+    </script>
+</block>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="shortcut icon" href="__IMG__/favicon.png">
+<title>积分详情</title>
+<!-- Bootstrap core CSS -->
+<css href="__JS__/bootstrap/dist/css/bootstrap.css" />
+<css href="__FONTS__/font-awesome-4/css/font-awesome.min.css" />
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+      <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv-printshiv.js"></script>
+    <![endif]-->
+<!-- Bootstrap core CSS -->
+<css href="__JS__/jquery.nanoscroller/nanoscroller.css" />
+<css href="__CSS__/pygments.css" />
+<!-- Custom styles for this template -->
+<css href="__CSS__/style.css" />
+</head>
+<body>
+<div class="block-flat">
+	<div class="col-md-12">
+		<div class="nano nscroller" style="height:500px;">
+			<div class="content">
+				<table class="no-border blue" style="border: 1px solid #dadada">
+					<notempty name="item">
+					<tr>
+						<td style="width: 20%">用户名称:</td>
+						<td>{$item.username}</td>
+					</tr>
+					<tr>
+						<td style="width: 20%">用户昵称:</td>
+						<td>{$item.nickname}</td>
+					</tr>
+					<tr>
+						<td style="width: 20%">用户手机号:</td>
+						<td>{$item.phone}</td>
+					</tr>
+					<tr>
+						<td style="width: 20%">登录方式:</td>
+						<td>{$item.loginWay}</td>
+					</tr>
+					<tr>
+						<td style="width: 20%">所有积分:</td>
+						<td>{$item.total_point}</td>
+					</tr>
+					<tr>
+						<td style="width: 20%">时间:</td>
+						<td>{$item.create_time|date="Y-m-d H:i:s",###}</td>
+					</tr>
+					<tr>
+						<td style="width: 20%">本次所得积分:</td>
+						<td><gt name="item.point" value="0"><b><a style="color:blue">+{$item.point}</a><else/><a style="color: red;">{$item.point}</a></b></gt></td>
+					</tr>
+					<tr>
+						<td style="width: 20%">积分类型:</td>
+						<td>{$item.type_name}</td>
+					</tr>
+					<tr>
+						<td style="width: 20%">备注:</td>
+						<td>{$item.remark}</td>
+					</tr>
+					<tr>
+						<td style="width: 20%">期号:</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td style="width: 20%">商品名称:</td>
+						<td></td>
+					</tr>
+					<else/>
+					<td colspan="4"> aOh! 暂时还没有内容! </td>
+					</notempty>
+				</table>
+			</div>
+		</div>
+	</div>	
+</div>
+<js href="__JS__/jquery.js" />
+<js href="__JS__/jquery.nanoscroller/jquery.nanoscroller.js" />
+<js href="__STATIC__/layer/layer.js" />
+<js href="__JS__/behaviour/web.js" />
+<js href="__JS__/bootstrap/dist/js/bootstrap.min.js" />
+<script type="text/javascript">
+$(document).ready(function(){
+	$(".nscroller").nanoScroller();
+
+	highlight_subnav("{:U('Point/detail')}");
+});
+</script>
+</html>

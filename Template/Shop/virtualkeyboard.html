@@ -1,0 +1,196 @@
+<div class="input_box">
+    <div class="ib_con">
+        <div class="ibc_one">
+            <span class="ibc_span"></span>
+            <span><em>参与</em><i id="buy_count">1</i><em>人次</em></span>
+        </div>
+        <div class="ibc_two"></div>
+        <div class="ibc_thr"></div>
+        <div class="keyboard">
+            <table>
+                <tr>
+                    <td class="vk vk-num">1</td>
+                    <td class="vk vk-num">2</td>
+                    <td class="vk vk-num">3</td>
+                    <td class="vk gray_bg" rowspan="2">删除</td>
+                </tr>
+                <tr>
+                    <td class="vk vk-num">4</td>
+                    <td class="vk vk-num">5</td>
+                    <td class="vk vk-num">6</td>
+                </tr>
+                <tr>
+                    <td class="vk vk-num">7</td>
+                    <td class="vk vk-num">8</td>
+                    <td class="vk vk-num">9</td>
+                    <td class="vk yellow_bg confirm" rowspan="2">确定</td>
+                </tr>
+                <tr>
+                    <td class="vk vk-num">0</td>
+                    <td class="vk vk-num">-1</td>
+                    <td class="vk vk-num">+1</td>
+                </tr>
+                <input type="hidden" id="gold" value="">
+                <input type="hidden" id="gold_price" value="">
+                <input type="hidden" id="gold_md5" value="">
+            </table>
+        </div>
+    </div>
+</div>
+<div class="tips_box" style="display: none;">
+      <div class="tpb_con">
+        <p class="content"></p>
+      </div>
+    </div>
+<script type="text/javascript">
+    $(function() {
+        //立即参与
+        $(".partkake").click(function() {
+            var url = "{:U('ajaxmd5')}";
+             $.post(
+            url, {
+
+            },
+            function(data) {
+                $('#gold_price').val(data.gold_price);
+                $('#gold_md5').val(data.md5);
+                getrate();
+                getchannelgold();
+                gettotalgold();
+            },
+            'json'
+        );
+        
+        });
+        
+        vkBehavior($(".vk"),$("#buy_count"),function(){
+            //处理确定事件
+            console.log('ok');
+        });
+        
+        //加减
+        $(".vk").click(function() {
+            getrate();
+            gettotalgold();
+        });
+        //提交
+        $(".confirm").click(function() {
+            getsubmit();
+        });
+
+    });
+    /**
+     * 中奖率
+     * @return {[type]}          [description]
+     */
+    function getrate() {
+        //本期购买次数
+        var total_number = parseFloat("{$info.total_number}");
+        //用户已购买次数
+        var user_number = parseFloat("{$info.user_number}");
+        //点击购买的数
+        var buy_count = parseFloat($('#buy_count').html());
+        //概率
+        var rate = (buy_count+user_number)/(total_number+buy_count)*100;
+        if(total_number+buy_count==0){
+            rate=0;
+        }else{
+            rate = Math.floor(rate * 100) / 100 ;
+        }
+        var user_total_number = user_number+buy_count;
+        var html = "本期您有<i>"+user_total_number+"</i>个参与号码 中奖率<i>"+rate+"%</i>";
+        $('.ibc_two').html(html);
+    }
+    /**
+     * 计算 - 需要花费的钻石数 (钻石/毫克/人次)
+     * @return {[type]}       [description]
+     */
+    function getchannelgold() {
+        //渠道起拍mg数
+        var starting_number = parseFloat("{$channel_info.starting_number}");
+        //溢价
+        var premium = parseFloat("{$channel_info.premium}");
+        //实时金价
+        var gold_price = parseFloat($('#gold_price').val());
+        var proportion = parseFloat("{$channel_info.proportion}");
+        //钻石
+        var total_price = (gold_price/1000)*proportion*starting_number*(1+premium/100);
+        var price = Math.ceil(total_price);
+        var number = starting_number;
+
+        var html = price+"{:C('WEB_CURRENCY')}/"+starting_number+"毫克/人次";
+        $('.ibc_span').html(html);
+    }
+    /**
+     * 计算 - 需要花费的钻石数
+     * @return {[type]}       [description]
+     */
+    function gettotalgold() {
+        //点击购买的数
+        var buy_count = parseFloat($('#buy_count').html());
+        //渠道起拍mg数
+        var starting_number = parseFloat("{$channel_info.starting_number}");
+        //溢价
+        var premium = parseFloat("{$channel_info.premium}");
+        //实时金价
+        var gold_price = parseFloat($('#gold_price').val());
+        //渠道起拍mg数
+        var proportion = parseFloat("{$channel_info.proportion}");
+
+
+        //钻石
+        var total_gold_price = buy_count*(gold_price/1000)*proportion*starting_number*(1+premium/100);
+        var number = buy_count*starting_number;
+
+        var html_number = Math.ceil(number);
+        var html_total_gold_price = Math.ceil(total_gold_price);
+        var html = "总计<i>"+html_number+"毫克</i> 总需<i>"+html_total_gold_price+"{:C('WEB_CURRENCY')}</i>";
+        $('.ibc_thr').html(html);
+        $('#gold').val(html_total_gold_price);
+    } 
+    function getsubmit(argument) {
+        //md5值
+        var htmlmd5 = $('#gold_md5').val();
+        //期数
+        var pid = "{$info.last_no}";
+        //购买次数
+        var price = $('#buy_count').html();
+        //钻石数
+        var gold = $('#gold').val();
+        var url = "{:U('ajaxpay')}";
+        $.post(
+            url, {
+                pid: pid,
+                htmlmd5: htmlmd5,
+                price: price,
+                gold: gold
+
+            },
+            function(data) {
+                var html = '';
+                if (data.code == 200) {
+                    window.location = "{:U('suc')}/pid/"+"{$period.pid}";
+                } else if (data.code == 430){
+                    html += data.msg;
+                    $('.content').html(html);
+                    $('.tips_box').show(); 
+                    setTimeout(function(){$(".tips_box").hide();}, 1000);
+                    setTimeout(function(){location.reload();}, 1000);
+                } else if (data.code == 420){
+                    html += data.msg;
+                    $('.content').html(html);
+                    $('.tips_box').show(); 
+                    setTimeout(function(){$(".tips_box").hide();}, 1000);
+                    setTimeout(function(){location.reload();}, 1000);
+                } else {
+                    html += data.msg;
+                    $('.content').html(html);
+                    $('.tips_box').show(); 
+                    setTimeout(function(){$(".tips_box").hide();}, 1000);
+
+                }
+            },
+            'json'
+        );
+    }    
+</script>

@@ -1,0 +1,157 @@
+<extend name="Public/base"/>
+<block name="style">
+	<css href="__JS__/jquery.icheck/skins/square/blue.css"/>
+	<css href="__JS__/bootstrap.datetimepicker/css/bootstrap-datetimepicker.min.css" />
+</block>
+<block name="body">
+<div>
+<div class="page-head">
+	<h2>图片管理</h2>
+</div>
+<div class="cl-mcont">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="block-flat">
+				<div class="header">							
+					<h3 class="hthin">{$meta_title}</h3>
+				</div>
+				<div class="content">
+					<form action="{:U()}" class="form-horizontal"  method="post">
+						<div class="tab-pane active" id="basics">
+							<div class="form-group">
+								<label class="col-sm-2 control-label">标题</label>
+								<div class="col-sm-6">
+									<input type="text" name="title" class="form-control" value="{$info.title|default=''}" placeholder="标题"/>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-sm-2 control-label">开始时间</label>
+								<div class="col-sm-2">
+									<div class="input-group date start_time" data-min-view="2" data-date-format="yyyy-mm-dd">
+										<input type="text" name="start_time" class="form-control" value="{$info.start_time|time_format=###,'Y-m-d'}"/>
+										<span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+									</div>
+								</div>
+								<label class="col-sm-2 control-label">结束时间</label>
+								<div class="col-sm-2">
+									<div class="input-group date end_time" data-min-view="2" data-date-format="yyyy-mm-dd">
+										<input type="text" name="end_time" class="form-control" value="{$info.end_time|time_format=###,'Y-m-d'}"/>
+										<span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">图片</label>
+								<div class="col-sm-6">
+									<input type="file" id="upload_picture">
+									<input type="hidden" name="cover_id" id="cover_id" value="{$info.cover_id|default=0}"/>
+									<div id="shop-pic">
+									<notempty name="info.picurl">
+										<img src="{$info.picurl}" class="img-thumbnail" style="height:100px;"/>
+									</notempty>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">连接</label>
+								<div class="col-sm-6">
+									<input type="text" name="link" class="form-control" value="{$info.link|default=''}" placeholder="连接地址"/>
+									<label >注：h5页面可以输入链接，如果是商品可以直接输入商品id</label>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">发布位置</label>
+								<!-- <div class="col-sm-8">
+									<label class="col-sm-1  checkbox-inline">
+										<input class="icheck" type="checkbox" name="position[]" value="1"  <if condition="check_slider_publish($info['publish'],'1') ">checked="checked"</if> > APP
+
+									</label>
+									<label class="col-sm-1 ">排序</label>
+									<div class="col-sm-2">
+										<input type="text" name="app_order" class="form-control" value="{$info.app_order|default=''}" placeholder="排序"/>
+									</div>
+								</div> -->
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label"></label>
+								<div class="col-sm-8">
+									<label class="col-sm-2  checkbox-inline">
+										<!-- <input class="icheck" type="checkbox" name="position[]"  value="2" <if condition="check_slider_publish($info['publish'],'2') ">checked="checked"</if> > H5 -->
+										<input class="icheck" type="checkbox" name="position[]"  value="2" checked="checked" > H5首页
+									</label>
+									<label class="col-sm-1 ">排序</label>
+									<div class="col-sm-2">
+										<input type="text" name="h5_order" class="form-control" value="{$info.h5_order|default=''}" placeholder="排序"/>
+									</div>
+								</div>
+							</div>
+							<!-- <div class="form-group">
+								<label class="col-sm-2 control-label"></label>
+								<div class="col-sm-8">
+									<label class="col-sm-4  checkbox-inline">
+										<input class="icheck" type="checkbox" name="position[]" value="h5_ismajor" <if condition="$info['h5_ismajor']">checked="checked"</if> > H5首页主推
+									</label>
+								</div>
+							</div> -->
+						</div>
+						<input type="hidden" name="id" value="{$info.id|default=''}">
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-sm-10">
+								<button class="btn btn-primary ajax-post" type="submit" target-form="form-horizontal">提 交</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>			
+		</div>
+	</div>
+</div>
+</block>
+<block name="script">
+	<js href="__STATIC__/uploadify/jquery.uploadify.min.js" />
+	<js href="__JS__/jquery.icheck/icheck.min.js"/>
+	<js href="__JS__/bootstrap.datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" />
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$(".start_time").datetimepicker({autoclose: true,language: 'zh-CN'});
+			$(".end_time").datetimepicker({autoclose: true,language: 'zh-CN'});
+			<present name="info.id">
+				highlight_subnav('{:U('Slider/index')}');
+			<else/>
+				highlight_subnav('{:U('Slider/add')}');
+			</present>	
+			
+			$("#upload_picture").uploadify({
+				"height"          : 35,
+				"swf"             : "__STATIC__/uploadify/uploadify.swf",
+				"fileObjName"     : "download",
+				"buttonClass"     :  "btn btn-success fa fa-upload no-padding",
+				"buttonText"      : " 上传图片",
+				"uploader"        : "{:U('Slider/uploadPicture',array('session_id'=>session_id()))}",
+				"width"           : 100,
+				'removeTimeout'	  : 1,
+				'fileTypeExts'	  : '*.jpg; *.png; *.gif;',
+				"onUploadSuccess" : uploadPicture,
+				'onFallback' : function() {
+					alert('未检测到兼容版本的Flash.');
+				}
+			});
+			function uploadPicture(file, data){
+				var data = $.parseJSON(data);
+				var src = '';
+				if(data.status){
+					$("#cover_id").val(data.id);
+					src = data.url || '__ROOT__' + data.path
+					$("#shop-pic").html(
+						'<img src="__ROOT__' + src + '" class="img-thumbnail" style="height:100px;"/>'
+					);
+				} else {
+					layer.msg(data.info, {icon: 2});
+				}
+			}
+
+			$("#type").val({$info.type});
+		});
+	</script>
+</block>

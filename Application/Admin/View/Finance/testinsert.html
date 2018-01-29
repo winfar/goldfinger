@@ -1,0 +1,245 @@
+<extend name="Public/base" />
+<block name="style">
+</block>
+<block name="body">
+    <div>
+        <div class="page-head">
+            <h2>财务管理—测试资金录入</h2>
+        </div>
+        <div class="cl-mcont">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="block-flat">
+                        <div class="header">
+                            <h3 class="hthin">{$meta_title}</h3>
+                        </div>
+                        <div class="content">
+                            <div class="tab-container">
+                                <form id="defaultForm" action="{:U()}" class="form-horizontal" method="post">
+                                    <input type="hidden" name="id" value="{$info.id|default=''}">
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">支付流水号</label>
+                                        <div class="col-xs-4">
+                                            <input type="text" name="order_no" class="form-control" value="{$info.order_no|default=''}" placeholder="支付流水号" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">用户id <span class="text-danger">*</span></label>
+                                        <div class="col-xs-4">
+                                            <input type="text" name="uid" class="form-control" value="{$info.uid|default=''}" placeholder="用户id" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">用户名称 <span class="text-danger">*</span></label>
+                                        <div class="col-xs-4">
+                                            <input type="text" name="user_name" class="form-control" value="{$info.user_name|default=''}" placeholder="用户名称" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">商品id <span class="text-danger">*</span></label>
+                                        <div class="col-xs-4">
+                                            <input type="text" name="shop_id" class="form-control" value="{$info.shop_id|default=''}" placeholder="商品id" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">商品名称 <span class="text-danger">*</span></label>
+                                        <div class="col-xs-4">
+                                            <input type="text" name="shop_name" class="form-control" value="{$info.shop_name|default=''}" placeholder="商品名称" />
+                                        </div>
+                                    </div>
+                                     <div class="form-group">
+                                        <label class="col-xs-2 control-label">商品期号 <span class="text-danger">*</span></label>
+                                        <div class="col-xs-4">
+                                            <input type="text" name="no" class="form-control" value="{$info.no|default=''}" placeholder="商品期号" />
+                                        </div>
+                                    </div>
+                                     <div class="form-group">
+                                        <label class="col-xs-2 control-label">现金支付金额（单位：元）</label>
+                                        <div class="col-xs-4">
+                                            <input type="text" name="cash" class="form-control" value="{$info.cash|default='0.00'}" placeholder="现金支付金额" />
+                                        </div>
+                                    </div>
+                                     <div class="form-group">
+                                        <label class="col-xs-2 control-label">金币支付金额（单位：元）</label>
+                                        <div class="col-xs-4">
+                                            <input type="text" name="gold" class="form-control" value="{$info.gold|default='0'}" placeholder="金币支付金额" />
+                                        </div>
+                                    </div>
+                                     <div class="form-group">
+                                        <label class="col-xs-2 control-label">优惠现金金额（单位：元）</label>
+                                        <div class="col-xs-4">
+                                            <input type="text" name="discount_cash" class="form-control" value="{$info.discount_cash|default='0.00'}" placeholder="优惠现金金额" />
+                                        </div>
+                                    </div>
+                                     <div class="form-group">
+                                        <label class="col-xs-2 control-label">优惠金币金额（单位：元） </label>
+                                        <div class="col-xs-4">
+                                            <input type="text" name="discount_gold" class="form-control" value="{$info.discount_gold|default='0'}" placeholder="优惠金币金额" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">支付方式 <span class="text-danger">*</span></label>
+                                        <div class="col-xs-4">
+                                            <select name="type" class="form-control">
+                                                <volist name=":get_payarr()" id="vo">
+                                                    <option value="{$vo.type}">{$vo.name}</option>
+                                                </volist>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">支付时间 <span class="text-danger">*</span></label>
+                                        <div class="col-xs-4">
+                                            <input type="text" name="pay_time" class="form-control paytime" value="{$info.pay_time|default=time()|date='Y-m-d H:i',###}" placeholder="开始时间" />
+                                            <!--<span class="form-control-static btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>-->
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-2 col-sm-10">
+                                            <button class="btn btn-primary" type="submit" target-form="form-horizontal">提 交
+                                            </button>
+                                            <button class="btn btn-primary" type="button" id="btnRefresh" style="margin-left: 30px;" target-form="form-horizontal">重 置
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script type="text/javascript">
+        $(document).ready(function() {
+            highlight_subnav('{:U('Finance/testinsert')}');
+
+            $('#btnRefresh').click(function() {
+                $('form')[0].reset();
+            });
+
+            $(".paytime").datetimepicker({
+                autoclose: true,
+                language: 'zh-CN'
+            });
+
+            $('#defaultForm').bootstrapValidator({
+                message: 'This value is not valid',
+                /*输入框不同状态，显示图片的样式*/
+                feedbackIcons: {
+                    valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                },
+                /*验证*/
+                fields: {
+                    /*键名username和input name值对应*/
+                    uid: {
+                        message: '用户id不能为空',
+                        validators: {
+                            notEmpty: { /*非空提示*/
+                                message: '用户id不能为空'
+                            },
+                            stringLength: { /*长度提示*/
+                                min: 1,
+                                max: 11,
+                                message: '长度必须在1到11之间'
+                            },
+                            regexp: {
+                                regexp: /^\d+$/,
+                                message: '必须为整数'
+                            }
+                        }
+                    },
+                    user_name: {
+                        message: '用户名称不能为空',
+                        validators: {
+                            notEmpty: { /*非空提示*/
+                                message: '用户名称不能为空'
+                            },
+                            stringLength: { /*长度提示*/
+                                min: 1,
+                                max: 100,
+                                message: '长度必须在1到100之间'
+                            }
+                        }
+                    },
+                    shop_id: {
+                        message: '商品id不能为空',
+                        validators: {
+                            notEmpty: { /*非空提示*/
+                                message: '商品id不能为空'
+                            },
+                            stringLength: { /*长度提示*/
+                                min: 1,
+                                max: 11,
+                                message: '长度必须在1到11之间'
+                            },
+                            regexp: {
+                                regexp: /^\d+$/,
+                                message: '必须为整数'
+                            }
+                        }
+                    },
+                    shop_name: {
+                        message: '商品名称不能为空',
+                        validators: {
+                            notEmpty: { /*非空提示*/
+                                message: '商品名称不能为空'
+                            },
+                            stringLength: { /*长度提示*/
+                                min: 1,
+                                max: 100,
+                                message: '长度必须在1到100之间'
+                            }
+                        }
+                    },
+                    no: {
+                        message: '商品期号不能为空',
+                        validators: {
+                            notEmpty: { /*非空提示*/
+                                message: '商品期号不能为空'
+                            },
+                            stringLength: { /*长度提示*/
+                                min: 1,
+                                max: 32,
+                                message: '长度必须在1到32之间'
+                            },
+                            regexp: {
+                                regexp: /^\d+$/,
+                                message: '必须为整数'
+                            }
+                        }
+                    },
+                    type: {
+                        message: '支付方式不能为空',
+                        validators: {
+                            notEmpty: { /*非空提示*/
+                                message: '支付方式不能为空'
+                            },
+                            stringLength: { /*长度提示*/
+                                min: 1,
+                                max: 32,
+                                message: '长度必须在1到32之间'
+                            }
+                        }
+                    },
+                    pay_time: {
+                        message: 'The begin_time is not valid',
+                        validators: {
+                            notEmpty: {
+                                message: '付款时间不能为空'
+                            },
+                            regexp: {
+                                regexp: /^\d{4}-\d{2}-\d{2}|\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}$/,
+                                message: '时间格式不匹配'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</block>

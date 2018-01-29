@@ -1,0 +1,131 @@
+<extend name="Public/base"/>
+<block name="style">
+	<css href="__JS__/bootstrap.datetimepicker/css/bootstrap-datetimepicker.min.css" />
+</block>
+
+<block name="body">
+	<div class="page-head">
+		<h2>统计</h2>
+	</div>
+	<div class="cl-mcont">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="block-flat">
+					<div class="header">							
+						<h3 class="hthin">{$meta_title}</h3>
+					</div>
+					<div class="content">
+						<div class="col-sm-12">
+							<form action="{:U()}" class="form-horizontal"  method="post">
+							<label class="pull-left control-label">开始日期</label>
+							<div class="col-sm-3">
+								<div class="input-group date starttime" data-min-view="2" data-date-format="yyyy-mm-dd">
+									<input type="text" id="starttime" name="starttime" class="form-control" value="{$Think.post.starttime|default=time_format(NOW_TIME-24*60*60*30,'Y-m-d')}"/>
+									<span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+								</div>
+							</div>
+							<label class="pull-left control-label">结束日期</label>
+							<div class="col-sm-3">
+								<div class="input-group date endtime" data-min-view="2" data-date-format="yyyy-mm-dd">
+									<input type="text" id="endtime" name="endtime" class="form-control" value="{$Think.post.endtime|default=time_format(NOW_TIME-24*60*60,'Y-m-d')}"/>
+									<span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<button type="submit" class="btn btn-success">确认</button>
+								<button type="button" url="{:U('exportOverview')}" class="btn btn-success" id="btnExport">导出Excel</button>
+							</div>
+							</form>
+						</div>	
+						<table class="no-border blue">
+							<thead class="no-border">
+								<tr>
+									<th>{:C("WEB_CURRENCY")}兑换金额</th>
+									<th>兑换人数</th>
+									<th>新用户兑换人数</th>
+									<th>老用户兑换人数</th>
+									<th>{:C("WEB_CURRENCY")}平均兑换量</th>
+								</tr>
+							</thead>
+							<tbody class="no-border-y">
+							<tr>
+								<volist name="third_statistic" id="vo" key="k">
+									<td>{$vo}</td>
+								</volist>
+							</tr>
+							</tbody>
+						</table>	
+                        <table class="no-border blue">
+							<thead class="no-border">
+								<tr>
+									<th>注册用户数</th>
+									<th>平均次日留存</th>
+									<th>活跃</th>
+									<th>老用户活跃</th>
+									<th>老用户活跃占比</th>
+                                    <th>抽奖金额</th>
+									<th>全价兑换金额</th>
+									<th>总消费金额</th>
+									<th>充值{:C("WEB_CURRENCY")}消耗</th>
+									<th>活动{:C("WEB_CURRENCY")}消耗</th>
+                                    <th>抽奖人数</th>
+									<th>全价兑换人数</th>
+									<th>新用户消费人数</th>
+									<th>老用户消费人数</th>
+									<th>消费人数</th>
+                                    <th>消费率</th>
+									<th>ARPU</th>
+									<th>ARPPU</th>
+								</tr>
+							</thead>
+							<tbody class="no-border-y">
+								<volist name="_statistic" id="vo">
+								<tr>
+									<td>{$vo['sum_new']|default=0}</td>
+									<td>{$vo['avg_day1retention']*100|round=2}%</td>
+									<td>{$vo['sum_active']|default=0}</td>
+									<td>{$vo['old_active']|default=0}</td>
+									<td>{$vo['old_active_rate']*100|round=2}%</td>
+									<td>{$vo['sum_draw_amount']|default=0}</td>
+									<td>{$vo['sum_exchange_amount']|default=0}</td>
+									<td>{$vo['sum_full_amount']|default=0}</td>
+									<td>{$vo['sum_rechage_amount']|default=0}</td>
+									<td>{$vo['sum_active_amount']|default=0}</td>
+									<td>{$vo['draw_total']|default=0}</td>
+									<td>{$vo['fullprice_total']|default=0}</td>
+									<td>{$vo['sum_newer_consume_total']|default=0}</td>
+									<td>{$vo['old_consume_total']|default=0}</td>
+									<td>{$vo['consume_total']|default=0}</td>
+									<td>{$vo['consumption_rate']*100|round=2}%</td>
+									<td>{$vo['ARPU']|round=2}</td>
+									<td>{$vo['ARPPU']|round=2}</td>
+								</tr>
+								</volist>
+							</tbody>
+						</table>						
+					</div>
+				</div>				
+			</div>
+		</div>
+	</div>
+</block>
+<block name="script">
+	<js href="__JS__/bootstrap.datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" />
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$(".starttime").datetimepicker({autoclose: true,language: 'zh-CN'});
+			$(".endtime").datetimepicker({autoclose: true,language: 'zh-CN'});
+			highlight_subnav("{:U('Statistics/overview')}");
+
+			//导出功能
+			$("#btnExport").click(function () {
+				var url = $(this).attr('url');
+				var starttime = $('#starttime').val();//开始时间
+				var endtime = $('#endtime').val();//结束时间
+				var query="starttime/"+starttime+"/endtime/"+endtime;
+				url += '/' + query;
+				window.location.href = url;
+			});
+		})
+	</script>
+</block>

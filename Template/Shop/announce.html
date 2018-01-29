@@ -1,0 +1,178 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <include file="{$web_tplpath}head.html" />
+    <style type="text/css">
+    .cb_con h1{
+        background: none;
+    }
+    </style>
+</head>
+
+<body>
+<div class="wrap">		
+	
+		<div class="announce">
+			<ul class="announce_list">
+			<notempty name="list">
+                <if condition="($list['state'] eq 0)"> 
+                    <div class="take_in_time down_date" id = "down_date" data-now-format="{:date('Y-m-d H:i:s')}" data-now="{:time().get_millisecond()}" data-end="{$list.kaijang_date}" style="display: none;">
+                                    <div class="time_go">
+                                    <i class="hour">00</i><em>:</em><i class="mini">00</i><em>:</em><i class="sec">00</i><em>:</em><i class="hm">000</i>
+                                    </div>
+                                </div>
+                </if>
+                <if condition="($list['total_number'] gt 0) and ($list['down_time'] elt 0)">
+        		<li class="ann_periods_li">
+        			<div class="ann_periods">
+        				<span>第<i>{$list.no}</i>期</span>当前参与<em>{$list.total_number}人次</em> 总计<em>{$list.total_buy_gold}</em>黄金
+        			</div>
+        			<div class="ann_tit">
+                    
+                    <a href="{:U('detail')}/pid/{$list.pid}">
+        				<span><i class="ssc">时时彩[{$list['kaijiang_issue']}]揭晓倒计时</i></span>
+                            <if condition="($list['state'] eq 0) or ($list['ssc_time'] gt 0)">
+                            <span id="fnTimeCountDown" data-now-format="{:date('Y-m-d H:i:s')}" data-now="{:time().get_millisecond()}" data-end="{$list.ssc_date}">
+                                
+            				    <div class="time_go">
+            					   <i class="hour">00</i><em>:</em><i class="mini">00</i><em>:</em><i class="sec">00</i><em>:</em><i class="hm">000</i>
+            					</div>
+                                <div class="data_getting getting" style="display: none;">数据获取中...</div>
+                            <else />
+                            <span> 
+                                <div class="data_getting">数据获取中...</div>
+                            </span>   
+                            </if>
+                            
+                        </a>
+        			</div>
+        			</li>
+                </if>		       
+			</notempty>    
+		    <ul>
+			</div>
+	<div class="loading" style="display: none;"></div>
+</div>
+<div class="take_box">
+  <div class="tb_con clearfix">
+    <h1><span class="dis_none">X</span></h1>
+    <span class="code_list clearfix"></span>
+  </div>
+  <div class="dis_none"></div>
+</div>
+<script src="{$web_tplpath}js/jquery.countdown.milliseconds.js" type="text/javascript"></script>
+<block name="script">
+    <script type="text/javascript">
+        $(function(){
+            var ssc_time = "{$period['ssc_time']}";
+            console.log(ssc_time);
+            // if (down_time>0) {
+            //     $('.ann_periods_li').hide();
+            // }
+        	$("#fnTimeCountDown").fnTimeCountDown("",function(){
+                setTimeout(function(){window.location.reload(true);}, 1000);
+			});
+            $("#down_date").fnTimeCountDown("",function(){
+                setTimeout(function(){window.location.reload(true);}, 1000);
+            });
+			getdata();
+            if (ssc_time && ssc_time <= 0) {
+                var pid = "{$period['pid']}";
+                setInterval("ajaxdata("+pid+")",10000);
+            }
+        });
+        function ajaxdata(pid) {
+            var url = "{:U('getperiod')}";
+            $.post(
+                url, {
+                    pid:pid
+                },
+                function(data) {
+                    if (data==2) {
+                        setTimeout(function(){window.location.reload(true);}, 1000);
+
+                    }
+                    
+                },
+                'json'
+            );
+        }
+        //获取数据
+        function getdata() {
+            var url = "{:U('ajaxannouncedlist')}";
+            var uid = "{$uid}";
+            var totalNumber = "{$list['total_number']}";
+            $.ajax(
+               {
+                  type:"POST",//通常会用到两种：GET,POST。默认是：GET
+                  url:url,//(默认: 当前页地址) 发送请求的地址
+                  data:{},
+                  dataType:"json",//预期服务器返回的数据类型。
+                  beforeSend:function(){
+    
+                    $(".loading").show();
+                  }, //发送请求
+                  success:function(data) {
+                    $(".loading").hide(); 
+                    var html = '';
+                    if (data != '') {
+                    	for (var i in data ) {
+                            html += '<li>';
+                            html += '<div class="ann_periods">';
+                            html += '<span>第<i>'+data[i].no+'</i>期</span>幸运号码<em>'+data[i].kaijang_num+'</em> 获得<em>'+data[i].total_buy_gold+'克</em>黄金';
+                            html += '</div>';
+                            if (data[i].uid >0) {
+                            html += '<a href="{:U(detail)}/pid/'+data[i].id+'">';
+                            html += '<span class="ul_img"><img src="'+data[i].img+'" /><em></em></span>';
+                            html += '<span class="ul_user"><h1>'+data[i].nickname+'</h1><p>本期参与：<i>'+data[i].user_total_number+'人次</i></p></span>';
+                            html += '</a>';
+                            html += '<span class="ul_info"><i>'+data[i].kaijang_date+'</i><br><a href="javascript:void(0);" onclick="getrecordsnumbers('+data[i].id+','+data[i].uid+','+data[i].kaijang_num+')">参与号码</a></span>';
+                            }
+                            html += '</li>';
+                    	}
+                        $('.announce_list').append(html);
+
+                    } else {
+                        if (totalNumber=="") {
+                            html += ' <div class="record_none"><div class="rn_con">还没有记录喔</div></div>';
+                            $('.announce_list').html(html);
+                        } else if(totalNumber==0) {
+                            html += ' <div class="record_none"><div class="rn_con">还没有记录喔</div></div>';
+                            $('.announce_list').html(html);
+                        }
+                    } 
+                                      
+                  }
+               });
+        }
+        //参与号码  
+        function getrecordsnumbers(pid,uid,kaijang_num) {
+            var url = "{:U('usernumbers')}"; 
+            $.post(
+                url,
+                {
+                    pid:pid,
+                    uid:uid
+                },
+                function(data) {
+                    var html = '';
+                    for(var i in data) {
+                        if (kaijang_num==data[i]) {
+                            html += "<i class='wincode'>"+data[i]+"</i>";
+                        } else {
+                            html += "<i>"+data[i]+"</i>";
+                        }
+                    }
+                    $('.code_list').html(html);
+                    $('.take_box').show();
+                },
+                'json'
+            );
+        } 
+        </script>
+    </block>
+
+</body>
+
+</html>

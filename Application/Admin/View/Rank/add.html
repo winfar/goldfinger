@@ -1,0 +1,88 @@
+<extend name="Public/base"/>
+<block name="style">
+	<css href="__JS__/bootstrap.datetimepicker/css/bootstrap-datetimepicker.min.css" />
+	<css href="__JS__/jquery.icheck/skins/square/blue.css" />
+</block>
+<block name="body">
+	<div>
+		<div class="page-head">
+			<h2>{$meta_title}</h2>
+		</div>
+		<div class="cl-mcont">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="block-flat">
+						<div class="header">
+							<h3 class="hthin">{$meta_title}</h3>
+						</div>
+						<div class="content">
+							<div class="tab-container">
+								<form action="{:U('save')}" class="form-horizontal"  method="post">
+									<div class="tab-content">
+										<div class="tab-pane active" id="basics">
+											<div class="form-group">
+												<label class="col-sm-2 control-label">用户id</label>
+												<div class="col-sm-6">
+													<input type="text" name="uid" class="form-control" value="{$data.uid|default=''}" placeholder="用户id"/>
+												</div>
+											</div>
+											<div class="form-group">
+												<label class="col-sm-2 control-label">用户名称</label>
+												<div class="col-sm-6">
+													<input type="text" name="username" class="form-control" value="{$data.username|default=''}" placeholder="用户名称"/>
+												</div>
+											</div>
+											<div class="form-group">
+												<label class="col-sm-2 control-label">抽奖花费{:C("WEB_CURRENCY")}</label>
+												<div class="col-sm-6">
+													<input type="text" name="draw_diamond" class="form-control" value="{$data.draw_diamond|default=''}" placeholder="抽奖花费{:C("WEB_CURRENCY")}"/>
+												</div>
+											</div>
+											<div class="form-group">
+												<label class="col-sm-2 control-label">抽奖参与期数</label>
+												<div class="col-sm-6">
+													<input type="text" name="draw_number" class="form-control" value="{$data.draw_number|default=''}" placeholder="抽奖花费{:C("WEB_CURRENCY")}"/>
+												</div>
+											</div>
+											<div class="form-group">
+												<label class="col-sm-2 control-label">中奖次数</label>
+												<div class="col-sm-6">
+													<input type="text" name="win_number" class="form-control" value="{$data.win_number|default=''}" placeholder="中奖次数"/>
+												</div>
+											</div>
+											<div class="form-group">
+												<label class="col-sm-2 control-label">全价兑换花费{:C("WEB_CURRENCY")}</label>
+												<div class="col-sm-6">
+													<input type="text" name="full_draw" class="form-control" value="{$data.full_draw|default=''}" placeholder="全价兑换花费{:C("WEB_CURRENCY")}"/>
+												</div>
+											</div>
+											<div class="form-group">
+												<label class="col-sm-2 control-label">全价兑换次数</label>
+												<div class="col-sm-6">
+													<input type="text" name="full_number" class="form-control" value="{$data.full_number|default=''}" placeholder="全价兑换次数"/>
+												</div>
+											</div>
+										</div>
+
+										<input type="hidden" name="id" value="{$data.id}" id="id" />
+										<div class="form-group">
+											<div class="col-sm-offset-2 col-sm-10">
+												<button class="btn btn-primary ajax-post" type="submit" target-form="form-horizontal">提 交</button>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+</block>
+<block name="script">
+	<script type="text/javascript">
+		$(document).ready(function(){
+			highlight_subnav('{:U('Rank/add')}');
+		});
+	</script>
+</block>

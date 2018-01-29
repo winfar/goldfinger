@@ -1,0 +1,263 @@
+<extend name="Public/base" />
+<block name="style">
+    <css href="__JS__/bootstrap.datetimepicker/css/bootstrap-datetimepicker.min.css" />
+</block>
+<block name="body">
+    <div>
+        <div class="page-head">
+            <h2>渠道管理-{$meta_title}</h2>
+        </div>
+        <div class="cl-mcont">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="block-flat">
+                        <div class="header">
+                            <h3 class="hthin">{$meta_title}</h3>
+                        </div>
+                        <div class="content">
+                            <div class="tab-container">
+                                <form action="{:U('save')}" class="form-horizontal" method="post">
+                                    <div class="content">
+                                        <div class="tab-pane active" id="basics">
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">渠道名称<em class="text-danger">*</em></label>
+                                                <div class="col-sm-6">
+                                                    <input type="text" name="channel_name" class="form-control" value="{$data.channel_name|default=''}" placeholder="渠道名称" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">联系人</label>
+                                                <div class="col-sm-6">
+                                                    <input type="text" name="contact" class="form-control" value="{$data.contact|default=''}" placeholder="联系人" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">联系电话</label>
+                                                <div class="col-sm-6">
+                                                    <input type="text" name="tel" class="form-control" value="{$data.tel|default=''}" placeholder="联系电话" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">{:C("WEB_CURRENCY")}兑换比例<em class="text-danger">*</em></label>
+                                                <div class="col-sm-6">
+                                                    <input type="text" name="proportion" class="form-control" value="{$data.proportion|default=''}" placeholder="{:C(" WEB_CURRENCY ")}兑换比例" style="width: 80%;float: left;" onkeyup="value=value.replace(/[^\d.]/g,'')" />
+                                                    <label class="control-label form-input-tooltip">{:C("WEB_CURRENCY")}=1元人民币</label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">起拍数量<em class="text-danger">*</em></label>
+                                                <div class="col-sm-6">
+                                                    <input type="text" name="starting_number" class="form-control" value="{$data.starting_number|default=''}" placeholder="起拍数量" style="width: 80%;float: left;" onkeyup="value=value.replace(/[^\d.]/g,'')" />
+                                                    <label class="control-label form-input-tooltip">mg/人次</label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">溢价<em class="text-danger">*</em></label>
+                                                <div class="col-sm-6">
+                                                    <input type="text" name="premium" class="form-control" value="{$data.premium|default=''}" placeholder="溢价" style="width: 80%;float: left;" onkeyup="value=value.replace(/[^\d.]/g,'')" /><label class="control-label form-input-tooltip">%</label>
+                                                </div>
+                                            </div>
+                                            <!-- <div class="form-group">
+                                                <label class="col-sm-2 control-label">提取费用<em class="text-danger">*</em></label>
+                                                <div class="col-sm-6">
+                                                    <input type="text" name="extract_cost" class="form-control" value="{$data.extract_cost|default=''}" placeholder="提取费用" style="width: 80%;float: left;" onkeyup="value=value.replace(/[^\d.]/g,'')" />
+                                                    <label class="control-label form-input-tooltip">{:C("WEB_CURRENCY")}/克</label>
+                                                </div>
+                                            </div> -->
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">提金数量<em class="text-danger">*</em></label>
+                                                <div class="col-sm-6">
+                                                    <input type="text" name="cash[]" class="form-control" value="{$data['cash'][0]|default=''}" style="width: 20%;float: left;margin-bottom: 10px;" onkeyup="value=value.replace(/[^\d.]/g,'')" /><span class="control-label"
+                                                        style="width: 5%;float: left;margin-bottom: 10px;text-align: center;">g</span>
+
+                                                    <input type="text" name="cash[]" class="form-control" value="{$data['cash'][1]|default=''}" style="width: 20%;float: left;margin-bottom: 10px;" onkeyup="value=value.replace(/[^\d.]/g,'')" /><span class="control-label"
+                                                        style="width: 5%;float: left;margin-bottom: 10px;text-align: center;">g</span>
+
+                                                    <input type="text" name="cash[]" class="form-control" value="{$data['cash'][2]|default=''}" style="width: 20%;float: left;margin-bottom: 10px;" onkeyup="value=value.replace(/[^\d.]/g,'')" /><span class="control-label"
+                                                        style="width: 5%;float: left;margin-bottom: 10px;text-align: center;">g</span>
+
+                                                    <input type="text" name="cash[]" class="form-control" value="{$data['cash'][3]|default=''}" style="width: 20%;float: left;margin-bottom: 10px;" onkeyup="value=value.replace(/[^\d.]/g,'')" /><span class="control-label"
+                                                        style="width: 5%;float: left;margin-bottom: 10px;text-align: center;">g</span>
+
+                                                    <input type="text" name="cash[]" class="form-control" value="{$data['cash'][4]|default=''}" style="width: 20%;float: left;" onkeyup="value=value.replace(/[^\d.]/g,'')" /><span class="control-label" style="width: 5%;float: left;text-align: center;">g</span>
+
+                                                    <input type="text" name="cash[]" class="form-control" value="{$data['cash'][5]|default=''}" style="width: 20%;float: left;" onkeyup="value=value.replace(/[^\d.]/g,'')" /><span class="control-label" style="width: 5%;float: left;text-align: center;">g</span>
+
+                                                    <input type="text" name="cash[]" class="form-control" value="{$data['cash'][6]|default=''}" style="width: 20%;float: left;" onkeyup="value=value.replace(/[^\d.]/g,'')" /><span class="control-label" style="width: 5%;float: left;text-align: center;">g</span>
+
+                                                    <input type="text" name="cash[]" class="form-control" value="{$data['cash'][7]|default=''}" style="width: 20%;float: left;" onkeyup="value=value.replace(/[^\d.]/g,'')" /><span class="control-label" style="width: 5%;float: left;text-align: center;">g</span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">提金百分比<em class="text-danger">*</em></label>
+                                                <div class="col-sm-6">
+                                                    <input type="text" name="extract_gold_persent" class="form-control" value="{$data.extract_gold_persent|default=''}" placeholder="提金百分比" style="width: 80%;float: left;" onkeyup="value=value.replace(/[^\d.]/g,'')" />
+                                                    <label class="control-label form-input-tooltip">%</label>
+                                                </div>
+                                                <!--<div class="col-sm-6" style="text-align: right;">
+                                                    <span style="color: red;">提现手续费=提现百分比*实时黄金价格（每mg）*提金总毫克数</span>
+                                                </div>-->
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">提金额外费用<em class="text-danger">*</em></label>
+                                                <div class="col-sm-6">
+                                                    <input type="text" name="extract_gold_extra_expenses" class="form-control" value="{$data.extract_gold_extra_expenses|default=''}" placeholder="提金额外费用" style="width: 80%;float: left;" onkeyup="value=value.replace(/[^\d.]/g,'')" />
+                                                    <label class="control-label form-input-tooltip">元</label>
+                                                </div>
+                                                <!--<div class="col-sm-6" style="text-align: right;">
+                                                    <span style="color: red;">提现手续费=提现百分比*实时黄金价格（每mg）*提金总毫克数</span>
+                                                </div>-->
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">提现百分比<em class="text-danger">*</em></label>
+                                                <div class="col-sm-6">
+                                                    <input type="text" name="extract_money" class="form-control" value="{$data.extract_money|default=''}" placeholder="提现百分比" style="width: 80%;float: left;" onkeyup="value=value.replace(/[^\d.]/g,'')" />
+                                                    <label class="control-label form-input-tooltip">%</label>
+
+                                                </div>
+                                                <div class="col-sm-6" style="text-align: right;">
+                                                    <span style="color: red;">提现手续费=提现百分比*实时黄金价格（每mg）*提金总毫克数</span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">提现起提克数<em class="text-danger">*</em></label>
+                                                <div class="col-sm-6">
+                                                    <input type="text" name="extract_number" class="form-control" value="{$data.extract_number|default=''}" placeholder="提现起提克数" style="width: 80%;float: left;" onkeyup="value=value.replace(/[^\d.]/g,'')" />
+                                                    <label class="control-label form-input-tooltip">毫克</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" name="id" value="{$data.id}" id="id" />
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-2 col-sm-10">
+                                                <button class="btn btn-primary ajax-post" type="submit" target-form="form-horizontal">提 交</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</block>
+<block name="script">
+    <js href="__JS__/bootstrap.datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" />
+    <js href="__STATIC__/uploadify/jquery.uploadify.min.js" />
+    <script type="text/javascript">
+        $(document).ready(function() {
+            highlight_subnav("{:U('Channel/add')}");
+            $(".datetime").datetimepicker({
+                autoclose: true,
+                language: 'zh-CN'
+            });
+            setValue('display', '{$data.display}');
+
+            // $("#upload_picture").uploadify({
+            // 	"height"          : 35,
+            // 	"swf"             : "__STATIC__/uploadify/uploadify.swf",
+            // 	"fileObjName"     : "download",
+            // 	"buttonClass"     :  "btn btn-success fa fa-upload no-padding",
+            // 	"buttonText"      : " 上传图片",
+            // 	"uploader"        : "{:U('Activity/uploadPicture',array('session_id'=>session_id()))}",
+            // 	"width"           : 100,
+            // 	'removeTimeout'	  : 1,
+            // 	'fileTypeExts'	  : '*.jpg; *.png; *.gif;',
+            // 	"onUploadSuccess" : uploadPicture,
+            // 	'onFallback' : function() {
+            // 		alert('未检测到兼容版本的Flash.');
+            // 	}
+            // });
+            // function uploadPicture(file, data){
+            // 	var data = $.parseJSON(data);
+            // 	var src = '';
+            // 	if(data.status){
+            // 		src = data.url || '__ROOT__' + data.path
+            // 		$("#picurl").val(src);
+            // 		$("#shop-pic").html(
+            // 				'<img src="__ROOT__' + src + '" class="img-thumbnail" style="height:100px;"/>'
+            // 		);
+            // 	} else {
+            // 		layer.msg(data.info, {icon: 2});
+            // 	}
+            // }
+
+            highlight_subnav("{:U('Activity/add')}");
+        });
+
+
+        var xmlHttp;
+
+        function S_xmlhttprequest() {
+            if (window.ActiveXObject) {
+                xmlHttp = new ActiveXObject('Microsoft.XMLHTTP');
+            } else if (window.XMLHttpRequest) {
+                xmlHttp = new XMLHttpRequest();
+            }
+        }
+
+        function gen_qr_code(url, code, id) {
+            if (!url) {
+                return;
+            }
+            S_xmlhttprequest();
+            xmlHttp.open("GET", "admin.php?s=/Channel/genQrCode/&activity_link=" + url + "&code=" + code + "&id=" + id, true);
+            xmlHttp.onreadystatechange = getPicurl;
+            xmlHttp.send(null);
+        }
+
+        function getPicurl() {
+            var picurl = xmlHttp.responseText;
+            document.getElementById('qr_code_id').src = picurl;
+            document.getElementById('picurl').value = picurl;
+        }
+
+
+        function selectChannel($k) {
+            document.getElementById($k).src = "http://www.w3school.com.cn/i/site_photoref.jpg"
+        }
+        //生成渠道号码,通过当前的记录Id生成渠道号码
+        function genChannelCode() {
+            var id = document.getElementById('id').value;
+            var pid = document.getElementById('parentId').value;
+            S_xmlhttprequest();
+
+            //如果id 为空，再提交前不自动生成渠道号码
+            if (!id || typeof(id) == "undefined" || id == 0) {
+                xmlHttp.open("GET", "admin.php?s=/Channel/getChannelCode/pid/" + pid, true);
+                xmlHttp.onreadystatechange = setChanenlLevel;
+                xmlHttp.send(null);
+            } else {
+                xmlHttp.open("GET", "admin.php?s=/Channel/getChannelCode/pid/" + pid, true);
+                xmlHttp.onreadystatechange = setChanenlCode;
+                xmlHttp.send(null);
+            }
+        }
+        //html设置渠道号码code
+        function setChanenlCode() {
+            var codePrefix = setChanenlLevel().substr(0, 1);
+            codePrefix = codePrefix + '' + pad(document.getElementById('id').value.substr(1, 5), 5);
+            document.getElementById('channel_code_id').value = codePrefix;
+        }
+
+        function pad(num, n) {
+            var len = num.toString().length;
+            while (len < n) {
+                num = "0" + num;
+                len++;
+            }
+            return num;
+        }
+
+        function setChanenlLevel() {
+            var code = xmlHttp.responseText;
+            //计算渠道级别
+            var codePrefix = code.substr(0, 1);
+            var codeASC = codePrefix.charCodeAt(0);
+            var level = codeASC - 64;
+            document.getElementById('channel_level').value = level;
+            return code;
+        }
+    </script>
+</block>

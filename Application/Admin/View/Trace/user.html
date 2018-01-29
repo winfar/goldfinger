@@ -1,0 +1,533 @@
+<extend name="Public/base" />
+
+<block name="style">
+	<style>
+
+	</style>
+</block>
+<block name="body">
+	<div>
+		<div class="page-head">
+			<h2>追溯管理 - 用户轨迹</h2>
+		</div>
+		<div class="cl-mcont">
+			<div class="row">
+				<div class="col-md-12">
+					<form class="shop-form form-inline" method="post" action="{:U()}">
+						<div class="block-flat">
+							<div class="header">
+								<h3 class="hthin">{$meta_title}</h3>
+							</div>
+							<div class="content">
+								<div class="col-sm-12">
+									<div class="form-group col-sm-2">
+										<label class="" for="uid">用户id</label>
+										<input type="text" name="uid" id="uid" class="form-control" placeholder="按用户id搜索" value="{$Think.get.uid|default=''}" />
+									</div>
+									<div class="form-group col-sm-2">
+										<label class="" for="phone">用户手机号</label>
+										<input type="text" name="phone" id="phone" class="form-control" placeholder="按用户手机号搜索" value="{$Think.get.phone|default=''}"
+										/>
+									</div>
+									<div class="form-group">
+										<button type="button" id="search" url="{:U()}" class="btn btn-success">查询</button>
+									</div>
+								</div>
+								<div class="clearfix" style="margin-bottom: 20px;"></div>
+								<div class="col-sm-12">
+									<!--用户基本信息start-->
+									<div class="col-sm-12 panel panel-default table-responsive">
+										<table class="table no-border blue">
+											<thead class="no-border">
+												<tr colspan="12">
+													<th colspan="12">用户信息</th>
+												</tr>
+												<tr>
+													<th style="width:5%;">ID</th>
+													<th>登录方式</th>
+													<th>用户名</th>
+													<th>手机号</th>
+													<th>{$web_currency}</th>
+													<th>积分</th>
+													<th>充值记录</th>
+													<th>奖励记录</th>
+													<th>购买数量</th>
+													<th>中奖数量</th>
+													<th>注册时间</th>
+													<th>地址</th>
+												</tr>
+											</thead>
+											<tbody class="no-border-y">
+												<notempty name="_user">
+													<tr>
+														<td>{$_user['id']}</td>
+														<td>{$_user['loginWay']}</td>
+														<td>{$_user['nickname']}</td>
+														<td>{$_user['phone']}</td>
+														<td>{$_user['black']}</td>
+														<td>{$_user['total_point']}</td>
+														<td>{$_user['id']|user_pay}</td>
+														<td>{$_user['id']|user_activity}</td>
+														<td>{$_user['id']|user_record}</td>
+														<td>{$_user['id']|user_period}</td>
+														<td>{$_user['create_time']|time_format=###,"Y-m-d"}</td>
+														<td>{$_user['province']}-{$_user['city']}</td>
+													</tr>
+													<else/>
+													<td colspan="6"> aOh! 暂时还没有内容! </td>
+												</notempty>
+											</tbody>
+										</table>
+									</div>
+									<!--用户基本信息end-->
+								</div>
+								<div class="col-sm-12">
+									<div class="col-sm-6 panel panel-default">
+										<!--用户购买记录start-->
+										<div class="table-responsive">
+											<table class="table no-border blue">
+												<thead class="no-border">
+													<tr colspan="12">
+														<th colspan="12">用户订单
+															<div class="pull-right">
+																<a data-toggle="modal" href="javascript:;" data-target=".tmpOrder">临时订单...</a>
+																<div class="modal fade tmpOrder" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+																	<div class="modal-dialog modal-lg">
+																		<div class="modal-content">
+																			<div class="modal-header">
+																				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+																				<h4 class="modal-title" id="myModalLabel">用户临时订单</h4>
+																			</div>
+																			<div class="modal-body">
+																				<!--用户临时订单start-->
+																				<div class="table-responsive">
+																					<table class="table no-border blue">
+																						<thead class="no-border">
+																							<tr colspan="10">
+																								<th colspan="10">用户临时订单</th>
+																							</tr>
+																							<tr>
+																								<th style="width:auto;">期号</th>
+																								<th style="width:20%;">商品名称</th>
+																								<th style="width:20%;">订单号</th>
+																								<th style="width:auto;">pid</th>
+																								<th style="width:auto;">现金支付</th>
+																								<th style="width:auto;">金币支付</th>
+																								<th style="width:auto;">时间</th>
+																							</tr>
+																						</thead>
+																						<notempty name="_temporary_list">
+																							<tbody class="no-border-y">
+																								<volist name="_temporary_list" id="record">
+																									<tr>
+																										<td>{$record['no']}</td>
+																										<td>{$record['shopname']}</td>
+																										<td>{$record['order_id']}</td>
+																										<td>{$record['pid']}</td>
+																										<td>{$record['cash']}</td>
+																										<td>{$record['gold']}</td>
+																										<td>{$record['create_time']|time_format=###,"Y-m-d H:i:s"}</td>
+
+																									</tr>
+																								</volist>
+																							</tbody>
+																							<else/>
+																							<td colspan="6"> aOh! 暂时还没有内容! </td>
+																						</notempty>
+																					</table>
+																				</div>
+																				<!--用户临时订单end-->
+																			</div>
+																			<div class="modal-footer">
+																				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+																				<!--<button type="button" class="btn btn-primary">Save changes</button>-->
+																			</div>
+																		</div>
+																	</div>
+																</div>
+															</div>
+														</th>
+													</tr>
+													<tr>
+														<th style="width:auto;">id</th>
+														<th style="width:auto;">期号</th>
+														<!--<th style="width:20%;">商品名称</th>-->
+														<th style="width:auto;">订单号</th>
+														<th style="width:auto;">pid</th>
+														<th style="width:auto;">类型</th>
+														<th style="width:auto;">现金</th>
+														<th style="width:auto;">金币</th>
+														<th style="width:auto;">数量</th>
+														<th style="width:auto;">购买结果</th>
+														<th style="width:auto;">时间</th>
+														<th style="width:auto;">明细</th>
+													</tr>
+												</thead>
+												<notempty name="_record_list">
+													<tbody class="no-border-y">
+														<volist name="_record_list" id="record">
+															<tr>
+																<td>{$record['id']}</td>
+																<td>{$record['no']}</td>
+																<!--<td>{$record['name']}</td>-->
+																<td>{$record['order_id']}</td>
+																<td>{$record['pid']}</td>
+																<td>{:get_recharge($record['type'])}</td>
+																<td>{$record['cash']}</td>
+																<td>{$record['gold']}</td>
+																<td>{$record['number']}</td>
+																<td>{$record['code']}</td>
+																<td>{$record['create_time']|time_format=###,"Y-m-d H:i:s"}</td>
+																<td>
+																	<a data-toggle="modal" href="javascript:;" data-target=".{$record['id']}">查看...</a>
+
+																	<div class="modal fade {$record['id']}" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+																		<div class="modal-dialog modal-lg">
+																			<div class="modal-content">
+																				<div class="modal-header">
+																					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+																					<h4 class="modal-title" id="myModalLabel">查看明细</h4>
+																				</div>
+																				<div class="modal-body">
+																					<table class="table-responsive">
+																						<thead class="no-border">
+																							<tr>
+																								<th style="width:auto;">商品名称</th>
+																								<th style="width:auto;">订单号</th>
+																								<th style="width:auto;">商品数量</th>
+																								<th style="width:auto;">幸运码</th>
+																								<th style="width:auto;">时间</th>
+																							</tr>
+																						</thead>
+																						<tr>
+																							<td>{$record['name']}</td>
+																							<td>{$record['order_id']}</td>
+																							<td>{$record['number']}</td>
+																							<td style="word-break:break-all">{$record['num']}</td>
+																							<td>{:msecdate("Y-m-d H:i:s",$record['add_time'])}</td>
+																						</tr>
+
+																					</table>
+																				</div>
+																				<div class="modal-footer">
+																					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+																					<!--<button type="button" class="btn btn-primary">Save changes</button>-->
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																</td>
+															</tr>
+														</volist>
+													</tbody>
+													<else/>
+													<td colspan="6"> aOh! 暂时还没有内容! </td>
+												</notempty>
+											</table>
+										</div>
+										<!--用户购买记录end-->
+									</div>
+									<div class="col-sm-6 panel panel-default">
+										<!--用户中奖记录start-->
+										<div class="table-responsive">
+											<table class="table no-border blue">
+												<thead class="no-border">
+													<tr colspan="7">
+														<th colspan="12">用户中奖记录</th>
+													</tr>
+													<tr>
+														<th style="width:auto;">id</th>
+														<th style="width:auto;">期号</th>
+														<th style="width:auto;">订单号</th>
+														<th style="width:auto;">pid</th>
+														<th style="width:auto;">现金</th>
+														<th style="width:auto;">金币</th>
+														<th style="width:auto;">类型</th>
+														<th style="width:auto;">开奖时间</th>
+														<th style="width:auto;">渠道</th>
+														<th style="width:auto;">采购状态</th>
+														<th style="width:auto;">物流状态</th>
+													</tr>
+												</thead>
+												<notempty name="_period_list">
+													<tbody class="no-border-y">
+														<volist name="_period_list" id="period">
+															<tr>
+																<td>{$period['id']}</td>
+																<td>{$period['no']}</td>
+																<td>{$period['order_id']}</td>
+																<td>{$period['pid']}</td>
+																<td>{$period['cash']}</td>
+																<td>{$period['gold']}</td>
+																<td>{:get_recharge($period['type'])}</td>
+																<td>{$period.kaijang_time|time_format=###,"Y-m-d H:i:s"}</td>
+																<td>{$period['channel_name']}</td>
+																<td>{:get_logistics_status($period['order_status'])}</td>
+																<td>{:purchaseorderstatus($period['purchaseorderstatus'])}</td>
+															</tr>
+														</volist>
+													</tbody>
+													<else/>
+													<td colspan="6"> aOh! 暂时还没有内容! </td>
+												</notempty>
+											</table>
+										</div>
+										<!--用户中奖记录end-->
+									</div>
+								</div>
+								<div class="col-sm-12">
+									<div class="col-sm-6 panel panel-default">
+										<!--用户金币start-->
+										<div class="table-responsive">
+											<table class="table no-border blue">
+												<thead class="no-border">
+													<tr colspan="6">
+														<th colspan="7">用户金币记录(总金币数:<a style="color: red;">{$_total_gold}</a>)</th>
+													</tr>
+													<tr>
+														<th style="width:auto;">id</th>
+														<th style="width:auto;">类型</th>
+														<th style="width:auto;">金币数量</th>
+														<th style="width:auto;">日期</th>
+													</tr>
+												</thead>
+												<notempty name="_gold">
+													<tbody class="no-border-y">
+														<volist name="_gold" id="gold">
+															<tr>
+																<td>{$gold['id']}</td>
+																<td>{$gold['name']}</td>
+																<td>
+																	<gt name="gold.gold" value="0"><b><a style="color:blue">+{$gold['gold']}</a><else/><a style="color: red;">{$gold['gold']}</a></b></gt>
+																</td>
+																<td>{$gold['create_time']|time_formats=###,"Y-m-d H:i:s"}</td>
+															</tr>
+														</volist>
+													</tbody>
+													<else/>
+													<td colspan="6"> aOh! 暂时还没有内容! </td>
+												</notempty>
+											</table>
+										</div>
+										<!--用户金币end-->
+										<!--用户消息start-->
+										<div class="table-responsive">
+											<table class="table no-border blue">
+												<thead class="no-border">
+													<tr colspan="7">
+														<th colspan="7">用户消息</th>
+													</tr>
+													<tr>
+														<th style="width:auto;">id</th>
+                                                        <th style="width:auto;">内容</th>
+														<th style="width:auto;">是否已读</th>
+														<th style="width:auto;">时间</th>
+													</tr>
+												</thead>
+												<notempty name="_message_list">
+													<tbody class="no-border-y">
+														<volist name="_message_list" id="message">
+															<tr>
+                                                                <td>{$message['id']}</td>
+																<td>
+																	<a href="javascript:;" title="{$message['title']}">查看...</a>
+																</td>
+																<td>{$message['isread']==0 ? '否' :'是'}</td>
+																<td>{$message['msg_time']|time_formats=###,"Y-m-d H:i:s"}</td>
+															</tr>
+														</volist>
+													</tbody>
+													<else/>
+													<td colspan="6"> aOh! 暂时还没有内容! </td>
+												</notempty>
+											</table>
+										</div>
+										<!--用户消息end-->
+									</div>
+									<div class="col-sm-6 panel panel-default">
+										<!--用户积分start-->
+										<div class="table-responsive">
+											<table class="table no-border blue">
+												<thead class="no-border">
+													<tr colspan="6">
+														<th colspan="7">用户积分记录(总积分数:<a style="color: red;">{$_total_point}</a>)</th>
+													</tr>
+													<tr>
+														<th style="width:auto;">id</th>
+														<th style="width:auto;">积分</th>
+														<th style="width:auto;">积分类型</th>
+														<th style="width:auto;">备注</th>
+														<th style="width:auto;">创建时间</th>
+													</tr>
+												</thead>
+												<notempty name="_point_list">
+													<tbody class="no-border-y">
+														<volist name="_point_list" id="pointlist">
+															<tr>
+																<td>{$pointlist['id']}</td>
+																<td>{$pointlist['point']}</td>
+																<td>{:get_pointtype($pointlist['type_id'])}</td>
+																<td>{$pointlist['remark']}</td>
+																<td>{$pointlist['create_time']|time_formats=###,"Y-m-d H:i:s"}</td>
+															</tr>
+														</volist>
+													</tbody>
+													<else/>
+													<td colspan="6"> aOh! 暂时还没有内容! </td>
+												</notempty>
+											</table>
+										</div>
+										<!--用户积分end-->
+									</div>
+								</div>
+								<div class="col-sm-12">
+									<!--用户分享记录start-->
+									<div class="col-sm-6 panel panel-default">
+										<div class="table-responsive">
+											<table class="table no-border blue">
+												<thead class="no-border">
+													<tr colspan="7">
+														<th colspan="7">用户分享记录</th>
+													</tr>
+													<tr>
+														<th style="width:45%;">商品名称</th>
+														<th style="width:auto;">期号</th>
+														<th style="width:auto;">分享内容</th>
+														<th style="width:auto;">分享时间</th>
+													</tr>
+												</thead>
+												<notempty name="_shared_list">
+													<tbody class="no-border-y">
+														<volist name="_shared_list" id="shared">
+															<tr>
+																<td>{$shared['shop_name']}</td>
+																<td>{$shared['no']}</td>
+																<td>{$shared['content']}</td>
+																<td>{$shared['shared_time']}</td>
+															</tr>
+														</volist>
+													</tbody>
+													<else/>
+													<td colspan="6"> aOh! 暂时还没有内容! </td>
+												</notempty>
+											</table>
+										</div>
+									</div>
+									<!--用户分享记录end-->
+									<!--用户红包记录start-->
+									<div class="col-sm-6 panel panel-default">
+										<div class="table-responsive">
+											<table class="table no-border blue">
+												<thead class="no-border">
+													<tr colspan="7">
+														<th colspan="7">用户领取红包记录</th>
+													</tr>
+													<tr>
+														<th style="width:45%;">红包名称</th>
+														<th style="width:auto;">红包状态</th>
+														<th style="width:auto;">红包金额</th>
+														<th style="width:auto;">领取时间</th>
+														<th style="width:auto;">使用时间</th>
+													</tr>
+												</thead>
+												<notempty name="_envelope_list">
+													<tbody class="no-border-y">
+														<volist name="_envelope_list" id="shared">
+															<tr>
+																<td>{$shared['name']}</td>
+																<td>{$shared['status_name']}</td>
+																<td>{$shared['amount']}</td>
+																<td>{$shared['create_time']|time_formats=###,"Y-m-d H:i:s"}</td>
+																<td>{$shared['use_time']|time_formats=###,"Y-m-d H:i:s"}</td>
+															</tr>
+														</volist>
+													</tbody>
+													<else/>
+													<td colspan="6"> aOh! 暂时还没有内容! </td>
+												</notempty>
+											</table>
+										</div>
+									</div>
+									<!--用户红包记录end-->
+								</div>
+								<div class="col-sm-12">
+									<!--用户签到记录start-->
+									<div class="col-sm-6 panel panel-default" style="float: left">
+										<div class="table-responsive">
+											<table class="table no-border blue">
+												<thead class="no-border">
+													<tr colspan="6">
+														<th colspan="7">用户签到记录</th>
+													</tr>
+													<tr>
+														<th style="width:auto;">签到日期</th>
+														<th style="width:auto;">金币记录id</th>
+														<th style="width:auto;">积分记录id</th>
+														<th style="width:auto;">日期</th>
+													</tr>
+												</thead>
+												<notempty name="_checkin_list">
+													<tbody class="no-border-y">
+														<volist name="_checkin_list" id="checkin">
+															<tr>
+																<td>{$checkin['check_time']}</td>
+																<td>{$checkin['gold_record']}</td>
+																<td>{$checkin['point_record']}</td>
+																<td>{$checkin['create_time']|time_formats=###,"Y-m-d H:i:s"}</td>
+															</tr>
+														</volist>
+													</tbody>
+													<else/>
+													<td colspan="6"> aOh! 暂时还没有内容! </td>
+												</notempty>
+											</table>
+										</div>
+
+									</div>
+									<!--用户金币end-->
+								</div>
+
+								<div class="clearfix"></div>
+								<!--<div class="content col-lg-12 pull-left">
+                                    <div class="panel-footer text-center">
+                                        <div class="page">{$_page}</div>
+                                    </div>
+                                </div>-->
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</block>
+<block name="script">
+	<script type="text/javascript">
+        $(document).ready(function() {
+            highlight_subnav("{:U('Trace/user')}");
+
+            // $(".starttime").datetimepicker({
+            //     autoclose: true,
+            //     language: 'zh-CN'
+            // });
+            // $(".endtime").datetimepicker({
+            //     autoclose: true,
+            //     language: 'zh-CN'
+            // });
+
+            // $(".lottery_btn").on('click',function(){
+            //     $(this).next("div").show().siblings(".lottery_numbers").hide();
+            // });
+
+            //搜索功能
+            $("#search").click(function () {
+                var url = $(this).attr('url');//搜索url
+                var uid = $('#uid').val();//用户id
+                var phone = $('#phone').val();//用户手机号
+                var query="uid/"+uid+'/phone/'+phone;
+                url += '/' + query;
+                window.location.href = url;
+            });
+        });
+    </script>
+</block>

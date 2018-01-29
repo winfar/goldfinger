@@ -1,0 +1,118 @@
+<extend name="Public/base"/>
+<block name="body">
+    <div>
+        <div class="page-head">
+            <h2>{$meta_title}</h2>
+        </div>
+        <div class="cl-mcont">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="block-flat">
+                        <div class="header">
+                            <h3 class="hthin">{$meta_title}</h3>
+                        </div>
+                        <div class="content">
+                            <div class="tab-container">
+                                <form action="{:U()}" class="form-horizontal" method="post">
+                                    <input type="hidden" value="" name="hidId" id="hidId"/>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">消息标题</label>
+
+                                        <div class="col-sm-6">
+                                            <input type="text" name="title" class="form-control" value="{$info.title}"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">消息类型</label>
+                                        <label class="checkbox-inline" style="margin-left:15px;">
+                                        <volist name=":getNotificationList()" id="vo">
+                                            <input type="radio" value="{$key}"   name="msgType" id="msgInfo" <if condition="($key eq $info['type'])">checked="checked"</if> >{$vo}
+                                        </volist>
+                                        <!-- <label class="checkbox-inline" style="margin-left:15px;">
+                                            <input class="icheck" type="checkbox" value="1" checked="checked" name="msgType" id="msgNot"/>推送
+                                        </label> -->
+                                        
+                                            
+                                        </label>
+                                    </div>
+                                    <!--<div class="form-group" id="divplatformType">
+                                        <label class="col-sm-2 control-label">终端类型</label>
+                                        <label class="checkbox-inline" style="margin-left:15px;">
+
+                                                <input class="icheck" type="checkbox" checked="checked" value="1" name="platformType[]"/>IOS
+                                        </label>
+                                        <label class="checkbox-inline" style="margin-left:15px;">
+
+                                                <input class="icheck" type="checkbox" checked="checked" value="2" name="platformType[]"/>Android
+                                        </label>
+                                    </div>-->
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">消息内容</label>
+
+                                        <div class="col-sm-6">
+                                            <textarea rows="8" name="content" cols="20" class="form-control">{$info.content}</textarea>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="form-group" style="margin-bottom: 0px;">
+                                        <label class="col-sm-2 control-label">消息链接</label>
+
+                                        <div class="col-sm-6">
+                                            <input type="text" name="msgLink" class="form-control" value=""
+                                                   placeholder="消息链接"/>
+                                        </div>
+                                    </div> -->
+                                    <!-- <div class="form-group" style="margin-top: 0px; ">
+                                        <label class="col-sm-2 control-label"></label>
+                                        <div class="col-sm-6"> -->
+                                            <!--H5可以直接输入页面链接，--><!-- 商品可以直接输入商品ID，app将跳转至最新的周期页面 -->
+                                        <!-- </div> </div> -->
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-2 col-sm-10">
+                                            <input type="hidden" name="id" value="{$info.id}">
+                                            <button class="btn btn-primary ajax-post" type="submit"
+                                                    target-form="form-horizontal">提 交
+                                            </button>
+                                            <button class="btn btn-primary ajax-post" type="button" id="btnRefresh" style="margin-left: 30px;"
+                                                    target-form="form-horizontal">重 置
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+</block>
+<block name="script">
+    <script type="text/javascript">
+        $(document).ready(function () {
+            highlight_subnav("{:U('Notification/sendJpushInfo')}");
+
+            $('input[name=msgType]').on('click',function(){
+             var typeChk=   $(this).prop('checked');
+                var typeVal=$(this).val();
+
+                if(typeChk&&typeVal==1){
+                    $('#msgInfo').prop('checked',false);
+                }else if(typeChk&&typeVal==2){
+                    $('#msgNot').prop('checked',false);
+                }
+
+                if(typeChk&&typeVal==1){
+                    $('#divplatformType').show();
+                }else if(typeChk&&typeVal==2){
+                    $('#divplatformType').hide();
+                }
+            });
+            
+            $('#btnRefresh').click(function () {
+                location.reload();
+            });
+//            highlight_subnav('{:U('Shop/add')}');
+        });
+    </script>
+</block>

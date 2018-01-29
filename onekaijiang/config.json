@@ -1,0 +1,10 @@
+{
+	"host":"mysql.busonline.com",
+	"user":"yiyuan",
+	"passwd":"VdSgtCz3",
+	"db":"hxoneshop",
+	"port":3306,
+	"prefix":"hx_",
+	"charset":"utf8",
+	"party":1
+}

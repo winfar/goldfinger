@@ -1,0 +1,245 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <include file="{$web_tplpath}head.html" />
+</head>
+<body>
+
+<div class="wrap">
+	<if condition="($period.state eq 2)">
+        <style>
+			.header_take{background: #fec94a;}
+		</style>
+	</if>
+	<div class="header header_take">
+		
+		<if condition="($period.state eq 0)">
+			<div class="take_in">本期参与截止倒计时</div>
+			<div class="take_in_time down_date" id = "down_date" data-now-format="{:date('Y-m-d H:i:s')}" data-now="{:time().get_millisecond()}" data-end="{$period['kaijang_date']}">
+				    <div class="time_go">
+					<i class="hour">00</i><em>:</em><i class="mini">00</i><em>:</em><i class="sec">00</i><em>:</em><i class="hm">000</i>
+					</div>
+			</div>
+		<elseif condition="($period.state eq 2)"/>
+		<else/>
+			<div class="take_over">本期参与已截止</div>
+			<div class="take_over_time">新一期进行中</div> 
+		</if>
+		<if condition="($period.state eq 2)">
+			<div class="take_code_h">幸运号码</div>
+			<div class="take_code_win">{$period.kaijang_num}</div>
+			<div class="take_detail"><a href="{:U('info')}/pid/{$period.pid}">计算详情</a></div>
+		<elseif condition="($period.state eq 5)"/>
+			<div class="take_in">时时彩<i><a href="http://shishicai.cjcp.com.cn/chongqing/kaijiang/">[{$period['kaijiang_issue']}]</a></i>数据获取中</div>
+		<else />
+			<div class="take_in">时时彩<i><a href="http://shishicai.cjcp.com.cn/chongqing/kaijiang/">[{$period['kaijiang_issue']}]</a></i>揭晓倒计时</div>
+			<div class="take_in_time kaijang_date" id = "kaijang_date" data-now-format="{:date('Y-m-d H:i:s')}" data-now="{:time().get_millisecond()}" data-end="{$period['ssc_date']}">
+				    <div class="time_go">
+					<i class="hour">00</i><em>:</em><i class="mini">00</i><em>:</em><i class="sec">00</i><em>:</em><i class="hm">000</i>
+					</div>
+			</div>
+		</if>	
+	</div>
+	<div class="take_periods">
+			<span>第<i>{$period['no']}</i>期</span>当前参与<em>{$period['total_number']}人次</em> 总计<em>{$period['total_buy_gold']}</em>黄金
+	</div>
+	<div class="take_no" style="display: none;"></div>
+	<!-- 中奖者 -->
+	<div class="take_winner">
+	</div>
+	<!-- 参与者 -->
+	<div class="take_yes">
+	</div>
+	<!-- 其他参与者 -->
+	<div class="take_list">
+		<ul class="take_ul">
+		</ul>
+	</div>
+	<!-- 其他参与者不存在 -->
+	<div class="take_no_info" style="display: none"><p class="tni_p">暂无其他用户参与</p><p class="tni_p">邀请好友参与荣耀、财富、智慧与运气的比拼</p></div>
+</div>
+<div class="take_btn">
+	<if condition="($period.state eq 0)">
+		<span class="take_now"><a href="javascript:;" class="partkake">立即参与</a></span>
+	
+		<!-- <span class="take_add"><a href="javascript:;" class="partkake">追加参与</a></span> -->
+	<else />
+		<span class="go_now"><i>新一期火热进行中...</i><i><a class="take_now location_now" href="javascript:;">立即前往</a></i></span>	 
+	</if>
+</div>
+<div class="take_box">
+  <div class="tb_con clearfix">
+    <h1><span class="dis_none">X</span></h1>
+    <span class="code_list clearfix"></span>
+  </div>
+  <div class="dis_none"></div>
+</div>
+<div class="loading" style="display: none;"></div>
+{:R('Index/virtualkeyboard')}
+
+<script src="{$web_tplpath}js/jquery.countdown.milliseconds.js" type="text/javascript"></script>
+<script src="{$web_tplpath}js/script.js" type="text/javascript"></script>
+<script>
+	$(function(){
+		
+		//倒计时结束
+		var ssc_date = "{$period['ssc_time']}";
+		var state = "{$period['state']}";
+		console.log(ssc_date);
+		console.log(state);
+		if ( ssc_date <= 0 && (state ==1 || state ==5) ) {
+			setInterval("ajaxdata()",10000);
+		}
+		
+		$("#kaijang_date").fnTimeCountDown("",function(){
+				// $(".hm").html('000');
+				console.log("over");
+				var ssc_time = "{$period['ssc_time']}";
+				var state = "{$period.state}";
+				if (ssc_time>=0) {
+					if (state==4) {
+						var url = "{:U('detail')}/pid/"+"{$period.last_no}"+"/r/" + Math.random();
+                    	setTimeout(function(){location.href=url;}, 2000);
+					} else {
+						var url = "{:U('detail')}/pid/"+"{$period.pid}"+"/r/" + Math.random();
+                    	setTimeout(function(){location.href=url;}, 2000);
+					}
+					
+				} 
+			});
+        $("#down_date").fnTimeCountDown("",function(){
+				// $(".hm").html('000');
+				console.log("over");
+				var down_time = "{$period['down_time']}";
+				if (down_time>=0) {
+					var url = "{:U('detail')}/pid/"+"{$period.pid}"+"/r/" + Math.random();
+                    setTimeout(function(){location.href=url;}, 2000);
+				} 
+			});
+		$(".location_now").click(function() {
+			window.location = "{:U('detail')}/pid/"+"{$period.last_no}";
+		});
+		getdata();
+	});
+	function ajaxdata() {
+		var pid = "{$period['pid']}";
+		var url = "{:U('getperiod')}";
+		$.post(
+            url, {
+                pid:pid
+            },
+            function(data) {
+            	if (data==2) {
+            		var url = "{:U('detail')}/pid/"+pid+"/r/" + Math.random();
+                	setTimeout(function(){location.href=url;}, 2000);
+
+            	}
+                
+            },
+            'json'
+        );
+	}
+	//获取数据
+    function getdata() {
+        var url = "{:U('ajaxdetail')}";
+        var pid = "{$period.pid}";
+        $.ajax(
+           {
+              type:"POST",//通常会用到两种：GET,POST。默认是：GET
+              url:url,//(默认: 当前页地址) 发送请求的地址
+              data:{'pid':pid},
+              dataType:"json",//预期服务器返回的数据类型。
+              beforeSend:function(){
+
+                $(".loading").show();
+              }, //发送请求
+              success:function(data) {
+                $(".loading").hide();
+                var uid = "{$uid}"; 
+                var userList = data.user;
+                var winList = data.win;
+                var list = data.list;
+                console.log(list);
+                var userHtml = '';
+                var winHtml = '';
+                //用户
+                if (userList != '') {
+                	userHtml += '<ul>';
+					userHtml += '<li>';
+					userHtml += '<span class="ul_img"><img src="'+userList.img+'" /></span>';
+					userHtml += '<span class="ul_user"><h1>'+userList.nickname+'</h1><p>您已参与：<i>'+userList.number+'人次</i></p></span>';
+					userHtml += '<span class="ul_info">中奖率<i>'+userList.rate+'%</i><br><a href="javascript:void(0);" onclick="getrecordsnumbers('+userList.uid+',0)">参与号码</a></span>';
+					userHtml += '</li>';
+					userHtml += '<ul>';
+					$('.take_yes').html(userHtml);
+                } else {
+                	if (winList != '') {
+                		if (winList.uid!=uid) {
+	                		$('.take_no').show();
+                		}
+	                } else {
+	                	$('.take_no').show();
+	                }
+                }
+                //中奖者
+                if (winList.length != '') {
+                	winHtml += '<ul>';
+					winHtml += '<li>';
+					winHtml += '<span class="ul_img"><img src="'+winList.img+'" /><em></em></span>';
+					winHtml += '<span class="ul_user"><h1>'+winList.nickname+'</h1><p>您已参与：<i>'+winList.number+'人次</i></p></span>';
+					winHtml += '<span class="ul_info"><br><a href="javascript:void(0);" onclick="getrecordsnumbers('+winList.uid+',0)">参与号码</a></span>';
+					winHtml += '<span class="seal"></span>';
+					winHtml += '</li>';
+					winHtml += '<ul>';
+					$('.take_winner').html(winHtml);
+                } else {
+                	$('.take_winner').hide();
+                }
+                var html = '';
+                if (list.length != '') {
+                	for (var i in list ) {
+                		html += '<li>';
+						html += '<span class="ul_img"><img src="'+list[i].img+'" /></span>';
+						html += '<span class="ul_user"><h1>'+list[i].nickname+'</h1><p>参与人次：<i>'+list[i].number+'</i></p></span>';
+						html += '<span class="ul_info"><i>'+list[i].create_date+'</i><br><a href="javascript:void(0);" onclick="getrecordsnumbers('+list[i].uid+',\''+list[i].order_id+'\')">参与号码</a></span>';
+						html += '</li>';
+                	}
+                	$('.take_ul').html(html);
+                } else {
+                	$('.take_no_info').show();
+                }
+                                   
+              }
+           });
+    }
+     //参与号码  
+        function getrecordsnumbers(uid,oid) {
+            var url = "{:U('usernumbers')}";
+            var pid = "{$period.pid}"; 
+            var kaijang_num = "{$period.kaijang_num}";
+            $.post(
+                url,
+                {
+                	oid:oid,
+                    pid:pid,
+                    uid:uid
+                },
+                function(data) {
+                    var html = '';
+                    for(var i in data) {
+                        if (kaijang_num==data[i]) {
+                            html += "<i class='wincode'>"+data[i]+"</i>";
+                        } else {
+                            html += "<i>"+data[i]+"</i>";
+                        }
+                    }
+                    $('.code_list').html(html);
+                    $('.take_box').show();
+                },
+                'json'
+            );
+        }
+</script>
+</body>
+</html>

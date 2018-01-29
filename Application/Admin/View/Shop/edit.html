@@ -1,0 +1,650 @@
+<extend name="Public/base" />
+<block name="style">
+    <!--<css href="__JS__/bootstrap.datetimepicker/css/bootstrap-datetimepicker.min.css" />-->
+    <css href="__JS__/jquery.icheck/skins/square/blue.css" />
+    <link href="__STATIC__/dist/webuploader.css" rel="stylesheet" />
+    <!-- <link href="{$web_tplpath}css/oenpay.css" rel="stylesheet"> -->
+    <link rel="stylesheet" type="text/css" href="__ROOT__/Public/Home/css/style.css" />
+    <!--[if lt IE 8]>
+	<style type="text/css">
+		.searchs {float:left;width:620px}
+		.searchs>form {float:left;width:608px;height:35px;display:block}
+		.searchs>.hot-search {float:left;display:block;width:608px}
+	</style>
+	<![endif]-->
+</block>
+<block name="body">
+    <div>
+        <div class="page-head">
+            <h2>商品添加</h2>
+        </div>
+        <div class="cl-mcont">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="block-flat">
+                        <div class="header">
+                            <h3 class="hthin">{$meta_title}</h3>
+                        </div>
+                        <div class="content">
+                            <div class="tab-container">
+                                <ul class="nav nav-tabs">
+                                    <li class="active"><a href="#basics" data-toggle="tab" id="abasics">基础</a></li>
+                                    <li><a href="#shopimages" data-toggle="tab" id="ashopimages">商品相册</a></li>
+                                    <li><a href="#shopdetail" data-toggle="tab" id="ashopdetail">商品详情</a></li>
+                                    <li><a href="#senior" data-toggle="tab" id="asenior">其他</a></li>
+                                </ul>
+                                <form action="{:U()}" class="form-horizontal" method="post">
+                                <input type="hidden" name="id" value="{$info.id|default=''}">
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="basics">
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">商品名称</label>
+                                                <div class="col-sm-6">
+                                                    <input type="text" name="name" class="form-control" value="{$info.name|default=''}" placeholder="名称" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">商品分类</label>
+                                                <div class="col-sm-6">
+                                                    <select class="form-control" name="category">
+				                        	<volist name="category" id="vo">
+				                        	<option value="{$vo.id}" <eq name="info['category']" value="$vo['id']">selected="selected"</eq>>{$vo.html}{$vo.title}</option>
+											</volist>
+				                         </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">商品专区</label>
+                                                <div class="col-sm-6">
+                                                    <select class="form-control" name="ten">
+											<!--<option value="0" <eq name="info['ten']" value="0">selected="selected"</eq>>普通区</option>-->
+				                        	<volist name="ten" id="vo">
+				                        	<option value="{$vo.id}" data-unit="{$vo.unit}" <eq name="info['ten']" value="$vo['id']">selected="selected"</eq>>{$vo.html}{$vo.title}</option>
+											</volist>
+				                         </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">商品进价</label>
+                                                <div class="col-sm-6">
+                                                    <input type="text" name="buy_price" class="form-control" value="{$info.buy_price|default=''}" placeholder="商品进价"/>
+                                                </div>
+                                            </div>
+                                            <present name="info">
+                                                <div class="form-group">
+                                                    <label class="col-sm-2 control-label">商品售价</label>
+                                                    <div class="col-sm-6">
+                                                        <input type="text" name="price" class="form-control" value="{$info.price|default=''}" placeholder="修改价格" /><span style="color: red;">(注:当直播道具类型为:升级经验时 请填写0)</span>
+                                                    </div>
+                                                </div>
+                                                <else/>
+                                                <div class="form-group">
+                                                    <label class="col-sm-2 control-label">商品售价</label>
+                                                    <div class="col-sm-6">
+                                                        <input type="text" name="price" class="form-control" value="{$info.price|default=''}" placeholder="价格" /><span style="color: red;">(注:当直播道具类型为:升级经验时 请填写0)</span>
+                                                    </div>
+                                                </div>
+                                            </present>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">商品库存</label>
+                                                <div class="col-sm-6">
+                                                    <input type="text" name="shopstock" class="form-control" value="{$info.shopstock|default=''}" placeholder="商品库存" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">夺宝间隔</label>
+                                                <div class="col-sm-6">
+                                                    <select id="shopinterval" class="form-control" name="shopinterval">
+												<option value="1">循环进行</option>
+												<option value="2">5分钟</option>
+												<option value="3">10分钟</option>
+												<option value="4">15分钟</option>
+												<option value="5">30分钟</option>
+												<option value="6">60分钟</option>
+												<option value="7">24小时</option>
+											</select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">夺宝期数</label>
+                                                <div class="col-sm-6">
+                                                    <input type="text" name="periodnumber" class="form-control" value="{$info.periodnumber|default=''}" placeholder="" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">是否是虚拟商品</label>
+                                                <label class="checkbox-inline" style="margin-left:15px;"><input class="icheck" type="checkbox"  value="2" name="fictitious" <php>if($info['fictitious']==2){echo 'checked="checked"'; }</php>/>虚拟商品</label>
+                                                <span style="color: red;">(注:当直播道具类型为:升级经验时 必须勾选)</span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">直播道具类型</label>
+                                                <div class="col-sm-6">
+                                                    <select class="form-control" id="prop_type" name="prop_type">
+                                                        <volist name=":get_proptype()" id="vo">
+                                                            <option value="{$vo.type}">{$vo.name}</option>
+                                                        </volist>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">兑换类型</label>
+                                                <label class="checkbox-inline" style="margin-left:15px;"><input class="icheck" type="checkbox"  value="0" name="is_full[]" <php>if($info['is_full']==0 or $info['is_full']==2){echo 'checked="checked"'; }</php>/>夺宝</label>
+                                                <label class="checkbox-inline" style="margin-left:15px;"><input class="icheck" type="checkbox"  value="1" name="is_full[]" <php>if($info['is_full']==1 or $info['is_full']==2){echo 'checked="checked"'; }</php>/>全价兑换</label>
+                                                <span style="color: red;">(注:当直播道具类型为:升级经验时 必须勾选全价兑换)</span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">直播道具ID</label>
+                                                <div class="col-sm-6">
+                                                    <input type="text" name="prop_id" class="form-control" value="{$info.prop_id|default=''}" placeholder="" /><span style="color: red;">(如果“商品分类”选择“直播道具”，则请填写直播道具ID，否则不填。)</span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">全价兑换价格</label>
+                                                <div class="col-sm-6">
+                                                    <input type="text" name="full_price" class="form-control" value="{$info.full_price|default=''}" placeholder="全价兑换价格" />
+                                                    <span style="color: red;">(注:当直播道具类型为:升级经验时 可以不必填写)</span>
+                                                </div>
+                                            </div>
+                                            <!--<div class="form-group">-->
+                                            <!--<label class="col-sm-2 control-label">图片</label>-->
+                                            <!--<div class="col-sm-6">-->
+                                            <!--<input type="file" id="upload_picture">-->
+                                            <!--<input type="hidden" name="cover_id" id="cover_id" value="{$info.cover_id|default=0}"/>-->
+                                            <!--<div id="shop-pic">-->
+                                            <!--<notempty name="info.picurl">-->
+                                            <!--<img src="{$info.picurl}" class="img-thumbnail" style="height:100px;"/>-->
+                                            <!--</notempty>-->
+                                            <!--</div>-->
+                                            <!--</div>-->
+                                            <!--</div>-->
+                                            <div class="form-group">
+                                                <div class="col-sm-offset-2 col-sm-10">
+                                                    <button class="btn btn-primary ajax-post" id="basicsnext" type="button" target-form="form-horizontal">下一步</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="shopimages">
+                                            <div class="add-share">
+                                                <div id="uploader">
+                                                    <div class="queueList">
+                                                        <div id="dndArea" class="placeholder">
+                                                            <div id="filePicker"></div>
+                                                            <p>单次最多可选5张</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="statusBar" style="display:none">
+                                                        <div class="progress">
+                                                            <span class="text">0%</span>
+                                                            <span class="percentage"></span>
+                                                        </div>
+                                                        <div class="info">
+
+                                                        </div>
+                                                        <div class="btns">
+                                                            <div id="filePicker2"></div>
+                                                            <div class="uploadBtn">开始上传</div>
+                                                        </div>
+                                                        <input type="hidden" name="cover_id" id="cover_id" value="{$info.cover_id|default=0}" />
+                                                    </div>
+                                                </div>
+
+                                                <div class="add-btnes">
+                                                    <input name="pid" type="hidden" value="{$Think.get.pid}">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group" style="height: 200px; margin-left: 100px;" id="shopuploader">
+                                                <div class="col-sm-offset-2 col-sm-10" style="margin-left: 0px;">
+                                                    <notempty name="info.picurl">
+                                                        <ul class="filelist" style="margin-bottom: 50px;">
+                                                            <volist name="info.picarrimages" id="vo1">
+                                                                <input type="hidden" value="{$vo1[1]}" imageorder1="imageorder{$vo1[1]}" imageorder="{$vo1[0]}" name="pic[]" />
+                                                            </volist>
+                                                            <volist name="info.picurl" id="vo1">
+                                                                <li style="height: 150px;float: left; width:110px; margin-right: 15px;" id="WU_FILE_{$vo1[0]}">
+                                                                    <p class="imgWrap"><img src="{$vo1[1]}" style="height: 110px; width:110px;" />
+                                                                    </p>
+                                                                    <!--<div class="form-group">-->
+                                                                    <p style="margin-top: 5px;">
+                                                                        <span style="float: left;line-height: 27px;">排序</span>
+                                                                        <input type="text" name="txtImageOrder[]" style="width: 60px;line-height: 27px;height: 27px;" class="form-control" value="{$info['picarrimages'][$key][0]}" placeholder="排序">
+                                                                    </p>
+                                                                    <!--</div>-->
+                                                                    <div class="file-panel" style="height: 30px;width:110px;">
+                                                                        <span class="cancel" name="spancancel">删除</span>
+                                                                        <input type="hidden" value="{$info['picarrimages'][$key][0]}" name="hidorder" />
+                                                                        <input type="hidden" value="{$info['picarrimages'][$key][1]}" name="hidimage" />
+                                                                    </div>
+                                                                </li>
+                                                            </volist>
+                                                        </ul>
+                                                    </notempty>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-sm-offset-2 col-sm-10">
+                                                    <button class="btn btn-primary ajax-post" id="shopimagespre" type="button" target-form="form-horizontal">上一步</button>
+                                                    <button class="btn btn-primary ajax-post" id="shopimagesnext" type="button" target-form="form-horizontal">下一步</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="shopdetail">
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label" style="width: 100px;">详情</label>
+                                                <div class="col-sm-10">
+                                                    <js href="__STATIC__/ueditor/ueditor.config.js" />
+                                                    <js href="__STATIC__/ueditor/ueditor.all.js" />
+                                                    <script id="container" name="content" style="width:100%;height:500px;" type="text/plain">{$info.content|htmlspecialchars_decode|stripslashes}</script>
+                                                    <script type="text/javascript">
+                                                        var ue = UE.getEditor('container', {
+                                                            serverUrl: '{:U("Ueditor/Index")}',
+                                                            UEDITOR_HOME_URL: '__STATIC__/ueditor/',
+                                                        });
+                                                    </script>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <div class="col-sm-offset-2 col-sm-10">
+                                                    <button class="btn btn-primary ajax-post" id="shopdetailpre" type="button" target-form="form-horizontal">上一步</button>
+                                                    <button class="btn btn-primary ajax-post" id="shopdetailnext" type="button" target-form="form-horizontal">下一步</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="tab-pane" id="shoppkconfig">
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">PK设置</label>
+                                                <div class="col-sm-6">
+                                                    <label class="checkbox-inline"><input class="icheck" type="checkbox" value="1" name="pkset[]" <if condition="check_document_pkconfig($info['pkset'],1)">checked="checked"</if>/> 普通摸金</label>
+                                                    <label class="checkbox-inline"><input class="icheck" type="checkbox" value="2" name="pkset[]" <if condition="check_document_pkconfig($info['pkset'],2)">checked="checked"</if>/> PK专区</label>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">创建系统房间</label>
+                                                <div class="col-sm-6">
+                                                    <label class="checkbox-inline">	<input class="iradio" type="radio" value="1" <if condition="check_document_iscreatehouse($info['iscreatehouse'],1)">checked="checked"</if> name="iscreatehouse" />是</label>
+                                                    <!--<label class="checkbox-inline">	<input class="iradio" type="radio" value="0" <if condition="check_document_iscreatehouse($info['iscreatehouse'],0)">checked="checked"</if> name="iscreatehouse" />否</label>-->
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <div style="margin-right: 20%;float: right;">
+                                                    <button class="btn" type="button" id="btnpkconfigadd">添 加</button>
+                                                </div>
+                                            </div>
+                                            <div class="form-group" style="width: 100%;">
+                                                <div style="margin-left: 10%;">
+                                                    <table style="width:80%;">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>人数</th>
+                                                                <th>金额（元）</th>
+                                                                <th>人次/每人</th>
+                                                                <th>夺宝库存</th>
+                                                                <th>操作</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="tbodyinfo">
+                                                            <volist name="pkconfiginfo" id="vo">
+                                                                <tr>
+                                                                    <td style="display: none;"><input type="hidden" name="pkconfigid[]" value="{$vo.id}" /></td>
+                                                                    <td>
+                                                                        <input type="text" name="peoplenum[]" class="form-control" style="width:100px;" value="{$vo['peoplenum']}" />
+                                                                    </td>
+                                                                    <td><input type="text" name="amount[]" class="form-control" style="width:100px;" value="{$vo['amount']}" onblur="pkconfigkeyup(this)" /></td>
+                                                                    <td style="text-align: center;vertical-align: middle;" name="tdamountpeoplenum">{$vo['amount']/$vo['peoplenum']}</td>
+                                                                    <td><input type="text" name="inventory[]" class="form-control" style="width:100px;" value="{$vo['inventory']}" /></td>
+                                                                    <td style="text-align: center;vertical-align: middle;"><a name="btnpkconfigremove" data-pkconfigid="{$vo.id}" onclick="pkconfiginforemove(this)" style="cursor: pointer;">删除</a></td>
+                                                                </tr>
+                                                            </volist>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-sm-offset-2 col-sm-10">
+                                                    <button class="btn btn-primary ajax-post" id="shoppkconfigpre" type="button" target-form="form-horizontal">上一步</button>
+                                                    <button class="btn btn-primary ajax-post" id="shoppkconfignext" type="button" target-form="form-horizontal">下一步</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="tab-pane" id="senior">
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">商品关键字</label>
+                                                <div class="col-sm-6">
+                                                    <input name="keywords" type="text" class="form-control" value="{$info.keywords|default=''}" placeholder="SEO 关键字">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">简单描述</label>
+                                                <div class="col-sm-6">
+                                                    <input name="description" type="text" class="form-control" value="{$info.description|default=''}" placeholder="SEO 描述">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">商品人气</label>
+                                                <div class="col-sm-6">
+                                                    <input type="text" name="hits" class="form-control" value="{$info.hits|default=0}" />
+                                                </div>
+                                            </div>
+                                            <!--<div class="form-group">-->
+                                            <!--<label class="col-sm-2 control-label">购买价格</label>-->
+                                            <!--<div class="col-sm-6">-->
+                                            <!--<input type="text" name="buy_price" class="form-control" value="{$info.buy_price|default=''}" placeholder="购买价格"/>-->
+                                            <!--</div>-->
+                                            <!--</div>-->
+                                            <!-- <div class="form-group">
+                                                <label class="col-sm-2 control-label">购买链接</label>
+                                                <div class="col-sm-6">
+                                                    <input name="buy_url" type="text" class="form-control" value="{$info.buy_url|default=''}" placeholder="购买链接">
+                                                </div>
+                                            </div> -->
+                                            <!--<div class="form-group">-->
+                                            <!--<label class="col-sm-2 control-label">创建时间</label>-->
+                                            <!--<div class="col-sm-6">-->
+                                            <!--<div class="input-group date datetime" data-min-view="2" data-date-format="yyyy-mm-dd">-->
+                                            <!--<input type="text" name="create_time" class="form-control" value="{$info.create_time|time_format=###,'Y-m-d'}"/>-->
+                                            <!--<span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>-->
+                                            <!--</div>-->
+                                            <!--</div>-->
+                                            <!--</div>-->
+                                            <!-- <div class="form-group">
+                                                <label class="col-sm-2 control-label">可见性</label>
+                                                <div class="col-sm-6">
+                                                    <select class="form-control" name="display">
+											<option value="1">可见</option>
+											<option value="0">不可见</option>
+										</select>
+                                                </div>
+                                            </div> -->
+                                            <div class="form-group">
+                                                <div class="col-sm-offset-2 col-sm-10">
+                                                    <button class="btn btn-primary ajax-post" id="seniorpre" type="button" target-form="form-horizontal">上一步</button>
+                                                    <button class="btn btn-primary ajax-post" type="submit" target-form="form-horizontal">提 交</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" name="id" value="{$info.id|default=''}">
+                                        <input type="hidden" name="pkconfigremoveids" value="">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</block>
+<block name="script">
+    <js href="__JS__/behaviour/weixin.js" />
+    <js href="__JS__/jquery.icheck/icheck.min.js" />
+    <!--<js href="__JS__/bootstrap.datetimepicker/js/bootstrap-datetimepicker.min.js" />-->
+    <!--<js href="__JS__/bootstrap.datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" />-->
+    <!--<js href="__STATIC__/uploadify/jquery.uploadify.min.js" />-->
+
+    <!--<script src="{$web_tplpath}js/jquery.min.js"></script>-->
+    <!--<js href="__STATIC__/layer/layer.js"/>-->
+    <js href="__STATIC__/jquery.numeric.js" />
+    <script type="text/javascript" src="__STATIC__/dist/webuploader.js?refresh=<?= time() ?>"></script>
+    <script type="text/javascript" src="__STATIC__/shopupload.js?refresh=<?= time() ?>"></script>
+
+    <!--<js href="__STATIC__/dist/webuploader.js"/>
+	<js href="__STATIC__/shopupload.js"/>-->
+    <!--[if lt IE 9]>
+	<script src="{$web_tplpath}js/jquery.pseudo.js"></script>
+	<![endif]-->
+    <script type="text/javascript">
+        function pkconfiginforemove(obj) {
+            $(obj).parent().parent().remove();
+            var pkconfigid = $(obj).data('pkconfigid');
+            var pkconfigremoveids = $('input[name=pkconfigremoveids]').val();
+            if (pkconfigremoveids != "" && pkconfigremoveids != undefined) {
+                pkconfigid += "," + pkconfigremoveids;
+            }
+            $('input[name=pkconfigremoveids]').val(pkconfigid);
+        }
+
+        function pkconfigkeyup(obj) {
+            var num = $(obj).parent().prev().find('input').val();
+            if (num == "" || num < 0) {
+                alert("请先输入人数");
+                $(obj).parent().prev().find('input').val(1);
+                num = 1;
+            }
+            var amount = $(obj).val();
+            var m = parseInt(amount) / parseInt(num);
+            var ex = /^\d+$/;
+            if (!ex.test(m)) {
+                alert("金额除以人数必须为整数！");
+                $(obj).val(num * 2);
+                m = 2;
+            }
+            var ten = $('select[name=ten]').find(':selected').data('unit');
+            var n = m / (+ten);
+            $(obj).parent().next().html(n);
+        }
+
+        var pkconfiginfo = {
+            add: function() {
+                $('input[name="peoplenum[]"]').numeric(false);
+                $('input[name="amount[]"]').numeric(false);
+                $('input[name="inventory[]"]').numeric(false);
+
+                $('#btnpkconfigadd').on('click', function() {
+                    var tag = true;
+                    $.each($('input[name="peoplenum[]"]'), function(index, element) {
+                        if ($(this).val() == "") {
+                            alert("请把人数文本框都填写完再添加！");
+                            tag = false;
+                            return false;
+                        }
+                    });
+                    if (!tag) {
+                        return false;
+                    }
+                    $.each($('input[name="amount[]"]'), function(index, element) {
+                        if ($(this).val() == "") {
+                            alert("请把金额文本框都填写完再添加！");
+                            tag = false;
+                            return false;
+                        }
+                    });
+                    if (!tag) {
+                        return false;
+                    }
+                    $.each($('input[name="inventory[]"]'), function(index, element) {
+                        if ($(this).val() == "") {
+                            alert("请把夺宝库存文本框都填写完再添加！");
+                            tag = false;
+                            return false;
+                        }
+                    });
+                    if (!tag) {
+                        return false;
+                    }
+
+                    var tr = '<tr style="height: 49px;line-height: 49px;text-align: center;vertical-align: middle;">' +
+                        '<td style="text-align: center;vertical-align: middle;padding: 0 0 0 7px;">' +
+                        '<input type="text" name="peoplenum[]" class="form-control" style="width:100px;" value="" />' +
+                        '</td>' +
+                        '<td style="text-align: center;vertical-align: middle;padding: 0 0 0 7px;"><input type="text" name="amount[]" class="form-control" style="width:100px;" value="" onblur="pkconfigkeyup(this)"/></td>' +
+                        '<td style="text-align: center;vertical-align: middle;padding: 0 0 0 7px;"></td>' +
+                        '<td style="text-align: center;vertical-align: middle;padding: 0 0 0 7px;"><input type="text" name="inventory[]" class="form-control" style="width:100px;" value="" /></td>' +
+                        '<td style="text-align: center;vertical-align: middle;padding: 0 0 0 7px;" ><a name="btnpkconfigremove" onclick="pkconfiginforemove(this)" style="cursor: pointer;">删除</a></td>' +
+                        '</tr>';
+                    $("#tbodyinfo").append(tr);
+
+                    $('input[name="peoplenum[]"]').numeric(false);
+                    $('input[name="amount[]"]').numeric(false);
+                    $('input[name="inventory[]"]').numeric(false);
+                });
+            }
+        };
+
+        var edit = {
+            deleteImage: function() {
+                $('span[name=spancancel]').on('click', function() {
+                    var pic = $(this).nextAll('input[name=hidimage]').val();
+                    var picorder = $(this).nextAll('input[name=hidorder]').val();
+                    $("#shopuploader").find('input[imageorder1="imageorder' + pic + '"]').remove();
+                    $(this).parents('#WU_FILE_' + picorder).remove();
+                });
+            },
+            shopNameLimitChar: function() {
+                $("input[name=name]").on('keyup', function() {
+                    var lth = $(this).val().length;
+                    if (lth > 40) {
+                        $(this).val($(this).val().substr(0, 40));
+                    }
+                });
+            },
+            shopsubtitleLimitChar: function() {
+                $("input[name=shopsubtitle]").on('keyup', function() {
+                    var lth = $(this).val().length;
+                    if (lth > 255) {
+                        $(this).val($(this).val().substr(0, 255));
+                    }
+                });
+            },
+            txtNumeric: function() {
+                $("input[name=buy_price]").numeric(false);
+                $("input[name=price]").numeric(false);
+                $("input[name=shopstock]").numeric(false);
+            }
+        }
+
+        $(document).ready(function() {
+            highlight_subnav('{:U('Shop/add')}');
+            pkconfiginfo.add();
+
+            edit.deleteImage();
+            edit.shopNameLimitChar();
+            edit.shopsubtitleLimitChar();
+            edit.txtNumeric();
+
+            //			$(".datetime").datetimepicker({autoclose: true,language: 'zh-CN'});
+            $('.icheck').iCheck({
+                checkboxClass: 'icheckbox_square-blue checkbox',
+                radioClass: 'iradio_square-blue'
+            });
+
+            setValue('fictitious', '{$info.fictitious}');
+            setValue('display', '{$info.display}');
+            setValue('shopinterval', '{$info.shopinterval}');
+            setValue('prop_type', '{$info.prop_type}');
+            highlight_subnav('{:U('
+                Shop / add ')}');
+
+            //			$("#upload_picture").uploadify({
+            //				"height"          : 35,
+            //				"swf"             : "__STATIC__/uploadify/uploadify.swf",
+            //				"fileObjName"     : "download",
+            //				"buttonClass"     :  "btn btn-success fa fa-upload no-padding",
+            //				"buttonText"      : " 上传图片",
+            //				"uploader"        : "{:U('File/uploadPicture',array('session_id'=>session_id()))}",
+            //				"width"           : 100,
+            //				'removeTimeout'	  : 1,
+            //				'fileTypeExts'	  : '*.jpg; *.png; *.gif;',
+            //				"onUploadSuccess" : uploadPicture,
+            //				'onFallback' : function() {
+            //					alert('未检测到兼容版本的Flash.');
+            //				}
+            //			});
+            //			function uploadPicture(file, data){
+            //				var data = $.parseJSON(data);
+            //				var src = '';
+            //				if(data.status){
+            //					$("#cover_id").val(data.id);
+            //					src = data.url || '__ROOT__' + data.path
+            //					$("#shop-pic").html(
+            //						'<img src="__ROOT__' + src + '" class="img-thumbnail" style="height:100px;"/>'
+            //					);
+            //				} else {
+            //					layer.msg(data.info, {icon: 2});
+            //				}
+            //			}
+
+            showTab();
+
+            $.each($('td[name="tdamountpeoplenum"]'), function(index, element) {
+                var t = $(this).html();
+                if (t != "" && t != undefined) {
+                    var ten = $('select[name=ten]').find(':selected').data('unit');
+                    var n = t / (+ten);
+                    $(this).html(n);
+                }
+            });
+        });
+
+        function showTab() {
+
+            
+            $("#shopimagespre").on('click', function() {
+                //获取<a>标签对象
+                var a = document.getElementById("abasics");
+                //指定<a>标签的href
+                a.href = "#basics";
+                //取消<a>标签原先的onclick事件,使<a>标签点击后通过href跳转(因为无法用js跳转)^-^
+                a.setAttribute("onclick", '');
+                //激发标签点击事件OVER
+                a.click("return false");
+            });
+
+            $("#shopimagesnext").on('click', function() {
+                //获取<a>标签对象
+                var a = document.getElementById("ashopdetail");
+                //指定<a>标签的href
+                a.href = "#shopdetail";
+                //取消<a>标签原先的onclick事件,使<a>标签点击后通过href跳转(因为无法用js跳转)^-^
+                a.setAttribute("onclick", '');
+                //激发标签点击事件OVER
+                a.click("return false");
+            });
+            $("#shopdetailpre").on('click', function() {
+                 //获取<a>标签对象
+                var a = document.getElementById("ashopimages");
+                //指定<a>标签的href
+                a.href = "#shopimages";
+                //取消<a>标签原先的onclick事件,使<a>标签点击后通过href跳转(因为无法用js跳转)^-^
+                a.setAttribute("onclick", '');
+                //激发标签点击事件OVER
+                a.click("return false");
+            });
+            $("#shopdetailnext").on('click', function() {
+                //获取<a>标签对象
+                var a = document.getElementById("asenior");
+                //指定<a>标签的href
+                a.href = "#senior";
+                //取消<a>标签原先的onclick事件,使<a>标签点击后通过href跳转(因为无法用js跳转)^-^
+                a.setAttribute("onclick", '');
+                //激发标签点击事件OVER
+                a.click("return false");
+            });
+
+            $("#basicsnext").on('click', function() {
+                //获取<a>标签对象
+                var a = document.getElementById("ashopimages");
+                //指定<a>标签的href
+                a.href = "#shopimages";
+                //取消<a>标签原先的onclick事件,使<a>标签点击后通过href跳转(因为无法用js跳转)^-^
+                a.setAttribute("onclick", '');
+                //激发标签点击事件OVER
+                a.click("return false");
+            });
+
+            $("#seniorpre").on('click', function() {
+                //获取<a>标签对象
+                var a = document.getElementById("ashopdetail");
+                //指定<a>标签的href
+                a.href = "#shopdetail";
+                //取消<a>标签原先的onclick事件,使<a>标签点击后通过href跳转(因为无法用js跳转)^-^
+                a.setAttribute("onclick", '');
+                //激发标签点击事件OVER
+                a.click("return false");
+            });
+        }
+    </script>
+</block>

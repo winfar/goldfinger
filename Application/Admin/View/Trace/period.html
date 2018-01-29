@@ -1,0 +1,225 @@
+<extend name="Public/base" />
+
+<block name="style">
+	<style>
+
+	</style>
+</block>
+<block name="body">
+	<div>
+		<div class="page-head">
+			<h2>追溯管理 - 商品周期</h2>
+		</div>
+		<div class="cl-mcont">
+			<div class="row">
+				<div class="col-md-12">
+					<form class="shop-form form-inline" method="post" action="{:U()}">
+						<div class="block-flat">
+							<!--<div class="pull-right">
+                                <a class="btn btn-success" href="{:U('redenvelopedetails')}"><i class="fa fa-plus-square"></i> 红包生成</a>
+                            </div>-->
+							<div class="header">
+								<h3 class="hthin">{$meta_title}</h3>
+							</div>
+							<div class="content">
+								<div class="col-sm-12">
+									<div class="form-group col-sm-4">
+										<label class="" for="keyword">周期id</label>
+										<input type="text" name="keyword" id="keyword" class="form-control" placeholder="按周期id搜索" value="{$Think.get.keyword|default=''}"
+											onkeypress="if(event.keyCode==13) {search.click();return false;} " />
+									</div>
+									<div class="form-group">
+										<button type="button" id="search" url="{:U()}" class="btn btn-success">查询</button>
+									</div>
+								</div>
+								<div class="clearfix" style="margin-bottom: 20px;"></div>
+								<div class="col-sm-12 panel panel-default table-responsive">
+									<table class="table no-border blue">
+										<thead class="no-border">
+											<tr>
+												<th style="width:auto;">商品名称</th>
+												<th style="width:auto;">商品价格</th>
+												<th style="width:auto;">商品专区</th>
+												<th style="width:auto;">pid</th>
+												<th style="width:auto;">创建时间</th>
+												<th style="width:auto;">结束时间</th>
+												<th style="width:auto;">是否开奖</th>
+												<th style="width:auto;">人次</th>
+												<th style="width:auto;">期号</th>
+												<th style="width:auto;">开奖时间</th>
+												<th style="width:auto;">用户id</th>
+												<th style="width:auto;">奖号</th>
+												<th style="width:auto;">时时彩奖号</th>
+												<th style="width:auto;">时时彩期号</th>
+												<th style="width:auto;">虚拟卡号</th>
+												<th style="width:auto;">是否兑换</th>
+											</tr>
+										</thead>
+										<tbody class="no-border-y">
+											<tr>
+												<td>{$_period['name']}</td>
+												<td>{$_period['price']}</td>
+												<td>{$_period['title']}</td>
+												<td>{$_period['id']}</td>
+												<td>{$_period['create_time']|time_formats=###,"Y-m-d H:i:s"}</td>
+												<td>{$_period['end_time']/1000|time_formats=###,"Y-m-d H:i:s"}</td>
+												<td>{$_period['state']}</td>
+												<td>{$_period['number']}</td>
+												<td>{$_period['no']}</td>
+												<td>{$_period['kaijang_time']|time_formats=###,"Y-m-d H:i:s"}</td>
+												<td>{$_period['uid']}</td>
+												<td>{$_period['kaijang_num']}</td>
+												<td>{$_period['kaijiang_ssc']}</td>
+												<td>{$_period['kaijiang_issue']}</td>
+												<td>{$_period['card_id']}</td>
+												<td>{$_period['status_gold']}</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div class="col-sm-7 panel panel-default">
+                                    <div style="border-bottom: 2px solid #ddd; padding: 5px;" class="text-center">总人次：？ 金币总数：？现金总数：？合计：？</div>
+									<div class="table-responsive">
+										<table class="table no-border blue">
+											<thead class="no-border">
+												<tr>
+													<th style="width:auto;">id</th>
+													<th style="width:auto;">订单号</th>
+													<!--<th style="width:auto;">支付流水号</th>-->
+													<th style="width:auto;">uid</th>
+													<!--<th style="width:auto;">pid</th>-->
+													<th style="width:auto;">订单时间</th>
+													<th style="width:auto;">人次</th>
+													<th style="width:auto;">类型</th>
+													<th style="width:auto;">金币</th>
+													<th style="width:auto;">现金</th>
+													<th style="width:auto;">结果</th>
+												</tr>
+											</thead>
+											<notempty name="_orderlist">
+												<tbody class="no-border-y">
+													<volist name="_orderlist" id="orderlist">
+														<tr>
+															<td>{$orderlist['id']}</td>
+															<td>{$orderlist['order_id']}</td>
+															<!--<td>{$orderlist['prepay_id']}</td>-->
+															<td>{$orderlist['uid']}</td>
+															<!--<td>{$orderlist['pid']}</td>-->
+															<td>{$orderlist['create_time']|time_formats=###,"Y-m-d H:i:s"}</td>
+															<td>{$orderlist['number']}</td>
+															<td>{$orderlist['type']}</td>
+															<td>{$orderlist['gold']}</td>
+															<td>{$orderlist['cash']}</td>
+															<td>{$orderlist['code']}</td>
+														</tr>
+													</volist>
+												</tbody>
+												<else/>
+												<td colspan="6"> aOh! 暂时还没有内容! </td>
+											</notempty>
+										</table>
+									</div>
+									<!--<div class="content col-lg-12 pull-left">
+                                        <div class="panel-footer text-center">
+                                            <div class="page">{$_page}</div>
+                                        </div>
+                                    </div>-->
+								</div>
+								<div class="col-sm-5 panel panel-default">
+                                    <div style="border-bottom: 2px solid #ddd; padding: 5px;" class="text-center">总人次：？ 金币总数：？现金总数：？合计：？</div>
+									<div class="table-responsive">
+										<table class="table no-border blue">
+											<thead class="no-border">
+												<tr>
+													<th style="width:auto;">id</th>
+													<th style="width:auto;">订单号</th>
+													<th style="width:auto;">uid</th>
+													<!--<th style="width:auto;">pid</th>-->
+													<th style="width:auto;">创建时间</th>
+													<th style="width:auto;">人次</th>
+													<th style="width:auto;">奖号</th>
+												</tr>
+											</thead>
+											<notempty name="_orderlist">
+												<tbody class="no-border-y">
+													<volist name="_recordlist" id="recordlist">
+														<tr>
+															<td>{$recordlist['id']}</td>
+															<td>{$recordlist['order_id']}</td>
+															<td>{$recordlist['uid']}</td>
+															<!--<td>{$recordlist['pid']}</td>-->
+															<td>{$recordlist['create_time']/1000|time_formats=###,"Y-m-d H:i:s"}</td>
+															<td>{$recordlist['number']}</td>
+															<td>
+																<a data-toggle="modal" href="javascript:;" data-target=".{$recordlist['id']}">查看...</a>
+
+																<div class="modal fade {$recordlist['id']}" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+																	<div class="modal-dialog modal-lg">
+																		<div class="modal-content">
+																			<div class="modal-header">
+																				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+																				<h4 class="modal-title" id="myModalLabel">购买号码</h4>
+																			</div>
+																			<div class="modal-body">
+																				<div style="word-break:break-all">
+																					{$recordlist['num']}
+																				</div>
+																			</div>
+																			<div class="modal-footer">
+																				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+																				<!--<button type="button" class="btn btn-primary">Save changes</button>-->
+																			</div>
+																		</div>
+																	</div>
+																</div>
+															</td>
+														</tr>
+													</volist>
+												</tbody>
+												<else/>
+												<td colspan="6"> aOh! 暂时还没有内容! </td>
+											</notempty>
+										</table>
+									</div>
+								</div>
+								<div class="clearfix"></div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</block>
+<block name="script">
+	<script type="text/javascript">
+        $(document).ready(function() {
+            highlight_subnav("{:U('Trace/period')}");
+
+            // $(".starttime").datetimepicker({
+            //     autoclose: true,
+            //     language: 'zh-CN'
+            // });
+            // $(".endtime").datetimepicker({
+            //     autoclose: true,
+            //     language: 'zh-CN'
+            // });
+
+            // $(".lottery_btn").on('click',function(){
+            //     $(this).next("div").show().siblings(".lottery_numbers").hide();
+            // });
+
+            //搜索功能
+            $("#search").click(function () {
+            	var url = $(this).attr('url');
+                //var category= $('#category').val();
+            	var keyword= $('input[name=keyword]').val();
+            	//var starttime= $('input[name=starttime]').val();
+            	//var endtime= $('input[name=endtime]').val();
+            	var query="keyword/"+keyword;
+            	url += '/' + query;
+            	window.location.href = url;
+            });
+        });
+    </script>
+</block>

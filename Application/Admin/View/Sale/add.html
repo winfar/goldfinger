@@ -1,0 +1,179 @@
+<extend name="Public/base" />
+<block name="style">
+</block>
+<block name="body">
+    <div>
+        <div class="page-head">
+            <h2>促销管理—添加促销活动</h2>
+        </div>
+        <div class="cl-mcont">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="block-flat">
+                        <div class="header">
+                            <h3 class="hthin">{$meta_title}</h3>
+                        </div>
+                        <div class="content">
+                            <div class="tab-container">
+                                <form id="defaultForm" action="{:U()}" class="form-horizontal" method="post">
+                                    <input type="hidden" name="id" value="{$info.id|default=''}">
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">活动名称 <span class="text-danger">*</span></label>
+                                        <div class="col-xs-4">
+                                            <input type="text" name="name" class="form-control" value="{$info.name|default=''}" placeholder="活动名称" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">开始时间 <span class="text-danger">*</span></label>
+                                        <div class="col-xs-4">
+                                            <input type="text" name="begin_time" class="form-control starttime" value="{$info.begin_time|default=time()|date='Y-m-d H:i',###}" placeholder="开始时间" />
+                                            <!--<span class="form-control-static btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>-->
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">结束时间 <span class="text-danger">*</span></label>
+                                        <div class="col-xs-4">
+                                            <input type="text" name="end_time" class="form-control endtime" value="{$info.end_time|default=time()+24*60*60*30|date='Y-m-d H:i',###}" placeholder="结束时间" />
+                                            <!--<span class="form-control-static btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>-->
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">活动类型</label>
+                                        <div class="col-xs-4">
+                                            <select class="form-control" id="type" name="type" onchange="">
+                                            <volist name=":getSaleArr()" id="vo">
+                                                <option value="{$vo.type}" <if condition="$info.type eq $vo['type']">selected</if>>{$vo.name}</option>
+                                            </volist> 
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">活动范围</label>
+                                        <div class="col-xs-4">
+                                            <select class="form-control" id="range" name="range" onchange="">
+                                            <volist name=":getSaleRangeArr()" id="vo">
+                                                <option value="{$vo.type}" <if condition="$info.range eq $vo['type']">selected</if>>{$vo.name}</option>
+                                            </volist>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">分类/品牌/商品 id集合(注册不必填写)</label>
+                                        <div class="col-xs-4">
+                                            <textarea name="range_ids" class="range_ids" rows="3" cols="70">{$info.range_ids|default=''}</textarea>
+                                            (分类/品牌/商品的id集合以逗号分隔,比如:9,10)
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">红包(满减不用选择)</label>
+                                        <div class="col-xs-4">
+                                            <volist name="red_list" id="red">
+                                                <input type="checkbox" name="red[]" class="red" value="{$red['id']}" <php>if(in_array($red['id'],$info['range_array'])){echo 'checked="checked"'; }</php>>{$red['name']}
+                                            </volist>
+                                        </div>
+                                    </div>
+                                     <div class="form-group">
+                                        <label class="col-xs-2 control-label">金额下限/优惠金额/赠送金币/赠送积分<span class="text-danger">*</span></label>
+                                        <div class="col-xs-4">
+                                            <textarea name="remark" class="remark" rows="3" cols="70">{$info.remark_content|default=''}</textarea>
+                                            (1.满减时: 金额下限和优惠金额必须填上 规则:单个时候-金额下限/优惠金额,多个时候:金额下限/优惠金额,金额下限/优惠金额<br>
+                                            2.满赠时: 金额下限,赠送金币和赠送积分必须填上 规则:单个时候-金额下限/赠送金币/赠送积分,多个时候:金额下限/赠送金币/赠送积分,金额下限/赠送金币/赠送积分<br>
+                                            3.注册时: 赠送金币和赠送积分必须填上 规则:赠送金币/赠送积分 只有单个没有多个)
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-2 col-sm-10">
+                                            <button class="btn btn-primary" type="submit" target-form="form-horizontal">提 交
+                                            </button>
+                                            <button class="btn btn-primary" type="button" id="btnRefresh" style="margin-left: 30px;" target-form="form-horizontal">重 置
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script type="text/javascript">
+        $(document).ready(function() {
+            highlight_subnav("{:U('Sale/add')}");
+
+            $('#btnRefresh').click(function() {
+                $('form')[0].reset();
+            });
+
+            $(".starttime").datetimepicker({
+                autoclose: true,
+                language: 'zh-CN'
+            });
+            $(".endtime").datetimepicker({
+                autoclose: true,
+                language: 'zh-CN'
+            });
+
+            $('#defaultForm').bootstrapValidator({
+                message: 'This value is not valid',
+                /*输入框不同状态，显示图片的样式*/
+                feedbackIcons: {
+                    valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                },
+                /*验证*/
+                fields: {
+                    /*键名username和input name值对应*/
+                    name: {
+                        message: 'The username is not valid',
+                        validators: {
+                            notEmpty: { /*非空提示*/
+                                message: '红包名称不能为空'
+                            },
+                            stringLength: { /*长度提示*/
+                                min: 1,
+                                max: 50,
+                                message: '长度必须在1到50之间'
+                            }
+                        }
+                    },
+                    begin_time: {
+                        message: 'The begin_time is not valid',
+                        validators: {
+                            notEmpty: {
+                                message: '开始时间不能为空'
+                            },
+                            regexp: {
+                                regexp: /^\d{4}-\d{2}-\d{2}|\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}$/,
+                                message: '时间格式不匹配'
+                            }
+                        }
+                    },
+                    end_time: {
+                        message: 'The end_time is not valid',
+                        validators: {
+                            notEmpty: {
+                                message: '结束时间不能为空'
+                            },
+                            regexp: {
+                                regexp: /^\d{4}-\d{2}-\d{2}|\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}$/,
+                                message: '时间格式不匹配'
+                            }
+                        }
+                    },
+                    remark: {
+                        message: 'The remark is not valid',
+                        validators: {
+                            notEmpty: {
+                                message: '金额下限/优惠金额/赠送金币/赠送积分不能为空'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</block>

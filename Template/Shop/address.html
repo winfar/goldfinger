@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <include file="{$web_tplpath}head.html" />
+    <style type="text/css">
+    .cb_con h1{
+        background: none;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="address clearfix">
+        <form>
+            <div class="add_list"><label for="name">*姓名</label><span><input id="nickname" type="text" value="{$info.nickname}" placeholder="请填写收货人" /></span></div>
+            <div class="add_list"><label for="phone">*号码</label><span><input id="tel" type="text" value="{$info.tel}" placeholder="请填写手机号码" /></span></div>
+            <div class="add_list"><label for="addr">*地址</label><span><textarea id="address"  value="" placeholder="请填写详细地址" style="resize:none">{$info.address}</textarea></span></div>
+            <div class="add_list"><label for="mail">&nbsp;邮箱</label><span><input id="email" type="text" value="{$info.email}" placeholder="请填写有效邮箱" /></span></div>
+        </form>
+    </div>
+    <div class="submit"><input type="button" class="submit_address" value="保存" /></div>
+    <div class="tips_box" style="display: none;">
+      <div class="tpb_con">
+        <!-- <h1 class="none"><span class="dis_none">X</span></h1> -->
+        <p class="content"></p>
+      </div>
+    </div>
+</body>
+<block name="script">
+    <script type="text/javascript">
+    $(function(){
+        $('.submit_address').on("click", function(){
+            var url = "{:U('addressedit')}";
+            var uid = "{$uid}";
+            var nickname = $('#nickname').val();//姓名
+            var tel = $('#tel').val();//号码
+            var address = $('#address').val();//地址
+            var email = $('#email').val();//地址
+            var pid = "{:I('pid')}";
+            var cid = "{:I('cid')}";
+            var html = "";
+            if (nickname=="") {
+                html += "请填写收货人</span>";
+                setTimeout(function(){$(".tips_box").hide()}, 1000);
+                $('.content').html(html);
+                $('.tips_box').show();
+            } else if (tel=="") {
+                html += "请填写手机号码";
+                setTimeout(function(){$(".tips_box").hide()}, 1000);
+                $('.content').html(html);
+                $('.tips_box').show();
+            } else if (address=="") {
+                html += "请填写详细地址";
+                setTimeout(function(){$(".tips_box").hide()}, 1000);
+                $('.content').html(html);
+                $('.tips_box').show();
+            } else {
+                $.post(
+                    url,
+                    {
+                        uid:uid,
+                        nickname : nickname,
+                        tel : tel,
+                        address : address,
+                        email : email,
+                        pid :pid
+                    },
+                    function(data) {
+                        if (data.code==200) {
+                            html += data.msg;
+                            $('.content').html(html);
+                            $('.none').hide();
+                            $('.tips_box').show(); 
+                            setTimeout(function(){$(".tips_box").hide()}, 1000);
+                            setTimeout(function(){window.location="{:U('draw')}"}, 2000);
+                        } else {
+                            html += data.msg;
+                            setTimeout(function(){$(".tips_box").hide()}, 1000);
+                            $('.content').html(html);
+                            $('.tips_box').show(); 
+                        }
+                    },
+                    'json'
+                );
+            }
+            
+        });
+    });
+
+    </script>
+</block>    
+</html>

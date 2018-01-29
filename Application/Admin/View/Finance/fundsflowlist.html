@@ -1,0 +1,294 @@
+<extend name="Public/base"/>
+<block name="style">
+	<css href="__JS__/jquery.icheck/skins/square/blue.css"/>
+	<css href="__JS__/bootstrap.datetimepicker/css/bootstrap-datetimepicker.min.css" />
+	<style type="text/css">
+		.col-sm-3{
+			width:185px;
+		}
+		.blue {
+            table-layout:fixed;
+        }
+        .blue  td {
+            word-wrap:break-word;
+        }
+	</style>
+</block>
+<block name="body">
+	<div>
+		<div class="page-head">
+			<h2>实时资金流水</h2>
+		</div>
+		<div class="cl-mcont">
+			<div class="row">
+				<div class="col-md-12">
+					<form class="shop-form" method="get" action="{:U('fundsflowlist')}">
+					<div class="block-flat">
+						<div class="header">
+							<h3 class="hthin">{$meta_title}</h3>
+						</div>
+						<div class="content">
+							<div class="col-sm-12">
+								<label class="pull-left control-label">开始日期</br><a style="color:green">(支付时间)</a></label>
+								<div class="col-sm-3">
+									<div class="input-group date starttime" data-min-view="2" data-date-format="yyyy-mm-dd">
+										<input type="text" name="starttime" class="form-control" value=""/>
+										<!--<input type="text" name="starttime" class="form-control" value="{$Think.post.starttime|default=time_format(NOW_TIME-24*60*60*30,'Y-m-d')}"/>-->
+										<span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-remove" ></span></span>
+										<span class="input-group-addon btn btn-primary"> <span class="glyphicon glyphicon-th"></span></span>
+
+									</div>
+								</div>
+								<label class="pull-left control-label">结束日期</br><a style="color:green">(支付时间)</a></label>
+								<div class="col-sm-3" >
+									<div class="input-group date endtime" data-min-view="2" data-date-format="yyyy-mm-dd">
+										<input type="text" name="endtime" class="form-control" value=""/>
+										<span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-remove" ></span></span>
+										<span class="input-group-addon btn btn-primary" ><span class="glyphicon glyphicon-th"></span></span>
+									</div>
+								</div>
+								<label class="pull-left control-label">开始日期</br><a style="color:red">(开奖时间)</a></label>
+									<div class="col-sm-3">
+										<div class="input-group date kstarttime" data-min-view="2" data-date-format="yyyy-mm-dd">
+											<input type="text" name="kstarttime" class="form-control" value=""/>
+											<span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-remove" ></span></span>
+											<span class="input-group-addon btn btn-primary"> <span class="glyphicon glyphicon-th"></span></span>
+
+										</div>
+									</div>
+									<label class="pull-left control-label">结束日期</br><a style="color:red">(开奖时间)</a></label>
+									<div class="col-sm-3" >
+										<div class="input-group date kendtime" data-min-view="2" data-date-format="yyyy-mm-dd">
+											<input type="text" name="kendtime" class="form-control" value=""/>
+											<span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-remove" ></span></span>
+											<span class="input-group-addon btn btn-primary" ><span class="glyphicon glyphicon-th"></span></span>
+										</div>
+									</div>
+							</div>
+							<div class="col-sm-12">
+								<label class="pull-left control-label">商品名称&nbsp&nbsp</label>
+								<div class="col-sm-3">
+									<input type="text" name="keywordshop" class="form-control" >
+								</div>
+								 <label class="pull-left control-label">&nbsp;活动状态&nbsp;&nbsp;</label>
+								<div class="col-sm-3" >
+									<select class="form-control" name="state" >
+										<option value="">所有状态</option>
+										<option value="0">进行中</option>
+										<option value="1">开奖中</option>
+										<option value="2">已开奖</option>
+										<option value="3">已下架</option>
+										<option value="4">已取消</option>
+									</select>
+								</div>
+								<empty name = "channelId">
+                                        <label class="pull-left control-label">所属渠道 &nbsp;</label>
+                                        <div class="col-sm-3" >
+                                            <select class="form-control" name="channel" >
+                                                <option value="">所有渠道</option>
+                                                <notempty name="channelList">
+                                                    <volist name="channelList" id="channel">
+                                                        <option value="{$channel.id}">{$channel.channel_name}</option>
+                                                    </volist>
+                                                </notempty>
+                                                
+                                            </select>
+                                        </div>
+                                    </empty>
+								<label class="pull-left control-label">支付流水号</label>
+								<div class="col-sm-3">
+									<input type="text" name="orderid" class="form-control">
+								</div>
+								</div>
+							<div  class="col-sm-12" style="margin-top: 10px;">
+								<label class="pull-left control-label"> 用  &nbsp;户 ID&nbsp;&nbsp;</label>
+								<div class="col-sm-3">
+									<input type="text" name="uid" class="form-control">
+								</div>	
+								<div class="col-sm-3" >
+									<button type="button" id="search"
+											url="{:U('fundsflowlist')}" class="btn btn-success">
+										搜索
+									</button>
+								
+									<button type="button"   url="{:U('exportActiveFundsflow')}"  class="btn btn-success" id="btnExport">导出Excel</button>
+								</div>
+							</div>
+						</div>
+							<table class="no-border blue">
+								
+								<thead class="no-border">
+								<tr>
+									<td colspan="12">共:  {$total_info.total_number}  条记录,用户购买总数量:  {$total_info.all_number}g,总支付{:C("WEB_CURRENCY")}:{$total_info.total}</td>
+  								</tr>
+								<tr>
+									<th style="width:5%">期号</th>
+									<th style="width:8%">ID-渠道</th>
+									<th style="width:8%">订单号</th>
+									<th style="width:5%;">用户ID</th>
+									<th style="width:8%">用户名</th>
+									<th style="width:6%;">购买数量/mg</th>
+									<th style="width:8%;color:blue;">总参与{:C("WEB_CURRENCY")}</th>
+									<th style="width:8%;">实时金价</th>
+									<th style="width:8%;">活动状态</th>
+									<th style="width:6%;">开奖时间</th>
+									<th style="width:8%;">参与时间</th>
+									<th style="width:5%;">操作</th>
+  								</tr>
+
+								</thead>
+								<notempty name="list">
+									<tbody class="no-border-y">
+									<volist name="list" id="vo">
+										<tr>
+											<td>{$vo.period_no}</td>
+											<td>{$vo.channel_id}-{$vo.channel_name}</td>
+											<td>{$vo.pay_order_id}</td>
+											<td>{$vo.user_id}</td>
+											<td>{$vo.username}</td>
+											<td>{$vo.number}</td>
+											<td style="color:blue;"><empty name="vo.pay_total" >0<else/> {$vo.pay_total}</empty></td>
+											<td>{$vo.gold_price}</td>
+											<td>{:get_state($vo['state'])}</td>
+											<td><empty name="vo.kaijang_time" > ---<else/> {$vo.kaijang_time|date="Y-m-d H:i:s",###}</empty></td>
+											<td>{$vo.order_time|date="Y-m-d H:i:s",###}</td>											
+											<td>
+												<!-- Modal -->
+                                              <div class="modal fade" id="myModals{$vo['order_id']}" tabindex="-1" role="dialog" aria-labelledby="myModalLabels{$vo['order_id']}">
+                                                  <div class="modal-dialog" role="document">
+                                                      <div class="modal-content" style="margin-top: 45%;">
+                                                          <div class="modal-header">
+                                                              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                              <!--<h4 class="modal-title" id="myModalLabels">购买号码ttt</h4>-->
+                                                          </div>
+                                                          <div class="modal-body">
+                                                              {$vo['numbersinfo']}
+                                                          </div>
+                                                          <div class="modal-footer">
+                                                              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                              </div>
+
+                                                <a href="#"  data-toggle="modal" data-target="#myModals{$vo['order_id']}">查看</a></td>										
+										</tr>
+									</volist>
+									</tbody>
+									<else/>
+									<td colspan="4"> aOh! 暂时还没有内容! </td>
+								</notempty>
+							</table>
+							<div class="content col-lg-12 pull-left">
+								<div class="panel-foot text-center">
+									<div class="page">{$_page}</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</block>
+<block name="script">
+	<js href="__JS__/jquery.icheck/icheck.min.js"/>
+	<js href="__JS__/bootstrap.datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" />
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$(".starttime").datetimepicker({autoclose: true,language: 'zh-CN'});
+			$(".endtime").datetimepicker({autoclose: true,language: 'zh-CN'});
+			$(".kstarttime").datetimepicker({autoclose: true,language: 'zh-CN'});
+			$(".kendtime").datetimepicker({autoclose: true,language: 'zh-CN'});
+			highlight_subnav('{:U('Finance/fundsflowlist')}');
+			//搜索功能
+			$("#search").click(function () {
+				var url = $(this).attr('url');
+				var keywordshop=  $('input[name=keywordshop]').val();//商品名称
+				var state=  $("select[name=state]").val();//活动状态
+				var starttime=  $('input[name=starttime]').val();//支付时间开始时间
+				var endtime=    $('input[name=endtime]').val();//支付时间结束时间
+				var kstarttime=  $('input[name=kstarttime]').val();//开奖时间开始时间
+				var kendtime=    $('input[name=kendtime]').val();//开奖时间结束时间
+				var channel=  $("select[name=channel]").val();//兑换类型
+				var uid=  $('input[name=uid]').val();//用户id
+				var orderid=  $('input[name=orderid]').val();//支付流水号
+				var   query="/keywordshop/"+keywordshop+"/state/"+state+"/pay_platform/"+"/starttime/"+starttime+"/endtime/"+endtime+"/kstarttime/"+kstarttime+"/kendtime/"+kendtime+"/channel/"+channel+"/orderid/"+orderid+"/uid/"+uid;
+				url += '/' + query;
+				window.location.href = url;
+			});
+
+			//导出功能
+			$("#btnExport").click(function () {
+				var url = $(this).attr('url');
+				var keywordshop=  $('input[name=keywordshop]').val();//商品名称
+				var state=  $("select[name=state]").val();//活动状态
+				var starttime=  $('input[name=starttime]').val();//支付时间开始时间
+				var endtime=    $('input[name=endtime]').val();//支付时间结束时间
+				var kstarttime=  $('input[name=kstarttime]').val();//开奖时间开始时间
+				var kendtime=    $('input[name=kendtime]').val();//开奖时间结束时间
+				var channel=  $("select[name=channel]").val();//兑换类型
+				var uid=  $('input[name=uid]').val();//用户id
+				var orderid=  $('input[name=orderid]').val();//支付流水号
+				var query="/keywordshop/"+keywordshop+"/state/"+state+"/pay_platform/"+"/starttime/"+starttime+"/endtime/"+endtime+"/kstarttime/"+kstarttime+"/kendtime/"+kendtime+"/channel/"+channel+"/orderid/"+orderid+"/uid/"+uid;
+				url += '/' + query;
+				window.location.href = url;
+			});
+			fundsflowIndx.conditionarr();
+
+		});
+
+		var fundsflowIndx = {
+			conditionarr: function () {
+				var span='<span class="caret"></span>';
+				var conditionarr =  JSON.parse('{$conditionarr}');
+				//商品名称
+				var keywordshop=conditionarr['keywordshop'];
+				if(keywordshop!=undefined){
+					$('input[name=keywordshop]').val(keywordshop);
+				}
+				//活动状态
+				var state=conditionarr['state'];
+				if(state!=undefined){
+					$("select[name=state]").val(conditionarr['state']);
+				}
+				//支付时间开始时间
+				var starttime=conditionarr['starttime'];
+				if(starttime!=undefined){
+					$('input[name=starttime]').val(starttime);
+				}
+				//支付时间结束时间
+				var endtime=conditionarr['endtime'];
+				if(endtime!=undefined){
+					$('input[name=endtime]').val( endtime);
+				}
+				//开奖时间开始时间
+				var kstarttime=conditionarr['kstarttime'];
+				if(kstarttime!=undefined){
+					$('input[name=kstarttime]').val(kstarttime);
+				}
+				//开奖时间结束时间
+				var kendtime=conditionarr['kendtime'];
+				if(kendtime!=undefined){
+					$('input[name=kendtime]').val( kendtime);
+				}
+				//兑换类型
+				var channel=conditionarr['channel'];
+				if(channel!=undefined){
+					$("select[name=channel]").val(channel);
+				}
+				//支付流水号
+				var orderid=conditionarr['orderid'];
+				if(orderid!=undefined){
+					$('input[name=orderid]').val(orderid);
+				}
+				//用户id
+				var uid=conditionarr['uid'];
+				if(uid!=undefined){
+					$('input[name=uid]').val(uid);
+				}
+			}
+		}
+	</script>
+</block>

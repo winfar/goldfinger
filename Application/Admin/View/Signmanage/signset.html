@@ -1,0 +1,289 @@
+<extend name="Public/base"/>
+<block name="style">
+    <css href="__JS__/jquery.icheck/skins/square/blue.css"/>
+    <css href="__JS__/bootstrap.datetimepicker/css/bootstrap-datetimepicker.min.css" />
+    <style type="text/css">
+        .col-sm-3{
+            width:185px;
+        }
+    </style>
+</block>
+
+<block name="body">
+    <div>
+        <div class="page-head">
+            <h2>签到管理— —签到配置</h2>
+        </div>
+        <div class="cl-mcont">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="block-flat">
+                        <form class="form-horizontal"  method="post" action="{:U('Signmanage/addSign')}">
+                            <div class="tab-content">
+                                <div class="header">
+                                    <h3 class="hthin">{$meta_title}</h3>
+                                </div>
+                                <div class="content">
+                                    <div style="float: left;width: 100%;margin-bottom: 15px;">
+                                        <label class="pull-left control-label">签到状态</label>
+                                        <div class="btn-group col-sm-2">
+                                            <label class="btn  active">
+                                                <input type="radio" id="state1" name="status" autocomplete="off" value="1"  <eq name="status.status" value="1"> checked </eq> /> 启用
+                                            </label>
+                                            <label class="btn active">
+                                                <input type="radio" id="state0" name="status" autocomplete="off" value="0"  <eq name="status.status" value="0"> checked </eq>  /> 禁用
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div style="float: left;width: 100%;margin-bottom: 15px;">
+                                        <label class="pull-left control-label">签到周期</label>
+                                        <div class="btn-group col-sm-2">
+                                            <label class="btn  active">
+                                                <input type="radio" id="state2" name="status1" autocomplete="off" value="1" <eq name="type" value=""> checked </eq> /> 日常签到
+                                            </label>
+                                            <label class="btn active">
+                                                <input type="radio" id="state3" name="status1" autocomplete="off" value="0"  <eq name="type" value="1"> checked </eq> />活动签到
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div style="display: <eq name="type" value=""> none </eq>;margin-bottom: 15px;" id="divTime">
+                                        <label class="pull-left control-label">开始日期</label>
+                                        <div class="col-sm-3">
+                                            <div class="input-group date starttime" data-min-view="2" data-date-format="yyyy-mm-dd">
+                                                <input readonly="readonly" type="text" name="begintime" id="begintime" class="form-control" value='{$status.begintime|time_format=###,"Y-m-d"}'/>
+                                                <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                            </div>
+                                        </div>
+                                        <label class="pull-left control-label">结束日期</label>
+                                        <div class="col-sm-3" >
+                                            <div class="input-group date endtime" data-min-view="2" data-date-format="yyyy-mm-dd">
+                                                <input readonly="readonly" type="text" name="endtime" id="endtime" class="form-control" value='{$status.endtime|time_format=###,"Y-m-d"}'/>
+                                                <span class="input-group-addon btn btn-primary" ><span class="glyphicon glyphicon-th"></span></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="float: right;width: 100%;">
+                                        <div  class="pull-right">
+                                            <a data-placement="right" data-toggle="tooltip" data-original-title="添加" id="addSign"  class="btn btn-success " href="#" ><i class="fa fa-plus-square"></i>添加</a>
+                                        </div>
+                                    </div>
+
+                                    <table class="no-border blue">
+                                        <thead class="no-border">
+                                        <tr>
+                                            <th style="width:10%;">天数</th>
+                                            <th style="width:10%;">积分</th>
+                                            <th style="width:10%;">金币</th>
+                                            <th style="width:10%;">商品</th>
+                                            <th style="width:10%;">红包</th>
+                                            <th style="text-align:center;">操作</th>
+                                        </tr>
+                                        </thead>
+                                        <notempty name="_list">
+                                            <tbody class="no-border-y" id="tbodyinfo">
+                                            <volist name="_list" id="vo">
+                                                <tr>
+                                                    <td><span id="" name="rate[]"  data-day="{$key+1}" > 第{$key+1}天</span></td>
+                                                    <td><input id="point{$key}" name="rate1[]" value="{$vo['point']}" > </input></td>
+                                                    <td><input id="gold{$key}" name="rate2[]" value="{$vo['gold']}"  > </input></td>
+                                                    <td><input id="shop{$key}" name="rate3[]" value="{$vo['shop']}"  > </input></td>
+                                                    <td><input id="hongbao{$key}" name="rate4[]" value="{$vo['hongbao']}"  > </input></td>
+                                                    <td style="text-align: center;vertical-align: middle;padding: 0 0 0 7px;" ><a name="btnpkconfigremove" data-signsetid="{$vo['id']}" onclick="pkconfiginforemove(this)" style="cursor: pointer;">删除</a></td>
+                                                    <td style="display: none;"><input type="hidden" name="signmanageid[]" value="{$vo.id}" /></td>
+                                                </tr>
+                                            </volist>
+                                            </tbody>
+                                            <else/>
+                                            <td colspan="3"> aOh! 暂时还没有内容!</td>
+                                        </notempty>
+                                    </table>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-10">
+                                        <button class="btn btn-primary ajax-post" type="submit" target-form="form-horizontal">提 交</button>
+                                    </div>
+                                </div>
+                                 <!--   <div class="content col-lg-12 pull-left">
+                                        <div class="panel-foot text-center">
+                                            <div class="page">{$_page}</div>
+                                        </div>
+                                    </div>-->
+                                    <div class="col-sm-offset-2 col-sm-2 pull-right">
+                                    </div>
+                                    <div class="clearfix"></div>
+                                   <input type="hidden" name="signsetidremoveids" value="">
+                                </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </block>
+</block>
+<block name="script">
+    <js href="__JS__/jquery.icheck/icheck.min.js"/>
+    <js href="__JS__/bootstrap.datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" />
+    <js href="__STATIC__/jquery.numeric.js" />
+    <script type="text/javascript">
+        function pkconfiginforemove(obj){
+            $(obj).parent().parent().nextAll('tr').each(function(){
+                var day=   $(this).find("td:first").find('span').data('day');
+                var tempday=+day-1;
+                $(this).find("td:first").find('span').data('day',tempday);
+                $(this).find("td:first").find('span').html('第'+tempday+'天');
+            });
+
+            $(obj).parent().parent().remove();
+
+            var pkconfigid=$(obj).data('signsetid');
+            var pkconfigremoveids=	$('input[name=signsetidremoveids]').val();
+            if(pkconfigremoveids!=""&&pkconfigremoveids!=undefined){
+                pkconfigid+=","+pkconfigremoveids;
+            }
+            $('input[name=signsetidremoveids]').val(pkconfigid);
+        }
+
+        $(document).ready(function () {
+            $(".starttime").datetimepicker({autoclose: true,language: 'zh-CN'});
+            $(".endtime").datetimepicker({autoclose: true,language: 'zh-CN'});
+
+            highlight_subnav("{:U('Signmanage/signset')}");
+
+            $("#state2").click(function(){
+                var  url = "{:U('signset')}"+'/type/' ;
+                location.href=url;
+            });
+
+            $("#state3").click(function(){
+                var  url = "{:U('signset')}"+'/type/1' ;
+                location.href=url;
+            });
+
+            signSet.saveSet();
+            signSet.removeSet();
+            signSet.addSet();
+            signSet.txtNumeric();
+        });
+
+        var signSet={
+            saveSet:function(){
+                $('a[name=btnsaveinfo]').click(function () {
+                    //设置对应savebtn的url
+                    var id=$(this).data('signid');
+                    var key = $(this).data('signkey');
+                    var point = $("#point"+key).val();
+                    var gold = $("#gold"+key).val();
+                    var shop = $("#shop"+key).val();
+                    var hongbao = $("#hongbao"+key).val();
+                    var begintime=$('#begintime').val();
+                    var endtime=$('#endtime').val();
+
+                    var status1= $('input[name=status1]:checked').val();
+                    var status=$("input[name=status]:checked").val();
+
+                    var url = "admin.php?s=/Signmanage/signSave/id/"+id+"/point/"
+                            +point+"/gold/"+gold+"/shop/"+shop+"/hongbao/"
+                            +hongbao+"/type/"+status1+"/begintime/"+begintime
+                            +"/endtime/"+endtime+"/status/"+status;
+//debugger;
+//                    window.location.href=url;
+                    $.get( "{:U('signSave')}", {
+                        id:id,
+                        point:point,
+                        gold:gold,
+                        shop:shop,
+                        hongbao:hongbao,
+                        type:status1,
+                        begintime:begintime,
+                        endtime:endtime,
+                        status:status
+                        },
+                            function(data){
+//                            alert("Data Loaded: " + data);
+                            });
+
+                            });
+            },
+            removeSet:function(){
+                $('a[name=btnremoveinfo]').click(function () {
+                    var id=$(this).data('signid');
+                    var  status1= $('input[name=status1]:checked').val();
+                    var   url = "admin.php?s=/Signmanage/signRemove/id/"+id+"/type/"+status1;
+
+                    $.get(url, {  },
+                            function(data){
+//                            alert("Data Loaded: " + data);
+                            });
+                    window.location.reload();
+                });
+            },
+            addSet: function () {
+                $('input[name="rate1[]"]').numeric(false);
+                $('input[name="rate2[]"]').numeric(false);
+
+                $('#addSign').click(function () {
+                    var tag=true;
+                    $.each($('input[name="rate1[]"]'),function (index,element) {
+                        if($(this).val()==""){
+                            alert("请把积分文本框都填写完再添加！");
+                            tag=false;
+                            return false;
+                        }
+                    });
+                    if(!tag){
+                        return false;
+                    }
+//                    $.each($('input[name="rate2[]"]'),function (index,element) {
+//                        if($(this).val()==""){
+//                            alert("请把金额文本框都填写完再添加！");
+//                            tag=false;
+//                            return false;
+//                        }
+//                    });
+//                    if(!tag){
+//                        return false;
+//                    }
+//                    $.each($('input[name="rate3[]"]'),function (index,element) {
+//                        if($(this).val()==""){
+//                            alert("请把商品文本框都填写完再添加！");
+//                            tag=false;
+//                            return false;
+//                        }
+//                    });
+//                    if(!tag){
+//                        return false;
+//                    }
+
+                    var day=$("#tbodyinfo").find("tr:last").find("td:first").find('span').data('day');
+
+                    var tr='<tr style="height: 49px;line-height: 49px;vertical-align: middle;">'+
+                            '<td style="padding: 0 0 0 7px;"><span id="" name="rate[]"  data-day="'+(+day+1)+'" >第'+
+                            (+day+1)+
+                            '天</span></td>'+
+                            '<td style="text-align: center;vertical-align: middle;padding: 0 0 0 7px;">'+
+                            '<input type="text" name="rate1[]" class="form-control" style="width:116px;height: 27px;" value="" />'+
+                            '</td>'+
+                            '<td style="text-align: center;vertical-align: middle;padding: 0 0 0 7px;"><input type="text" name="rate2[]" class="form-control" style="width:116px;height: 27px;" value="" onblur="pkconfigkeyup(this)"/></td>'+
+                            '<td style="text-align: center;vertical-align: middle;padding: 0 0 0 7px;"><input type="text" name="rate3[]" class="form-control" style="width:116px;height: 27px;" value="" /></td>'+
+                            '<td style="text-align: center;vertical-align: middle;padding: 0 0 0 7px;"><input type="text" name="rate4[]" class="form-control" style="width:116px;height: 27px;" value="" /></td>'+
+                            '<td style="text-align: center;vertical-align: middle;padding: 0 0 0 7px;" ><a name="btnpkconfigremove" onclick="pkconfiginforemove(this)" style="cursor: pointer;">删除</a></td>'+
+                            '</tr>';
+                    $("#tbodyinfo").append(tr);
+
+                    $('input[name="rate1[]"]').numeric(false);
+                    $('input[name="rate2[]"]').numeric(false);
+//                    $('input[name="rate3[]"]').numeric(false);
+                    $('input[name="rate4[]"]').numeric(false);
+                });
+            },
+            txtNumeric: function () {
+                $("input[name='rate1[]']").numeric(false);
+                $("input[name='rate2[]']").numeric(false);
+
+                $("input[name='rate1[]'],input[name='rate2[]']").focus(function(){
+                    $(this).select();
+                });
+            }
+        }
+    </script>
+</block>

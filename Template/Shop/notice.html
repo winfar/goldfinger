@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <include file="{$web_tplpath}head.html" />
+</head>
+<body>
+
+<div class="wrap">		
+		
+	<div class="notice">
+		<ul class="notice_list">
+		<ul>
+	</div>
+
+</div>
+<div class="loading" style="display: none;"></div>
+<script>
+	$(function(){
+		getdata();
+	});
+	//获取数据
+    function getdata() {
+        var url = "{:U('ajaxnotice')}";
+        $.ajax(
+           {
+              type:"POST",//通常会用到两种：GET,POST。默认是：GET
+              url:url,//(默认: 当前页地址) 发送请求的地址
+              data:{},
+              dataType:"json",//预期服务器返回的数据类型。
+              beforeSend:function(){
+                $(".loading").show();
+              }, //发送请求
+              success:function(data) {
+                $(".loading").hide();
+                var html = '';
+                if (data != "") {
+                    for (var i in data ) {
+                    	html += '<li>';
+            					html += '<h1><span>'+data[i].title+'</span><i>'+data[i].msg_date+'</i></h1>';
+            					html += '<p>'+data[i].content+'</p>';
+            					html += '</li>';
+                    }
+                	   $('.notice_list').html(html);
+
+                } else {
+	                html += '<div class="record_none">';
+	                html += '<div class="rn_con">还没有消息喔</div>';
+	                // html += '<div class="submit"><a href="{:U('index')}"><input type="button" value="立即参与" /></a></div>';
+	                html += '</div>';
+	                $('.notice_list').html(html);
+	                $('html,body').animate({scrollTop: '0px'}, 0);
+	            }
+         
+                                   
+              }
+           });
+    }
+    function formatDate(now) { 
+      var year=now.getYear(); 
+      var month=now.getMonth()+1; 
+      var date=now.getDate(); 
+      var hour=now.getHours(); 
+      var minute=now.getMinutes(); 
+      var second=now.getSeconds(); 
+      return year+"."+month+"."+date; 
+    } 
+</script>
+
+</body>
+</html>

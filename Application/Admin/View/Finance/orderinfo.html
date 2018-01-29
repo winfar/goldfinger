@@ -1,0 +1,265 @@
+<extend name="Public/base" />
+<block name="style">
+    <css href="__JS__/jquery.icheck/skins/square/blue.css" />
+    <css href="__JS__/bootstrap.datetimepicker/css/bootstrap-datetimepicker.min.css" />
+    <style type="text/css">
+        .col-sm-3 {
+            width: 185px;
+        }
+        
+        .divtitle {
+            /*border: 1px;*/
+            background-color: #a09f9f;
+            /*width: 50%;
+            margin-left: 25%;*/
+            /*height: 35px;*/
+            font-size: 20px;
+            /*line-height: 35px;*/
+            color: black;
+        }
+        table th{
+            color: #3078EF;
+        }
+    </style>
+</block>
+
+<block name="body">
+    <div>
+        <div class="page-head">
+            <h2>{$meta_title}</h2>
+        </div>
+        <div class="cl-mcont">
+            <div class="row">
+                <div class="col-md-12">
+                    <div style="text-align: center;">
+                        <!--<div class="divtitle">基本信息
+                        </div>-->
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th colspan="4" class="divtitle">基本信息</th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width:10%;">订单号</th>
+                                        <th style="width:20%;">{$orderdetail['order_id']}</th>
+                                        <th style="width:10%;">物流状态</th>
+                                        <th style="width:20%;">{:get_order_status($orderdetail['order_status'])}</th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width:10%;">会员名称</th>
+                                        <th style="width:20%;">{$orderdetail['nickname']}</th>
+                                        <th style="width:10%;">联系电话</th>
+                                        <th style="width:20%;"><empty name="orderdetail['tel']">
+                                                {$orderdetail['phone']}
+                                                <else /> {$orderdetail['tel']}
+                                            </empty></th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width:10%;">兑换类型</th>
+                                        <th style="width:20%;">
+                                            夺宝
+                                        </th>
+                                        <th style="width:10%;">提取时间</th>
+                                        <th style="width:20%;">{$orderdetail['create_time']|time_format=###,"Y-m-d H:i:s"}</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 25px;" class="address">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th colspan="4" class="divtitle">收货人信息</th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width:10%;">收货人姓名</th>
+                                        <th style="width:20%;">{$orderdetail['contacts']}</th>
+                                        <th style="width:10%;">联系电话</th>
+                                        <th style="width:20%;">
+                                            <empty name="orderdetail['tel']">
+                                                {$orderdetail['phone']}
+                                                <else /> {$orderdetail['tel']}
+                                            </empty>
+                                            <!--{$orderdetail['phone']=='' ? $orderdetail['user']['phone'] : '-'}-->
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width:10%;">收货地址</th>
+                                        <th style="width:20%;">{$orderdetail['address']}</th>
+                                        <th style="width:10%;">邮箱</th>
+                                        <th style="width:20%;">{$orderdetail['email']}</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <form class="shop-form" method="post" action="{:U('cashadd')}">
+                        <div style="text-align: center; margin-top: 25px;" class="address1">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="4" class="divtitle">收货人信息</th>
+                                        </tr>
+                                        <tr>
+                                            <th style="width:10%;">收货人姓名</th>
+                                            <th style="width:20%;"><input type="text" name="contacts" value="{$orderdetail['contacts']}" class="form-control"></th>
+                                            <th style="width:10%;">联系电话</th>
+                                            <th style="width:20%;">
+                                                <input type="text" name="phone" value="<empty name="orderdetail['tel']">{$orderdetail['phone']}<else /> {$orderdetail['tel']}</empty>" class="form-control"></th>
+                                        </tr>
+                                        <tr>
+                                            <th style="width:10%;">收货地址</th>
+                                            <th style="width:20%;"><input type="text" name="address" value="{$orderdetail['address']}" class="form-control"></th>
+                                            <th style="width:10%;">邮箱</th>
+                                            <th style="width:20%;"><input type="text" name="email" value="{$orderdetail['email']}" class="form-control"></th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                        <div style="text-align: center;margin-top: 25px;">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="9" class="divtitle">商品信息</th>
+                                        </tr>
+                                        <tr>
+                                            <th style="width:20%;">商品名称</th>
+                                            <th style="width:10%;">渠道ID</th>
+                                            <th style="width:10%;">渠道名称</th>
+                                            <th style="width:8%;">实时金价（元）</th>
+                                            <th style="width:8%;">提取数量</th>
+                                            <th style="width:8%;">手续费（{:C("WEB_CURRENCY")}）</th>
+                                            </notempty>
+                                        </tr>
+                                        <tr>
+                                            <th>{$orderdetail['shop_name']}</th>
+                                            <th>{$orderdetail['channel_id']}</th>
+                                            <th>{$orderdetail['channel_name']}</th>
+                                            <th>{$orderdetail['gold_price']}</th>
+
+                                            <th>{$orderdetail['number']}</th>
+                                            <th>{$orderdetail['total']}</th>
+                                        </tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+                        </div>
+                        <div style="text-align: center;margin-top: 25px;">
+                            <div id="divdetail" class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="4" class="divtitle">物流采购信息</th>
+                                        </tr>
+                                        <tr>
+                                            <th>采购单号</th>
+                                            <th>{$orderdetail['purchaseno']} </th>
+                                            <th>供应商名称</th>
+                                            <th>{$orderdetail['suppliername']}</th>
+                                        </tr>
+                                        <tr>
+                                            <th>采购金额</th>
+                                            <th>{$orderdetail['purchasecash']} </th>
+                                            <th>采购订单状态</th>
+                                            <th>
+                                                {:purchaseorderstatus($orderdetail['purchaseorderstatus'])}
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th>物流名称</th>
+                                            <th>
+                                                {$orderdetail['express_name']}
+                                            </th>
+                                            <th>物流单号</th>
+                                            <th>
+                                                {$orderdetail['express_no']}
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th>发货状态</th>
+                                            <th>
+                                                {:get_order_status($orderdetail['order_status'])}
+                                            </th>
+                                            <th>其他费用</th>
+                                            <th>{$orderdetail['other_expenses']}</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <input type="hidden" value="{$orderdetail['id']}" name="oid" />
+                            <div id="divdetail1" class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="4" class="divtitle">物流采购信息</th>
+                                        </tr>
+                                        <tr>
+                                            <th>采购单号</th>
+                                            <th> <input type="text" name="purchaseno" value="{$orderdetail['purchaseno']}" class="form-control"></th>
+                                            <th>供应商名称</th>
+                                            <th><input type="text" name="suppliername" value="{$orderdetail['suppliername']}" class="form-control"></th>
+                                        </tr>
+                                        <tr>
+                                            <th>采购金额</th>
+                                            <th> <input type="text" name="purchasecash" value="{$orderdetail['purchasecash']}" class="form-control"></th>
+                                            <th>采购订单状态</th>
+                                            <th>
+                                                <select class="form-control" name="purchaseorderstatus" style="width: 150px;">
+                                        <option value="1">已采购</option>
+                                        <option value="2">未采购</option>
+                                        </select>
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th>物流名称</th>
+                                            <th> <input type="text" name="express_name" value="{$orderdetail['express_name']}" class="form-control"></th>
+                                            <th>物流单号</th>
+                                            <th><input type="text" name="express_no" value="{$orderdetail['express_no']}" class="form-control"></th>
+                                        </tr>
+                                        <tr>
+                                            <th>发货状态</th>
+                                            <th>
+                                                <select class="form-control" name="order_status" style="width: 150px;">
+                                                <option value="100">未发货</option>
+                                                <option value="101">已发货</option>
+                                                <option value="102">已收货</option>
+                                       </select>
+                                            </th>
+                                            <th>其他费用</th>
+                                            <th> <input type="text" name="other_expenses" value="{$orderdetail['other_expenses']}" class="form-control"></th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                                <div style="text-align: center;margin-top: 25px;">
+                                    <button type="submit" class="btn btn-success">提交</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var dis = '{$display}';
+            $("#divdetail").css('display', dis == 1 ? "block" : "none");
+            $("#divdetail1").css('display', dis == 0 ? "block" : "none");
+            $(".address").css('display', dis == 1 ? "block" : "none");
+            $(".address1").css('display', dis == 0 ? "block" : "none");
+
+            $("select[name=order_status]").val("{$orderdetail['order_status']}");
+            $("select[name=purchaseorderstatus]").val("{$orderdetail['purchaseorderstatus']}");
+        });
+    </script>
+</block>

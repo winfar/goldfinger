@@ -1,0 +1,223 @@
+<extend name="Public/base" />
+<block name="style">
+    <css href="__JS__/jquery.icheck/skins/square/blue.css" />
+    <css href="__JS__/bootstrap.datetimepicker/css/bootstrap-datetimepicker.min.css" />
+    <style type="text/css">
+        .col-sm-3 {
+            width: 185px;
+        }
+        
+        .blue {
+            table-layout: fixed;
+        }
+        
+        .blue td {
+            word-wrap: break-word;
+        }
+    </style>
+</block>
+<block name="body">
+    <div>
+        <div class="page-head">
+            <h2>{$meta_title}</h2>
+        </div>
+        <div class="cl-mcont">
+            <div class="row">
+                <div class="col-md-12">
+                    <form class="shop-form" method="get" action="{:U('fetchcash')}">
+                        <div class="block-flat">
+                            <div class="header">
+                                <h3 class="hthin">{$meta_title}</h3>
+                            </div>
+                            <div class="content">
+                                <div class="col-sm-12">
+                                    <label class="pull-left control-label">开始日期</label>
+                                    <div class="col-sm-3">
+                                        <div class="input-group date starttime" data-min-view="2" data-date-format="yyyy-mm-dd">
+                                            <input type="text" name="starttime" class="form-control" value="" />
+                                            <!--<input type="text" name="starttime" class="form-control" value="{$Think.post.starttime|default=time_format(NOW_TIME-24*60*60*30,'Y-m-d')}"/>-->
+                                            <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-remove" ></span></span>
+                                            <span class="input-group-addon btn btn-primary"> <span class="glyphicon glyphicon-th"></span></span>
+
+                                        </div>
+                                    </div>
+                                    <label class="pull-left control-label">结束日期</label>
+                                    <div class="col-sm-3">
+                                        <div class="input-group date endtime" data-min-view="2" data-date-format="yyyy-mm-dd">
+                                            <input type="text" name="endtime" class="form-control" value="" />
+                                            <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-remove" ></span></span>
+                                            <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                        </div>
+                                    </div>
+                                    <label class="pull-left control-label">用户ID</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" name="keyword" class="form-control">
+                                    </div>
+                                    <label class="pull-left control-label">审核状态</label>
+                                    <div class="col-sm-3">
+                                        <select class="form-control" name="status" style="width: 100px;">
+                                        <option value="">所有状态</option>
+                                        <option value="0">未审核</option>
+                                        <option value="1">审核通过</option>
+                                        <option value="2">审核未通过</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="col-sm-3">
+                                        <button type="button" id="search" url="{:U('fetchcash')}" class="btn btn-success">
+										搜索
+									</button>
+                                        <button type="button" url="{:U('exportFetchCash')}" class="btn btn-success" id="btnExport">导出</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="no-border blue">
+                                <thead class="no-border">
+
+                                    <tr>
+                                        <th style="width:5%">渠道ID</th>
+                                        <th style="width:8%">渠道名称</th>
+                                        <th style="width:5%;">用户ID</th>
+                                        <th style="width:5%">用户名称</th>
+                                        <th style="width:8%;">实时黄金价</th>
+                                        <th style="width:8%;">提现黄金数(mg)</th>
+                                        <th style="width:5%">总金额(元)</th>
+                                        <th style="width:8%;">手续费百分比(%)</th>
+                                        <th style="width:8%;">手续费(元)</th>
+                                        <th style="width:8%;">实际金额(元)</th>
+                                        <th style="width:8%;">申请时间</th>
+                                        <th style="width:8%;">提现方式</th>
+                                        <th style="width:8%;">账号</th>
+                                        <th style="width:5%;">姓名</th>
+                                        <th style="width:5%;">操作</th>
+                                    </tr>
+
+                                </thead>
+                                <notempty name="_list">
+                                    <tbody class="no-border-y">
+                                        <volist name="_list" id="vo">
+                                            <tr>
+                                                <td>{$vo.channel_id}</td>
+                                                <td>{$vo.channel_name}</td>
+                                                <td>{$vo.uid}</td>
+                                                <td>{$vo.nickname}</td>
+                                                <td>{$vo.gold_price}</td>
+                                                <td>{$vo.number}</td>
+                                                <td>{$vo.total_money}</td>
+                                                <td>{$vo.percentage}%</td>
+                                                <td>{$vo.procedures_money}</td>
+                                                <td>{$vo.money}</td>
+                                                <td>{:$vo['create_time']>0 ? date("Y-m-d H:i:s",$vo['create_time']) : ''}</td>
+                                                <td><if condition="$vo['cash_type'] eq 1">支付宝<else />微信</if></td>
+                                                <td>{$vo.cash_account}</td>
+                                                
+                                                <td>{$vo.cash_name}</td>
+                                                <td>
+                                                    <if condition="($vo['state'] eq 0)">
+                                                        <a data-placement="left" data-toggle="tooltip" data-original-title="未审核" class="label label-primary md-trigger" url="{:U('Finance/examine?id='.$vo['id'])}" href="javascript:">未审核</a>
+                                                    <else />
+                                                        <if condition="$vo['state'] eq 1">审核通过<else />审核未通过</if>
+                                                    </if>
+                                                </td>
+                                            </tr>
+                                        </volist>
+                                    </tbody>
+                                    <else/>
+                                    <td colspan="4"> aOh! 暂时还没有内容! </td>
+                                </notempty>
+                            </table>
+                            <div class="content col-lg-12 pull-left">
+                                <div class="panel-foot text-center">
+                                    <div class="page">{$_page}</div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
+</block>
+<block name="script">
+    <js href="__JS__/jquery.icheck/icheck.min.js" />
+    <js href="__JS__/bootstrap.datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" />
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $(".starttime").datetimepicker({
+                autoclose: true,
+                language: 'zh-CN'
+            });
+            $(".endtime").datetimepicker({
+                autoclose: true,
+                language: 'zh-CN'
+            });
+            highlight_subnav("{:U('Finance/fetchcash')}");
+            //搜索功能
+            $("#search").click(function() {
+                var url = $(this).attr('url');
+                var keyword = $('input[name=keyword]').val(); //用户ID/用户名
+                var status = $("select[name=status]").val(); //审核状态
+                var starttime = $('input[name=starttime]').val(); //开始时间
+                var endtime = $('input[name=endtime]').val(); //结束时间
+                var query = "/keyword/" + keyword + "/status/" + status + "/starttime/" + starttime + "/endtime/" + endtime;
+                url += '/' + query;
+                window.location.href = url;
+            });
+
+            //导出功能
+            $("#btnExport").click(function() {
+                var url = $(this).attr('url');
+               var keyword = $('input[name=keyword]').val(); //用户ID/用户名
+                var status = $("select[name=status]").val(); //审核状态
+                var starttime = $('input[name=starttime]').val(); //开始时间
+                var endtime = $('input[name=endtime]').val(); //结束时间
+                var query = "/keyword/" + keyword + "/status/" + status + "/starttime/" + starttime + "/endtime/" + endtime;
+                url += '/' + query;
+                window.location.href = url;
+            });
+            fundsflowIndx.conditionarr();
+
+        });
+
+        var fundsflowIndx = {
+            conditionarr: function() {
+                var span = '<span class="caret"></span>';
+                var conditionarr = JSON.parse('{$conditionarr}');
+                //用户ID
+                var keyword = conditionarr['keyword'];
+                if (keyword != undefined) {
+                    $('input[name=keyword]').val(keyword);
+                }
+                //审核状态
+                var status = conditionarr['status'];
+                if (status != undefined) {
+                    $("select[name=status]").val(status);
+                }
+                //开始时间
+                var starttime = conditionarr['starttime'];
+                if (starttime != undefined) {
+                    $('input[name=starttime]').val(starttime);
+                }
+                //结束时间
+                var endtime = conditionarr['endtime'];
+                if (endtime != undefined) {
+                    $('input[name=endtime]').val(endtime);
+                }
+            }
+        }
+        $(".md-trigger").click(function(){
+             if (target = $(this).attr('url')) {
+                layer.open({
+                    type: 2,
+                    title: false,
+                    closeBtn: false,
+                    area: ['600px', '520px'],
+                    fix: false,
+                    skin: 'layui-layer-nobg',
+                    content: [target,'no']
+                });
+            }
+        });
+    </script>
+</block>

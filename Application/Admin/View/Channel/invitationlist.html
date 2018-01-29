@@ -1,0 +1,102 @@
+<extend name="Public/base" />
+
+<block name="style">
+    <css href="__CSS__/lrtk.css" />
+</block>
+
+<block name="body">
+    <div>
+        <div class="page-head">
+            <h2>渠道管理-邀请码</h2>
+        </div>
+        <div class="cl-mcont">
+            <div class="row">
+                <div class="col-md-12">
+                    <form class="shop-form" method="post" action="{:U('invitationList')}">
+                        <div class="block-flat">
+                            <div class="header">
+                                <h3 class="hthin">{$meta_title}</h3>
+                            </div>
+                            <div class="content">
+                                <div class="col-sm-12">
+                                    <div class="col-sm-4">
+                                        <select class="form-control" id="channel_id" name="channel_id" onchange="" <gt name="data['id']" value="0">disabled="disabled"</gt>  >
+                                            <option value="-1" >==请选择==</option>
+                                            <volist name="channel_list" id="vo">
+                                                <option value="{$vo.id}" <eq name="channel_name['channel_name']" value="$vo['channel_name']">selected="selected"</eq>>{$vo.html}{$vo.channel_name}</option>
+                                            </volist>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button type="button" id="search" url="{:U('Channel/invitationlist')}" class="btn btn-success">查询</button>
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <a class="btn btn-success" href="{:U('invitation')}" ><i class="fa fa-plus-square"></i> 新增邀请码</a>
+                                    </div>
+                                </div>
+                                <div class="pull-right">
+                                    <div style="color:green;">用户总数：{$_totalcount}</div>
+                                </div>
+                                <table class="no-border blue">
+                                    <thead class="no-border">
+                                        <tr>
+                                            <th style="width:15%;">邀请码</th>
+                                            <th style="width:30%;">渠道名称</th>
+                                            <th style="width:15%;">用户数量</th>
+                                            <th style="width:10%;">添加时间</th>
+                                            <th style="width:15%;">二维码</th>
+                                        </tr>
+                                    </thead>
+                                    <notempty name="invitation_list">
+                                        <tbody class="no-border-y">
+                                            <volist name="invitation_list" id="vo">
+                                                <tr>
+                                                    <td>{$vo.id}</td>
+                                                    <td>{$vo.channel_name}</td>
+                                                    <td>{$vo.cnt}</td>
+                                                    <td>{$vo.create_time}</td>
+                                                    <td>
+                                                        <div class="weixin">
+                                                            <img src="Picture/Channel/qr-small.png" width="40" height="40">
+                                                            <div class="xixi">
+                                                                <img src="{$vo.qr_code}" width="150" height="150">
+                                                            </div>
+                                                        </div>
+                                                    </a></td>
+                                                </tr>
+                                            </volist>
+                                        </tbody>
+                                        <else/>
+                                        <td colspan="6"> aOh! 暂时还没有内容! </td>
+                                    </notempty>
+                                </table>
+                                <div class="content col-lg-12 pull-left">
+                                    <div class="panel-footer text-center">
+                                        <div class="page">{$_page}</div>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script type="text/javascript">
+        $(document).ready(function() {
+            highlight_subnav("{:U('Channel/invitationlist')}");
+
+            //搜索功能
+			$("#search").click(function () {
+				var url = $(this).attr('url') + "/channel_id/" + $("#channel_id").val();
+				window.location.href = url;
+			});
+
+            $("#channel_id").val({$channel_id});
+
+        });
+    </script>
+</block>

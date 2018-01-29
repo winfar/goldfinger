@@ -1,0 +1,242 @@
+<extend name="Public/base"/>
+<block name="style">
+	<css href="__JS__/jquery.icheck/skins/square/blue.css"/>
+	<css href="__JS__/bootstrap.datetimepicker/css/bootstrap-datetimepicker.min.css" />
+	<style type="text/css">
+		.col-sm-3{
+			width:185px;
+		}
+	</style>
+</block>
+<block name="body">
+	<div>
+		<div class="page-head">
+			<h2>测试资金流水</h2>
+		</div>
+		<div class="cl-mcont">
+			<div class="row">
+				<div class="col-md-12">
+					<form class="shop-form" method="get" action="{:U('test')}">
+					<div class="block-flat">
+						<div class="header">
+							<h3 class="hthin">{$meta_title}</h3>
+						</div>
+						<div class="content">
+							<div class="col-sm-12">
+								<div style="float: left;width: 100%;">
+									<label class="pull-left control-label">支付方式</label>
+									<div class="col-sm-3" >
+										<select class="form-control" name="pay_platform" style="width: 100px;">
+											<option value="">所有支付方式</option>
+											<volist name="type_list" id="vo">
+												<option value="{$vo.type}">{$vo.name}</option>
+											</volist>
+										</select>
+									</div>
+
+								<label class="pull-left control-label">开始日期</br><a style="color:green">(支付时间)</a></label>
+								<div class="col-sm-3">
+									<div class="input-group date starttime" data-min-view="2" data-date-format="yyyy-mm-dd">
+										<input type="text" name="starttime" class="form-control" value=""/>
+										<span class="input-group-addon btn btn-primary"> <span class="glyphicon glyphicon-th"></span></span>
+
+									</div>
+								</div>
+								<label class="pull-left control-label">结束日期</br><a style="color:green">(支付时间)</a></label>
+								<div class="col-sm-3" >
+									<div class="input-group date endtime" data-min-view="2" data-date-format="yyyy-mm-dd">
+										<input type="text" name="endtime" class="form-control" value=""/>
+										<span class="input-group-addon btn btn-primary" ><span class="glyphicon glyphicon-th"></span></span>
+									</div>
+								</div>
+								</div>
+
+								<div style="float: left;width: 100%;">
+									<label class="pull-left control-label">用户名</label>
+
+									<div class="col-sm-3">
+										<input type="text" name="keyworduser" class="form-control" style="width: 150px;">
+									</div>
+
+									<label class="pull-left control-label">商品名称</label>
+
+									<div class="col-sm-3">
+										<input type="text" name="keywordshop" class="form-control" style="width: 150px;">
+									</div>
+								
+
+									<label class="pull-left control-label">支付流水号</label>
+									<div class="col-sm-3">
+										<input type="text" name="keyword_orderno" class="form-control" style="width: 150px;">
+									</div>
+									</div>
+									<div style="float: left;width: 100%;margin-top: 10px">
+									<div>
+										<button type="button" id="search" url="{:U('test')}" class="btn btn-success">搜索</button>
+										<if condition="$Think.cookie.rolename neq '财务'">
+											<a class="btn btn-success" href="{:U('testinsert')}"><i class="fa fa-plus-square"></i>添加测试资金流水</a>
+											<a class="btn btn-success" href="{:U('testimport')}"><i class="fa fa-plus-square"></i>导入测试资金流水</a>
+											<else /> 
+										</if>
+										<button type="button"   url="{:U('exportTest')}"  class="btn btn-success" id="btnExport">导出Excel</button>
+									</div>
+								</div>
+							</div>
+							<table class="no-border blue">
+								<thead class="no-border">
+								<tr>
+									<th style="width:7%;">支付流水号</th>
+									<th style="width:3%;">用户ID</th>
+									<th style="width:auto;">用户名</th>
+									<th style="width:3%;">商品期号</th>
+									<th style="width:3%;">商品ID</th>
+									<th style="width:auto;">商品名称</th>
+									<th style="width:auto;">实际现金支付金额（单位：元）</th>
+									<th style="width:auto;color:green;">实际金币支付金额</th>
+									<th style="width:auto;color:red;">实际总支付金额（单位：元）</th>
+									<th style="width:auto;">优惠现金金额（单位：元）</th>
+									<th style="width:auto;color:green;">优惠金币金额</th>
+									<th style="width:auto;color:red;">实际总优惠金额（单位：元）</th>
+									<th style="width:auto;">红包id</th>
+									<th style="width:auto;">支付方式</th>
+									<th style="width:10%;">支付时间</th>
+									<if condition="$Think.cookie.rolename neq '财务'">
+										<th style="width:10%;">添加时间</th>
+										<else /> 
+									</if>
+  								</tr>
+
+								</thead>
+								<notempty name="list">
+									<tbody class="no-border-y">
+									<volist name="list" id="vo">
+										<tr>
+											<td style="width:auto;">{$vo.order_no}</td>
+											<td style="width:auto;">{$vo.uid}</td>
+											<td style="width:auto;">{$vo.user_name}</td>
+											<td style="width:auto;">{$vo.no}</td>
+											<td style="width:auto;">{$vo.shop_id}</td>
+											<td style="width:auto;">{$vo.shop_name}</td>
+											<td style="width:auto;">{$vo.cash}</td>
+											<td style="width:auto;">{$vo.gold}</td>
+											<td style="width:auto;">{$vo.total}</td>
+											<td style="width:auto;">{$vo.discount_cash}</td>
+											<td style="width:auto;">{$vo.discount_gold}</td>
+											<td style="width:auto;">{$vo.discount_total}</td>
+											<td style="width:auto;"><notempty name="vo.red_id"><a href="#" class="opiframe" url="{:U('fundsinfo?id='.$vo['red_id'])}">{$vo.red_id}</a></notempty></td>
+											<td>{:get_recharge($vo['type'])}</td>
+											<td style="width:auto;">{$vo.pay_time|date="Y-m-d H:i:s",###}</td>
+											<if condition="$Think.cookie.rolename neq '财务'">
+												<td style="width:auto;">{$vo.create_time|date="Y-m-d H:i:s",###}</td>
+												<else /> 
+											</if>
+										</tr>
+									</volist>
+									</tbody>
+									<else/>
+									<td colspan="4"> aOh! 暂时还没有内容! </td>
+								</notempty>
+							</table>
+							<div class="content col-lg-12 pull-left">
+								<div class="panel-foot text-center">
+									<div class="page">{$_page}</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</block>
+<block name="script">
+	<js href="__JS__/jquery.icheck/icheck.min.js"/>
+	<js href="__JS__/bootstrap.datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" />
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$(".starttime").datetimepicker({autoclose: true,language: 'zh-CN'});
+			$(".endtime").datetimepicker({autoclose: true,language: 'zh-CN'});
+			highlight_subnav('{:U('Finance/test')}');
+
+
+			$('.opiframe').click(function () {
+                layer.open({
+                    type: 2,
+                    title: '红包详情',
+                    shadeClose: true,
+                    maxmin: false, //开启最大化最小化按钮
+                    area: ['850px', '610px'],
+                    content: [$(this).attr('url'), 'no']
+                });
+            });
+			//搜索功能
+			$("#search").click(function () {
+				var url = $(this).attr('url');
+				var keyworduser=  $('input[name=keyworduser]').val();//用户名搜索
+				var keywordshop=  $('input[name=keywordshop]').val();//商品名称搜索
+				var keyword_orderno=  $('input[name=keyword_orderno]').val();//支付流水号搜索
+				var pay_platform=  $('select[name=pay_platform]').val();//支付方式搜索
+				var starttime=  $('input[name=starttime]').val();
+				var endtime=    $('input[name=endtime]').val();
+				var   query="keyworduser/"+keyworduser+"/keyword_orderno/"+keyword_orderno+"/keywordshop/"+keywordshop+"/pay_platform/"+pay_platform+"/starttime/"+starttime+"/endtime/"+endtime;
+				url += '/' + query;
+				window.location.href = url;
+			});
+
+			//导出功能
+			$("#btnExport").click(function () {
+				var url = $(this).attr('url');
+				var keyworduser=  $('input[name=keyworduser]').val();//用户名搜索
+				var keywordshop=  $('input[name=keywordshop]').val();//商品名称搜索
+				var keyword_orderno=  $('input[name=keyword_orderno]').val();//支付流水号搜索
+				var pay_platform=  $('select[name=pay_platform]').val();//支付方式搜索
+				var starttime=  $('input[name=starttime]').val();
+				var endtime=    $('input[name=endtime]').val();
+				var   query="keyworduser/"+keyworduser+"/keyword_orderno/"+keyword_orderno+"/keywordshop/"+keywordshop+"/pay_platform/"+pay_platform+"/starttime/"+starttime+"/endtime/"+endtime;
+				url += '/' + query;
+				window.location.href = url;
+			});
+			fundsflowIndx.conditionarr();
+
+		});
+
+		var fundsflowIndx = {
+			conditionarr: function () {
+				var span='<span class="caret"></span>';
+				var conditionarr =  JSON.parse('{$conditionarr}') ;
+				var keyworduser=conditionarr['keyworduser'];
+				if(keyworduser!=undefined){
+					$('input[name=keyworduser]').val(keyworduser);
+				}
+
+				var keywordshop=conditionarr['keywordshop'];
+				if(keywordshop!=undefined){
+					$('input[name=keywordshop]').val(keywordshop);
+				}
+
+				var keyword_orderno=conditionarr['keyword_orderno'];
+				if(keyword_orderno!=undefined){
+					$('input[name=keyword_orderno]').val(keyword_orderno);
+				}
+				var starttime=conditionarr['starttime'];
+				if(starttime!=undefined){
+					$('input[name=starttime]').val(starttime);
+				}
+				var endtime=conditionarr['endtime'];
+				if(endtime!=undefined){
+					$('input[name=endtime]').val( endtime);
+				}
+
+				var pay_platform=conditionarr['pay_platform'];
+				$('select[name=pay_platform]').val( pay_platform);
+			}
+		}
+		function myJsFunc( id,name) {
+			//拼装所有的查询、筛选条件   渠道等级、所有状态、搜索关键字
+			var span='<span class="caret"></span>';
+			$('#btnchannelname').html(name+span);
+			$('#btnchannelname').val(id);
+		}
+	</script>
+</block>

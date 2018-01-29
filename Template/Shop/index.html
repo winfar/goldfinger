@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <include file="{$web_tplpath}head.html" />
+    <script src="{$web_tplpath}js/jquery.cookie.js"></script>
+</head>
+
+<body>
+
+    <div class="wrap">
+        <div class="header">
+            <div class="user"><img class="user_img" src="{$user.headimgurl}" /><span id="notice"><if condition="($notification gt 0)"><i></i></if></span></div>
+            <div class="user_own">持有的黄金</div>
+            <div class="user_dia"><i>{$user.gold_balance}</i>克</div>
+            <div class="dia_info"><span class="amount">我的{:C("WEB_CURRENCY")}<i>{$gold}</i></span><span class="gold_price">当前金价<i>{:getGoldprice()}</i></span></div>
+        </div>
+        <div class="menu_box">
+            <ul class="mb_ul">
+                <li>
+                    <a href="http://www.myfans.cc/3lmee2bd4f">
+                        <em></em>
+                        <span>部落社区</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{:U('Index/draw')}">
+                        <em></em>
+                        <span>提取黄金</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{:U('Index/record')}">
+                        <em></em>
+                        <span>参与记录</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="notice_box">
+                <div id="wlist" class="wlist">
+                    <ul id="broadcast">
+                        <notempty name="msg_list">
+                            <volist name="msg_list" id="vo">
+                                <li>恭喜<i>{$vo.nickname}</i>参与<i>{$vo.total_number}人</i>次获得<i>{$vo.total_buy_gold}克</i>黄金<i>[{$vo.no}期]</i></li>
+                            </volist>
+                        </notempty>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="con">
+            <div class="con_periods">
+                <span>第<i>{$period['no']}</i>期</span><a href="{:U('Index/announce')}">往期揭晓</a>
+            </div>
+            <div class="con_tit">
+                <span><i>距本期参与截止还剩</i></span>
+                <span id="fnTimeCountDown" data-now-format="{:date('Y-m-d H:i:s')}" data-now="{:time().get_millisecond()}" data-end="{$period['kaijang_date']}">
+				    <div class="time_go">
+					<i class="hour">00</i><em>:</em><i class="mini">00</i><em>:</em><i class="sec">00</i><em>:</em><i class="hm">000</i>
+					</div>
+					<div class="index_loading"></div>  <!--loading-->
+				</span>
+                <!--<span><i id="cd_h">08</i>:<i id="cd_m">35</i>:<i id="cd_s">48</i>:<i id="cd_ms">48</i></span>-->
+                <span><i>已参与</i><i>总计</i></span>
+                <span><i>{$period['total_number']}人次</i><i>{$period['total_buy_gold']}</i></span>
+                <span><a href="{:U('Index/detail')}/pid/{$period.pid}">参与详情</a><a class="partkake">立即参与</a></span>
+            </div>
+        </div>
+        <div class="con_bot">
+            <span>用户累计参加</span>
+            <span>
+            <i>{$user.gold_kg}</i><em>千克</em><i>{$user.gold_g}</i><em>&nbsp;克&nbsp;</em><i>{$user.gold_mg}</i><em>毫克</em>
+			</span>
+        </div>
+    </div>
+    <div class="up_info"><a href="{:U('Index/playIntro')}">参与及玩法介绍，点击查看详情。</a><i class="up_info_x">x</i></div>
+    {:R('Index/virtualkeyboard')}
+    <script src="{$web_tplpath}js/jquery.marquee.min.js" type="text/javascript"></script>
+    <script src="{$web_tplpath}js/jquery.countdown.milliseconds.js" type="text/javascript"></script>
+    <script>
+        $(function() {
+            // 参与及玩法介绍，点击查看详情
+            var isClose = "{$is_close}";
+            if (isClose == 0) {
+                $.cookie('index_close_time', null);
+                $(".up_info").animate({
+                    bottom: "0"
+                }, 800);
+            }
+            $(".up_info_x").click(function() {
+                var timestamp = Date.parse(new Date());
+                $.cookie('index_close_time', timestamp);
+                console.log(timestamp);
+                $(".up_info").animate({
+                    bottom: "-30px"
+                }, 800);
+            });
+            $("#broadcast").marquee({
+                pauseSpeed: 2500,
+                pauseOnHover: false
+            });
+
+            $("#fnTimeCountDown").fnTimeCountDown("", function() {
+                $("#fnTimeCountDown").find('.index_loading').show();
+                var url = '/shop.php' + "?r=" + Math.random();
+                setTimeout(function() {
+                    location.href = url;
+                }, 3000);
+            });
+
+            $(".gold_price").click(function(argument) {
+                window.location = "{:U('goldprice')}";
+            });
+            $("#notice").click(function(argument) {
+                window.location = "{:U('notice')}";
+            });
+            if (typeof NATIVE !== 'undefined') {
+                if (NATIVE.buyGems != 'undefined' && typeof(NATIVE.buyGems) == 'function') {
+
+                    $(".amount").on("click", function() {
+                        // NATIVE.buyGems();
+                    });
+
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

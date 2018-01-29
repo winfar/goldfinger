@@ -1,0 +1,218 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <include file="{$web_tplpath}head.html" />
+</head>
+<body>
+
+<div class="wrap">
+	<div class="record_tab">
+		<ul>
+			<li><a class="result result1 " cid='1'>进行中</a></li>
+			<li><a class="result result2 " cid='2'>已揭晓</a></li>
+			<li><a class="result result3 " cid='3'>幸运单</a></li>
+		</ul>
+	</div>
+	<div class="announce record_list">
+	    <ul class="record_url_list">
+	    </ul>
+		
+	</div>
+	<div class="loading" style="display: none;"></div>
+</div>
+<div class="take_box">
+  <div class="tb_con clearfix">
+    <h1><span class="dis_none">X</span></h1>
+    <span class="code_list clearfix"></span>
+  </div>
+  <div class="dis_none"></div>
+</div>
+{:R('Index/virtualkeyboard')}
+<script src="{$web_tplpath}js/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script src="{$web_tplpath}js/jquery.marquee.min.js" type="text/javascript"></script>
+<script src="{$web_tplpath}js/jquery.countdown.min.js" type="text/javascript"></script>
+<script src="{$web_tplpath}js/jquery.countdown.milliseconds.js" type="text/javascript"></script>
+<!-- 底部 -->
+<block name="script">
+    <script type="text/javascript">
+        $(function(){
+        	$("#broadcast").marquee({
+                pauseSpeed: 2500,
+                pauseOnHover: false
+            });
+
+		    $("#fnTimeCountDown").fnTimeCountDown("",function(){
+				// $(".hm").html('000');
+				console.log("over");
+			});
+
+			
+            var t = "{:I('t')}";
+            if (t=="") {
+                t = 1;
+            }
+            var u = '.result'+t;
+            $(u).addClass('on');
+            getdata(t);           
+            $(this).addClass('on'); 
+            $('.result').on("click", function(){
+                $('.result').removeClass('on');
+                $(this).addClass('on');
+                var cid = $(this).attr("cid");
+                getdata(cid);
+            });
+        });
+        //获取数据
+        function getdata(cid) {
+            var url = "{:U('ajaxresultlist')}";
+            var uid = "{$uid}";
+            $.ajax(
+               {
+                  type:"POST",//通常会用到两种：GET,POST。默认是：GET
+                  url:url,//(默认: 当前页地址) 发送请求的地址
+                  data:{'cid':cid},
+                  dataType:"json",//预期服务器返回的数据类型。
+                  beforeSend:function(){
+                  	$('.record_url_list').empty();
+                    $(".loading").show();
+                  }, //发送请求
+                  success:function(data) {
+                    $(".loading").hide(); 
+                    var html = '';
+                    if (data != '') {
+                    	for (var i in data ) {
+	                    	if (cid==1) {
+	                    		//进行中
+	                    		if (data[i].state==0) {
+	                    			html += '<li>';
+									html += '<div class="ann_periods">';
+									html += '<span>第<i>'+data[i].no+'</i>期</span>当前参与<em>'+data[i].total_number+'人次</em> 总计<em>'+data[i].total_buy_gold+'克</em>黄金';
+									html += '</div>';
+                                    html += '<a href="{:U(detail)}/pid/'+data[i].id+'">';
+									html += '<span class="ul_img"><img src="'+data[i].img+'" /></span>';
+									html += '<span class="ul_user"><h1>'+data[i].nickname+'</h1><p>本期参与：<i>'+data[i].user_total_number+'人次</i></p></span>';
+                                    html += '</a>';
+									html += '<span class="ul_info"><i><i>中奖率:'+data[i].rate+'%</i><br><a href="javascript:void(0);" onclick="getrecordsnumbers('+data[i].id+','+uid+','+data[i].kaijang_num+')">参与号码</a></span>';
+									html += '<span class="rl_take_btn"><a onclick="record()">追加参与</a></span>';
+									html += '</li>';
+	                    		} else {
+	                    			//揭晓中
+	                    			html += '<li>';
+									html += '<div class="ann_periods">';
+									html += '<span>第<i>'+data[i].no+'</i>期</span>当前参与<em>'+data[i].total_number+'人次</em> 总计<em>'+data[i].total_buy_gold+'克</em>黄金';
+									html += '</div>';
+                                    html += '<a href="{:U(detail)}/pid/'+data[i].id+'">';
+									html += '<span class="ul_img"><img src="'+data[i].img+'" /></span>';
+									html += '<span class="ul_user"><h1>'+data[i].nickname+'</h1><p>本期参与：<i>'+data[i].user_total_number+'人次</i></p></span>';
+                                     html += '</a>';
+									html += '<span class="ul_info"><i>中奖率:'+data[i].rate+'%</i><br><a href="javascript:void(0);" onclick="getrecordsnumbers('+data[i].id+','+uid+','+data[i].kaijang_num+')">参与号码</a></span>';
+									html += '<span class="rl_take_btn"><a href="{:U(detail)}/pid/'+data[i].id+'">等待揭晓中</a></span>';
+									html += '</li>';
+	                    		}	
+	                    	} else if(cid==2) {
+	                    		//已揭晓
+	                    		//中奖的情况 
+	                    		if (data[i].iswin==1) {
+	                    			html += '<li>';
+									html += '<div class="ann_periods">';
+									html += '<span>第<i>'+data[i].no+'</i>期</span>幸运号码<em>'+data[i].kaijang_num+'</em> 获得<em>'+data[i].total_buy_gold+'克</em>黄金';
+									html += '</div>';
+                                    html += '<a href="{:U(detail)}/pid/'+data[i].id+'">';
+									html += '<span class="ul_img"><img src="'+data[i].img+'" /><em></em></span>';
+									html += '<span class="ul_user"><h1>'+data[i].nickname+'</h1><p>本期参与：<i>'+data[i].user_total_number+'人次</i></p></span>';
+                                    html += '</a>';
+									html += '<span class="ul_info"><i>'+data[i].kaijang_date+'</i><br><a href="javascript:void(0);" onclick="getrecordsnumbers('+data[i].id+','+uid+','+data[i].kaijang_num+')">参与号码</a></span>';
+									html += '<span class="seal"></span>';
+									html += '</li>';
+	                    		} else {
+	                    			html += '<li>';
+									html += '<div class="ann_periods">';
+									html += '<span>第<i>'+data[i].no+'</i>期</span>幸运号码<em>'+data[i].kaijang_num+'</em> 获得<em>'+data[i].total_buy_gold+'克</em>黄金';
+									html += '</div>';
+                                    html += '<a href="{:U(detail)}/pid/'+data[i].id+'">';
+									html += '<span class="ul_img"><img src="'+data[i].img+'" /></span>';
+									html += '<span class="ul_user"><h1>'+data[i].nickname+'</h1><p>本期参与：<i>'+data[i].user_total_number+'人次</i></p></span>';
+                                    html += '</a>';
+									html += '<span class="ul_info"><i>'+data[i].kaijang_date+'</i><br><a href="javascript:void(0);" onclick="getrecordsnumbers('+data[i].id+','+uid+','+data[i].kaijang_num+')">参与号码</a></span>';
+									html += '</li>';
+	                    		}
+
+	                    	} else if(cid==3) {
+	                    		//幸运单
+	                    		html += '<li>';
+								html += '<div class="ann_periods">';
+								html += '<span>第<i>'+data[i].no+'</i>期</span>幸运号码<em>'+data[i].kaijang_num+'</em> 获得<em>'+data[i].total_buy_gold+'克</em>黄金';
+								html += '</div>';
+                                html += '<a href="{:U(detail)}/pid/'+data[i].id+'">';
+								html += '<span class="ul_img"><img src="'+data[i].img+'" /><em></em></span>';
+								html += '<span class="ul_user"><h1>'+data[i].nickname+'</h1><p>本期参与：<i>'+data[i].user_total_number+'人次</i></p></span>';
+                                html += '</a>';
+								html += '<span class="ul_info"><i>'+data[i].kaijang_date+'</i><br><a href="javascript:void(0);" onclick="getrecordsnumbers('+data[i].id+','+uid+','+data[i].kaijang_num+')">参与号码</a></span>';
+								html += '<span class="seal"></span>';
+								html += '</li>';
+	                    	}
+	                    	$('.record_url_list').html(html);
+                    	}
+
+                    } else {
+                        html += '<div class="record_none">';
+                        html += '<div class="rn_con">还没有记录喔</div>';
+                        // html += '<div class="submit"><a href="{:U('index')}"><input type="button" value="立即参与" /></a></div>';
+                        html += '</div>';
+                        $('.record_url_list').html(html);
+                        $('html,body').animate({scrollTop: '0px'}, 0);
+                    }
+
+                    
+                  }
+               });
+        }
+        //参与号码  
+        function getrecordsnumbers(pid,uid,kaijang_num) {
+            var url = "{:U('usernumbers')}"; 
+            $.post(
+                url,
+                {
+                    pid:pid,
+                    uid:uid
+                },
+                function(data) {
+                    var html = '';
+                    for(var i in data) {
+                        if (kaijang_num==data[i]) {
+                            html += "<i class='wincode'>"+data[i]+"</i>";
+                        } else {
+                            html += "<i>"+data[i]+"</i>";
+                        }
+                    }
+                    $('.code_list').html(html);
+                    $('.take_box').show();
+                },
+                'json'
+            );
+        }  
+        function record() {
+         	$(".input_box").show();
+            $(".ib_con").animate({bottom:"0"},200);
+            //立即参与
+            var url = "{:U('ajaxmd5')}";
+            $.post(
+                url, {
+
+                },
+                function(data) {
+                    $('#gold_price').val(data.gold_price);
+                    $('#gold_md5').val(data.md5);
+                    getrate();
+                    getchannelgold();
+                    gettotalgold();
+                },
+                'json'
+            );
+         } 
+    </script>
+</block>
+
+</body>
+</html>

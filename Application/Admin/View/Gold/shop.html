@@ -1,0 +1,150 @@
+<extend name="Public/base"/>
+<block name="style">
+    <css href="__JS__/jquery.icheck/skins/square/blue.css"/>
+</block>
+
+<block name="body">
+    <div>
+        <div class="page-head">
+            <h2>商品兑换</h2>
+        </div>
+        <div class="cl-mcont">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="block-flat">
+                        <form class="form-horizontal" method="POST" action="{:U('shopsave')}" >
+                            <div class="tab-content">
+
+                                <div class="header">
+                                    <h3 class="hthin">{$meta_title}</h3>
+                                </div>
+                                <div class="content">
+                                    <div style="float: left;width: 100%;">
+                                        <label class="pull-left control-label">商品兑换</label>
+                                        <div class="btn-group col-sm-2">
+                                                    <label class="btn btn-default active">
+                                                        <input type="radio" id="state1" name="status" autocomplete="off" value="1"  <eq name="status.status" value="1"> checked </eq> /> 启用
+                                                    </label>
+                                                    <label class="btn btn-default">
+                                                        <input type="radio" id="state0" name="status" autocomplete="off" value="0"  <eq name="status.status" value="0"> checked </eq>  /> 禁用
+                                                    </label>
+                                            </div>
+                                    </div>
+
+                                <div style="float: left;width: 100%;">
+                                        <label class="pull-left control-label">商品品牌</label>
+                                        <div class="btn-group col-sm-2">
+                                                <select class="form-control" id = "brand" name="brand" style="width: 135px;" data-placement="left" >
+                                                    <option value="">-请选择-</option>
+                                                    <volist name=":get_brand()" id="vo">
+                                                        <option value="{$vo.id}">{$vo.title}</option>
+                                                    </volist>
+                                                </select>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <a data-placement="left" data-toggle="tooltip" data-original-title="新增品牌" id="addBrand"  class="ajax-get btn btn-success btn-sm"><i class="glyphicon glyphicon-plus"></i></a>
+                                        </div>
+
+                                </div>
+
+                                <table class="no-border blue">
+                                    <thead class="no-border">
+                                        <tr>
+                                            <th style="width:10%;">品牌列表</th>
+                                            <th style="width:10%;">兑换比例（%）</th>
+                                            <th class="text-right">操作</th>
+                                        </tr>
+                                        </thead>
+                                        <notempty name="_list">
+                                            <tbody class="no-border-y">
+                                            <volist name="_list" id="vo">
+                                                <tr>
+
+                                                    <td>{$vo['title']}</td>
+                                                    <td > <input id="rate{$key}" name="rate{$vo['id']}" value="{$vo['rate']}" onblur="setSaveURL({$vo['id']},{$key})" > </input> </td>
+                                                    <input type="hidden" value="{$vo['id']}" name="id[]"/>
+                                                    <td class="text-right">
+                                                        <a id="status" data-placement="left" data-toggle="tooltip" data-original-title="状态" class="label <eq name="vo.status" value="0">label-default<else/>label-success</eq>  ajax-get" href="{:U('setStatus?Model=ExchangeVirtual&id='.$vo['id'].'&status='.abs(1-$vo['status']))}"><i class="fa <eq name="vo.status" value="0">fa-eye-slash<else/>fa-eye</eq>"></i></a>
+                                                        <a data-placement="left" data-toggle="tooltip" data-original-title="删除" class="label label-danger confirm ajax-get" href="{:U('shopremove?id='.$vo['id'])}"><i class="fa fa-times"></i></a>
+                                                        <!-- <a data-placement="left" data-toggle="tooltip" data-original-title="保存" id="btnsave{$key}" class="label label-danger ajax-get" href="{:U('shopsave?id='.$list['id'])}"><i class="fa fa-chain"></i></a> -->
+                                                    </td>
+                                                </tr>
+                                            </volist>
+                                            </tbody>
+                                            <else/>
+                                            <td colspan="3"> aOh! 暂时还没有内容!</td>
+                                        </notempty>
+                                    </table>
+
+                                <div class="content col-lg-12 pull-left">
+                                        <div>
+
+                                        </div>
+                                        <div class="panel-foot text-center">
+                                            <div class="page">{$_page}</div>
+                                        </div>
+                                    </div>
+                                <div class="col-sm-offset-2 col-sm-2 pull-right">
+                                <!-- 新增 -->
+                                	<button class="btn btn-primary ajax-post" type="submit" target-form="form-horizontal">保存</button>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <js href="__JS__/jquery.icheck/icheck.min.js"/>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            highlight_subnav('{:U('Gold/shop')}');
+
+            $("#brand").change(function(){
+                var ids = ''+$("#brand").val();
+                var url ;
+                url = "admin.php?s=/Gold/addBrand/id/";
+                url = url + ids ;
+                $("#addBrand").attr({
+                    "href" : url,
+                });
+            });
+
+            $("#state1").click(function(){
+                $.get("{:U('setConfigState')}", { name: "bo_exchange_virtual", status: "1" },
+                        function(data){
+//                            alert("Data Loaded: " + data);
+                        });
+            });
+
+            $("#state0").click(function(){
+                $.get("{:U('setConfigState')}", { name: "bo_exchange_virtual", status: "0" },
+                        function(data){
+//                            alert("Data Loaded: " + data);
+                        });
+            });
+
+            $("#btnsave").click(function(){
+                $.get("{:U('setConfigState')}", { id: "110", status: "0" },
+                        function(data){
+//                            alert("Data Loaded: " + data);
+                        });
+            });
+
+        });
+
+        function setSaveURL(id,key){
+            //设置对应savebtn的url
+            var rate = ''+$("#rate"+key).val();
+//            alert(txt);
+            var url ;
+            url = "admin.php?s=/Gold/shopsave/id/"+id+"/rate/"+rate;
+            $("#btnsave"+key).attr({
+                "href" : url,
+            });
+        }
+    </script>
+</block>

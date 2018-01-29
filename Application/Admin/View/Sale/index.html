@@ -1,0 +1,178 @@
+<extend name="Public/base"/>
+
+<block name="style">
+    <css href="__CSS__/lrtk.css" />
+</block>
+
+<block name="body">
+<div>
+<div class="page-head">
+    <h2>促销管理-促销活动列表</h2>
+</div>
+<div class="cl-mcont">
+    <div class="row">
+        <div class="col-md-12">
+            <form class="shop-form" method="post" action="{:U('index')}">
+            <div class="block-flat">
+                <div class="header">                            
+                    <h3 class="hthin">{$meta_title}</h3>
+                </div>
+                <div class="content">
+                    <div class="col-sm-12">
+                        <label class="pull-left control-label">活动类型</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="type" name="type" onchange="" value="{$Think.get.type|default='0'}">
+                                <option value="">全部类型</option>
+                                <volist name=":getSaleArr()" id="vo">
+                                    <option value="{$vo.type}">{$vo.name}</option>
+                                </volist>           
+                            </select>
+                            </div>
+                        <label class="pull-left control-label">开始日期</label>
+                        <div class="col-sm-2">
+                        <div class="input-group date starttime" data-min-view="2" data-date-format="yyyy-mm-dd">
+                            <input type="text" name="starttime" class="form-control" value="{$Think.post.starttime|default=time_format(NOW_TIME,'Y-m-d')}"/>
+                            <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
+                        </div>
+                        <label class="pull-left control-label">结束日期</label>
+                        <div class="col-sm-2" >
+                        <div class="input-group date endtime" data-min-view="2" data-date-format="yyyy-mm-dd">
+                            <input type="text" name="endtime" class="form-control" value="{$Think.post.endtime|default=time_format(NOW_TIME+24*60*60*30,'Y-m-d')}"/>
+                            <span class="input-group-addon btn btn-primary" ><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
+                        </div>
+                        <label class="pull-left control-label">关键字搜索</label>
+                        <div class="col-sm-2">
+                            <input type="text" name="keyword" class="form-control" placeholder="输入用户名进行搜索">
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="button" id="search" url="{:U('index')}" class="btn btn-success">查询</button>
+                            <a class="btn btn-success" href="{:U('add')}"><i class="fa fa-plus-square"></i>添加促销活动</a>
+                        </div>
+                    </div>
+                    <table class="no-border blue">
+                        <thead class="no-border">
+                        <tr>
+                            <th style="width:auto;">ID</th>
+                            <th style="width:auto;">活动名称</th>
+                            <th style="width:auto;">开始时间</th>
+                            <th style="width:auto;">结束时间</th>
+                            <th style="width:auto;">活动类型</th>
+                            <th style="width:auto;">活动范围</th>
+                            <th style="width:auto;">查看活动范围</th>
+                            <th style="width:auto;">查看红包</th>
+                            <th style="width:auto;">查看详情</th>
+                            <th style="width:auto;">状态</th>
+                            <th style="width:auto;">添加时间</th>
+                            <th style="width:auto;">操作</th>
+                        </tr>
+                        </thead>
+                        <notempty name="_list">
+                        <tbody class="no-border-y">
+                        <volist name="_list" id="vo">
+                        <tr>
+                            <td>{$vo.id}</td>
+                            <td>{$vo.name}</td>
+                            <td>{$vo.begin_time|time_formats=###,"Y-m-d H:i:s"}</td>
+                            <td>{$vo.end_time|time_formats=###,"Y-m-d H:i:s"}</td>
+                            <td>{:getSaleName($vo['type'])}</td>
+                            <td>{:getSaleRangeName($vo['range'])}</td>
+                            <td><a href="#" class="opiframe" url="{:U('sale/getRange?id='.$vo['id'])}">查看</a></td>
+                            <td><a href="#" class="opiframe" url="{:U('sale/getRed?id='.$vo['id'])}">查看</a></td>
+                            <td><a href="#" class="opiframe" url="{:U('sale/getDetail?id='.$vo['id'])}">查看</a></td>
+                            <td>{$vo['status_name']}</td>
+                            <td>{$vo.create_time|time_formats}</td>
+                            <td>
+                                <a id="status" data-placement="left" data-toggle="tooltip" data-original-title="状态" class="label <eq name="vo['status']" value="0">label-default<else/>label-success</eq>" href="{:U('setStatus?id='.$vo['id'].'&status='.abs(1-$vo['status']))}"><i class="fa <eq name="vo.status" value="0">fa-eye-slash<else/>fa-eye</eq>"></i></a>
+                                <a data-placement="left" data-toggle="tooltip" data-original-title="编辑" class="label label-primary"  href="{:U('add?id='.$vo['id'])}"><i class="fa fa-pencil"></i></a>
+                            </td>
+                        </tr>
+                        </volist>
+                        </tbody>
+                        <else/>
+                        <td colspan="6"> aOh! 暂时还没有内容! </td>
+                        </notempty>
+                    </table>
+                    <div class="content col-lg-12 pull-left">
+                        <div class="panel-foot text-center">
+                            <div class="page">{$_page}</div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+</block>
+<block name="script">
+    <js href="__JS__/behaviour/weixin.js" />
+    <script type="text/javascript">
+        $(document).ready(function(){
+            highlight_subnav('{:U('Sale/index')}');
+            $("#btnExport").click(function(){
+                $('form').attr('action',"{:U('exportChannelList')}");
+            });
+            $(".starttime").datetimepicker({autoclose: true,language: 'zh-CN'});
+            $(".endtime").datetimepicker({autoclose: true,language: 'zh-CN'});
+            //搜索功能
+            $("#search").click(function () {
+                var url = $(this).attr('url');
+                var type=  $("select[name=type]").val();
+                var keyword=  $('input[name=keyword]').val();
+                var starttime=  $("input[name=starttime]").val();
+                var endtime=    $("input[name=endtime]").val();
+                var   query="type/"+type+"/keyword/"+keyword+"/starttime/"+starttime+"/endtime/"+endtime;
+                url += '/' + query;
+
+                window.location.href = url;
+            });
+
+            var conditionarr =  JSON.parse('{$conditionarr}') ;
+            $("select[name=type]").val(conditionarr['type']);
+            $('input[name=keyword]').val(conditionarr['keyword']);
+            $("input[name=starttime]").val(conditionarr['starttime']);
+            $("input[name=endtime]").val(conditionarr['endtime']);
+
+            channelIndx.conditionarr();
+        });
+
+        var channelIndx = {
+            conditionarr: function () {
+                var conditionarr =  JSON.parse('{$conditionarr}') ;
+                $('input[name=keyword]').val(  conditionarr['keyword']);
+
+                var span='<span class="caret"></span>';
+
+                if(conditionarr['levelname']!=undefined){
+                    $('#btnchannellevel').html(conditionarr['levelname']+span);
+                }
+
+                var statusname=conditionarr['statusname']
+                if(statusname!=undefined){
+                    $("#btnchannelstatus").html(statusname+span);
+                }
+            }
+        }
+        
+
+        function myJsFunc( url) {
+            //拼装所有的查询、筛选条件   渠道等级、所有状态、搜索关键字
+            var channellevel =  document.getElementById('btnchannellevel').innerText;
+            if(channellevel){
+                url += channellevel;
+            }
+            alert(channellevel);
+
+            var channelstatus =  document.getElementById('btnchannelstatus').innerText;
+            alert(channelstatus);
+            if(channelstatus){
+                url += channelstatus;
+            }
+
+        }
+    </script>
+</block>

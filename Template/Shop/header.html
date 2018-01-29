@@ -1,0 +1,40 @@
+<div class="user">
+    <div class="user_info">
+        <a href="{:U('address')}"><img src="{$user.headimgurl}" /><span class="user_name">{$user['nickname']}</span></a>
+    </div>
+    <div class="user_dm">
+        <a id="exchange_ex" href="javascript:;"><img src="{$web_tplpath}images/diamond.png" /><i>{$gold}</i></a>
+        <a id="exchange" href="javascript:;"><img style="left: auto;" src="{$web_tplpath}images/more_gold.png" /></a>
+    </div>
+    <div class="service">
+        <a href="{:U('service')}"><img src="{$web_tplpath}images/service.png" /></a>
+    </div>
+</div>
+<script type="text/javascript">
+if (typeof NATIVE !== 'undefined') {
+    if (NATIVE.buyGems != 'undefined' && typeof(NATIVE.buyGems) == 'function') {
+        $("#exchange").show();
+
+        $("#exchange").on("click", function() {
+            NATIVE.buyGems();
+        });
+
+        $("#exchange_ex").on("click", function() {
+            NATIVE.buyGems();
+        });
+    } else {
+        $("#exchange").hide();
+
+
+        $("#exchange_ex").on("click", function() {
+            return false;
+        });
+    }
+} else {
+    $("#exchange").hide();
+
+    $("#exchange_ex").on("click", function() {
+        return false;
+    });
+}
+</script>

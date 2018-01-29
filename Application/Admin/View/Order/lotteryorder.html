@@ -1,0 +1,206 @@
+<extend name="Public/base" />
+<block name="style">
+    <css href="__JS__/jquery.icheck/skins/square/blue.css" />
+    <css href="__JS__/bootstrap.datetimepicker/css/bootstrap-datetimepicker.min.css" />
+    <style type="text/css">
+        .col-sm-3 {
+            width: 185px;
+        }
+        .blue {
+            table-layout:fixed;
+        }
+        .blue  td {
+            word-wrap:break-word;
+        }
+    </style>
+</block>
+
+<block name="body">
+    <div>
+        <div class="page-head">
+            <h2>开奖订单</h2>
+        </div>
+        <div class="cl-mcont">
+            <div class="row">
+                <div class="col-md-12">
+                    <form class="shop-form" method="get" action="{:U('lotteryorder')}">
+                        <div class="block-flat">
+                            <div class="header">
+                                <h3 class="hthin">{$meta_title}</h3>
+                            </div>
+                        </div>
+
+                        <div class="content">
+                            <div class="col-sm-12">
+                                <div style="float: left;width: 100%;margin-bottom:15px;">
+                                    <input type="hidden" value="{$pid}" name="pid" />
+                                    <label class="pull-left control-label">采购状态</label>
+                                    <div class="col-sm-3">
+                                        <select class="form-control" name="purchaseorderstatus" style="width: 150px;">
+                                            <option value="">采购状态</option>
+                                            <option value="1">已采购</option>
+                                            <option value="2">未采购</option>
+                                        </select>
+                                    </div>
+                                    <empty name = "channelId">
+                                        <label class="pull-left control-label">所属渠道</label>
+                                        <div class="col-sm-3" >
+                                            <select class="form-control" name="channel" style="width: 100px;">
+                                                <option value="">所有渠道</option>
+                                                <notempty name="channelList">
+                                                    <volist name="channelList" id="channel">
+                                                        <option value="{$channel.id}">{$channel.channel_name}</option>
+                                                    </volist>
+                                                </notempty>
+                                                
+                                            </select>
+                                        </div>
+                                    </empty>
+                                    <label class="pull-left control-label">开始日期</label>
+                                    <div class="col-sm-3">
+                                        <div class="input-group date starttime" data-min-view="2" data-date-format="yyyy-mm-dd">
+                                            <input type="text" name="starttime" class="form-control" value="{$Think.post.starttime|default=''}" />
+                                            <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                        </div>
+                                    </div>
+                                    <label class="pull-left control-label">结束日期</label>
+                                    <div class="col-sm-3">
+                                        <div class="input-group date endtime" data-min-view="2" data-date-format="yyyy-mm-dd">
+                                            <input type="text" name="endtime" class="form-control" value="{$Think.post.endtime|default=''}" />
+                                            <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="pull-left control-label">订单号</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" name="keywordorder" class="form-control">
+                                    </div>
+                                    <label class="pull-left control-label">用户ID/用户昵称</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" name="keyword" class="form-control">
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <button type="button" id="search" url="{:U('lotteryorder')}" class="btn btn-success">
+                                            搜索
+                                        </button>
+                                        <button type="button" url="{:U('exportlotterylist')}" class="btn btn-success" id="btnExport">导出</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="no-border blue table">
+                                <thead class="no-border">
+                                    <tr>
+                                        <td colspan="12">共：{$total_info.total_number}条记录，用户购买总数量;{$total_info.all_number}mg，总支付{:C("WEB_CURRENCY")}：{$total_info.total}</td>
+                                    </tr>
+                                    <tr>
+                                        <th style="width:5%;">期号</th>
+                                        <th style="width:8%;">订单号</th>
+                                        <th style="width:6%;">ID-渠道</th>
+                                        <th style="width:8%;">用户ID</th>
+                                        <th style="width:8%;">用户名</th>
+                                        <th style="width:8%;">购买数量（mg）</th>
+                                        <!-- <th style="width:12%;">参与{:C("WEB_CURRENCY")}（充值）</th>
+                                        <th style="width:12%;">参与{:C("WEB_CURRENCY")}（活动）</th> -->
+                                        <th style="width:6%;">总参与{:C("WEB_CURRENCY")}</th>
+                                        <th style="width:5%;">实时金价</th>
+                                        <th style="width:10%;">开奖号码</th>
+                                        <th style="width:8%;">成单总数量（mg）</th>
+                                        <th style="width:6%;">成单{:C("WEB_CURRENCY")}</th>
+                                        <th style="width:5%;">开奖时间</th>
+                                    </tr>
+                                </thead>
+                                <notempty name="shoplist">
+                                    <tbody class="no-border-y">
+                                        <volist name="shoplist" id="vo">
+                                            <tr>
+                                                <td>{$vo['no']}</td>
+                                                <td>{$vo['order_id']}</td>
+                                                <td>{$vo['channel_id']}-{$vo['channel_name']}</td>
+                                                <td>{$vo['uid']}</td>
+                                                <td>{$vo['username']}</td>
+                                                <td>{$vo['win_number']}</td>
+                                                <!-- <td>{$vo['total_top_diamond']}</td>
+                                                <td>{$vo['total_recharge_activity']}</td> -->
+                                                <td>{$vo['total_win_price']}</td>
+                                                <td>{$vo['gold_price']}</td>
+                                                <td>{$vo['kaijang_num']}</td>
+                                                <td>{$vo['total_number']}</td>
+                                                <td>{$vo['total_price']}</td>
+                                                <td>{$vo.kaijang_time|time_format=###,"Y-m-d H:i:s"}</td>
+                                                
+                                            </tr>
+                                        </volist>
+                                    </tbody>
+                                    <else/>
+                                    <td colspan="3"> aOh! 暂时还没有内容!</td>
+                                </notempty>
+                            </table>
+                        </div>
+                        <div class="content col-lg-12 pull-left">
+                            <div class="panel-foot text-center">
+                                <div class="page">{$_page}</div>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+</block>
+<block name="script">
+    <js href="__JS__/jquery.icheck/icheck.min.js" />
+    <js href="__JS__/bootstrap.datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" />
+    <script type="text/javascript">
+        $(document).ready(function() {
+            highlight_subnav('{:U('Order/lotteryorder')}');
+            $(".starttime").datetimepicker({autoclose: true,language: 'zh-CN'});
+            $(".endtime").datetimepicker({autoclose: true,language: 'zh-CN'});
+            //搜索功能
+            $("#search").click(function() {
+                var url = $(this).attr('url');
+                var keyword = $('input[name=keyword]').val(); //用户ID/用户昵称
+                var purchaseorderstatus = $("select[name=purchaseorderstatus]").val(); //采购状态
+                var channel = $("select[name=channel]").val(); //所属渠道
+                var starttime = $('input[name=starttime]').val(); //开始日期
+                var endtime = $('input[name=endtime]').val(); //结束日期
+                var keywordorder = $('input[name=keywordorder]').val(); //订单号
+                var query = "keyword/" + keyword + "/purchaseorderstatus/" + purchaseorderstatus + "/channel/" + channel + "/starttime/" + starttime + "/endtime/" + endtime + "/keywordorder/" + keywordorder;
+                url += '/' + query;
+                window.location.href = url;
+            });
+            //导出功能
+            $("#btnExport").click(function() {
+                var url = $(this).attr('url');
+                var keyword = $('input[name=keyword]').val(); //用户ID/用户昵称
+                var purchaseorderstatus = $("select[name=purchaseorderstatus]").val(); //采购状态
+                var channel = $("select[name=channel]").val(); //所属渠道
+                var starttime = $('input[name=starttime]').val(); //开始日期
+                var endtime = $('input[name=endtime]').val(); //结束日期
+                var keywordorder = $('input[name=keywordorder]').val(); //订单号
+                var query = "keyword/" + keyword + "/purchaseorderstatus/" + purchaseorderstatus + "/channel/" + channel + "/starttime/" + starttime + "/endtime/" + endtime + "/keywordorder/" + keywordorder;
+                url += '/' + query;
+                window.location.href = url;
+            });
+
+            shopIndx.conditionarr();
+        });
+
+        var shopIndx = {
+            conditionarr: function() {
+                var conditionarr = JSON.parse('{$conditionarr}');
+                $('input[name=keyword]').val(conditionarr['keyword']);
+                $('input[name=keywordorder]').val(conditionarr['keywordorder']);
+                $("input[name=starttime]").val(conditionarr['create_time']);
+                $("input[name=endtime]").val(conditionarr['end_time']);
+                $("select[name=purchaseorderstatus]").val(conditionarr['purchaseorderstatus']);
+                $("select[name=channel]").val(conditionarr['channel']);
+            }
+        }
+    </script>
+</block>

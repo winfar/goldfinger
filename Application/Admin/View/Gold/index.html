@@ -1,0 +1,304 @@
+<extend name="Public/base"/>
+<block name="style">
+    <css href="__JS__/jquery.icheck/skins/square/blue.css"/>
+</block>
+
+<block name="body">
+    <div>
+        <div class="page-head">
+            <h2>金币明细</h2>
+        </div>
+        <div class="cl-mcont">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="block-flat">
+                        <form class="shop-form" method="post" action="{:U('auto')}">
+                            <div class="header">
+                                <h3 class="hthin">{$meta_title}</h3>
+                            </div>
+                            <div class="content">
+                                <div style="float: left;width: 100%;margin-bottom:15px;">
+                                <!--<div class="col-sm-12">-->
+                                    <!--<div class="col-sm-2 no-padding">
+                                    <input id="check-all" type="checkbox" name="checkall" style="position: absolute;">
+                                    <a class="btn btn-success ajax-post" href="#" target-form="shop-form"><i class="fa fa-check-square"></i> 自动投注</a>
+                                    </div>-->
+                                    <label class="pull-left control-label">产品名称</label>
+
+                                    <div class="col-sm-3">
+                                        <input type="text" name="keyword" class="form-control">
+                                    </div>
+
+                                    <label class="pull-left control-label">是否实物</label>
+                                    <div class="col-sm-3" >
+                                        <select class="form-control" name="fictitious" style="width: 150px;">
+                                            <option value="">所有</option>
+                                            <option value="1">实物</option>
+                                            <option value="2">虚拟</option>
+                                        </select>
+                                    </div>
+                                    <label class="pull-left control-label">商品状态</label>
+                                    <div class="col-sm-3" >
+                                        <select class="form-control" name="status" style="width: 150px;">
+                                            <option value="">所有</option>
+                                            <option value="1">上架</option>
+                                            <option value="0">下架</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                    <div>
+                                    <label class="pull-left control-label">商品专区</label>
+                                    <div class="col-sm-3">
+                                        <select name="ten" class="form-control" style="width: 150px;">
+                                            <option value="">所有专区</option>
+                                            <volist name="ten" id="vo">
+                                                <option value="{$vo.id}">{$vo.html}{$vo.title}</option>
+                                            </volist>
+                                        </select>
+                                    </div>
+                                    <label class="pull-left control-label">商品分类</label>
+                                    <div class="col-sm-3">
+                                        <select name="type" class="form-control" style="width: 150px;">
+                                            <option value="">所有分类</option>
+                                            <volist name="category" id="vo">
+                                                <option value="{$vo.id}">{$vo.html}{$vo.title}</option>
+                                            </volist>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <button type="button" id="search"
+                                                url="{:U('index')}" class="btn btn-success">
+                                            搜索
+                                        </button>
+                                    </div>
+                                        </div>
+                                        <a class="btn btn-success" href="{:U('add')}"><i class="fa fa-plus-square"></i>
+                                            添加商品</a>
+                                </div>
+                                <table class="no-border blue">
+                                    <thead class="no-border">
+                                    <tr>
+                                        <th style="width:5%;">选择</th>
+                                        <th style="width:5%;">商品ID</th>
+                                        <th style="width:20%;">商品名称</th>
+                                        <th style="width:5%;">当前期数</th>
+                                        <th style="width:5%;">总期数</th>
+                                        <th style="width:5%;">是否实物</th>
+                                        <!--<th style="width:10%;">更新时间</th>-->
+                                        <th style="width:10%;">商品分类</th>
+                                        <th style="width:5%;">售价</th>
+                                        <th style="width:5%;">夺宝人次</th>
+                                        <th style="width:5%;">人次单价</th>
+                                        <th style="width:5%;">库存</th>
+                                        <th style="width:10%;">商品专区</th>
+                                        <th style="width:5%;">商品状态</th>
+                                        <th style="width:5%;">人气权重</th>
+                                        <!--<th style="width:10%;">自动投注</th>-->
+                                        <th class="text-right">操作</th>
+                                    </tr>
+                                    </thead>
+                                    <notempty name="shoplist">
+                                        <tbody class="no-border-y">
+                                        <volist name="shoplist" id="vo">
+                                            <tr>
+                                                <td ><input  name="id[]" type="checkbox" value="{$vo.id}"></td>
+                                                <td>{$vo['id']}</td>
+                                                <td ><a href="#" class="opiframe" url="{:U('shop/period?id='.$vo['id'].'&price='.$vo['price'])}">{$vo['name']}</a><gt name="vo['ten']" value="0"><span class="color-danger" style="margin-left: 15px">{:get_ten_name($vo['ten'])}</span><gt></td>
+                                                <td >{$vo['no']}</td>
+                                                <td >{$vo['periodnumber']}</td>
+                                                <td >{$vo['fictitious']==2?"虚拟":"实物"}</td>
+                                                <!--<td >{$vo.update_time|time_format=###,"Y-m-d"}</td>-->
+                                                <td >{:get_category_name($vo['category'])}</td>
+                                                <td >{$vo['price']}</td>
+                                                <td >{$vo['price']/$vo['tenunit']}</td>
+                                                <td >{$vo['tenunit']}</td>
+                                                <td >{$vo['shopstock']}</td>
+                                                <td >{:get_ten_name($vo['ten'])}</td>
+                                                <td >{$vo['status']==1?"上架":"下架"}</td>
+                                                <td >{$vo['hits']}</td>
+                                                <!--<td style="width:10%;"><eq name="vo['auto']" value="1"><i class="fa fa-check-square-o color-success"></i><else /><i class="fa fa-square-o"></i></eq></td>-->
+                                                <td class="text-right">
+                                                    <a data-placement="left" data-toggle="tooltip" data-original-title="下架" class="label <eq name="vo.status" value="0">label-default<else/>label-warning</eq> confirm no-refresh ajax-get status" callback="status({$i})" href="{:U('status?id='.$vo['id'])}"><i class="fa fa-ban"></i></a>
+                                                    <a data-placement="left" data-toggle="tooltip" data-original-title="修改" class="label label-primary" href="{:U('edit?id='.$vo['id'])}"><i class="fa fa-pencil"></i></a>
+                                                    <!-- <a data-placement="left" data-toggle="tooltip" data-original-title="删除" class="label label-danger ajax-get" href="{:U('del?id='.$vo['id'])}"><i class="fa fa-times"></i></a> -->
+                                                </td>
+                                            </tr>
+                                        </volist>
+                                        </tbody>
+                                        <else/>
+                                        <td colspan="3"> aOh! 暂时还没有内容!</td>
+                                    </notempty>
+                                </table>
+
+                                <div class="content col-lg-12 pull-left">
+                                    <div>
+						<span style="margin: 15px; ">
+							<input type="checkbox" value="" id="chkAll"/> 全选</span>
+							<span>
+								<input type="button" id="btnshelves" value="上架" style="margin-right: 15px;"/>
+								<input type="button" id="btnoffshelf" value="下架"/>
+							</span>
+                                    </div>
+                                    <div class="panel-foot text-center">
+                                        <div class="page">{$_page}</div>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <js href="__JS__/jquery.icheck/icheck.min.js"/>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            highlight_subnav('{:U('Shop/index')}');
+
+            $('.opiframe').click(function () {
+                layer.open({
+                    type: 2,
+                    title: $(this).attr('data-name'),
+                    shadeClose: true,
+                    maxmin: false, //开启最大化最小化按钮
+                    area: ['850px', '610px'],
+                    content: [$(this).attr('url'), 'no']
+                });
+            });
+            $('input').iCheck({
+                checkboxClass: 'icheckbox_square-blue checkbox',
+                radioClass: 'icheckbox_square-blue'
+            });
+
+            $("#check-all").on('ifChanged', function () {
+                var checkboxes = $("tr td").find(':checkbox');
+                if ($(this).is(':checked')) {
+                    checkboxes.iCheck('check');
+                } else {
+                    checkboxes.iCheck('uncheck');
+                }
+            });
+
+            //搜索功能
+            $("#search").click(function () {
+                var url = $(this).attr('url');
+                var keyword=  $('input[name=keyword]').val();
+                var status=  $("select[name=status]").val();
+                var fictitious=  $("select[name=fictitious]").val();
+                var type=    $("select[name=type]").val();
+                var ten=    $("select[name=ten]").val();
+
+                var   query="keyword/"+keyword+"/status/"+status+"/fictitious/"+fictitious+"/ten/"+ten+"/type/"+type;
+                url += '/' + query;
+
+                window.location.href = url;
+            });
+
+            var conditionarr =  JSON.parse('{$conditionarr}') ;
+            $('input[name=keyword]').val(  conditionarr['keyword']);
+            $("select[name=status]").val(conditionarr['status']);
+            $("select[name=fictitious]").val(conditionarr['fictitious']);
+            $("select[name=type]").val(conditionarr['type']);
+            $("select[name=ten]").val(conditionarr['ten']);
+
+            document.onkeydown = function () {
+                if (window.event && window.event.keyCode == 13) {
+                    window.event.returnValue = false;
+                }
+            }
+            
+            shopIndx.chkAll();
+            editStatus.shelves();
+            shopIndx.conditionarr();
+        });
+
+        var shopIndx = {
+            chkAll: function () {
+                $('#chkAll').next().on('click', function () {
+                    //选择所有
+                    var chkAllVal = $(this).prev().prop('checked');
+                    if (chkAllVal) {
+                        $('input[name="id[]"]').parent().attr('aria-checked', chkAllVal).attr('class', 'icheckbox_square-blue checkbox checked');
+                    } else {
+                        $('input[name="id[]"]').parent().attr('aria-checked', chkAllVal).attr('class', 'icheckbox_square-blue checkbox');
+                    }
+                });
+            },
+            statusEdit: function (status) {
+                var text=status=="1"?"上架":"下架";
+                if (confirm("确定要"+text+"数据吗？")) {
+                    var ids = [];
+                    $('div[aria-checked="true"]').children('input').each(function (index, element) {
+                        var id = $(this).val();
+                        if(id!=""){
+                            ids.push(id);
+                        }
+                    });
+
+                    if(ids.length<=0){
+                        alert("请至少选择一个要"+text+"的数据");
+                        return false;
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: "{:U('Shop/multipleStatus')}",
+                        data: {ids: ids,status:status},
+                        dataType: "json",
+                        success: function (result) {
+                            
+                        }
+                    });
+
+                    location.reload();
+                }
+            },
+            conditionarr: function () {
+            var conditionarr =  JSON.parse('{$conditionarr}') ;
+              $('input[name=keyword]').val(  conditionarr['keyword']);
+                var span='<span class="caret"></span>';
+
+                if(conditionarr['fictitious']!=undefined){
+                    $('#btnisshiwu').html(conditionarr['fictitious']+span);
+                }
+
+                var categorytitle=conditionarr['categorytitle'];
+                if(categorytitle!=undefined){
+                    $('#btnshoptype').html(categorytitle+span);
+                }
+
+              var statusname=conditionarr['statusname']
+                if(statusname!=undefined){
+                    $("#btnshopstatus").html(statusname+span);
+                }
+
+                var zhuanqu=conditionarr['zhuanqu'];
+                if(zhuanqu!=undefined){
+                    $("#btnshopten").html(zhuanqu+span);
+                }
+            }
+        }
+
+        var editStatus={
+            shelves: function () {
+                //上架
+                $("#btnshelves").on('click', function () {
+                    shopIndx.statusEdit(1);
+                });
+
+                //下架
+                $("#btnoffshelf").on('click', function () {
+                    shopIndx.statusEdit(0);
+                });
+            }
+        }
+
+        function status(i) {
+            var t=setTimeout(location.reload(),10000);
+            $('.status:eq(' + (i - 1) + ')').toggleClass('label-default').toggleClass('label-warning');
+        }
+
+    </script>
+</block>

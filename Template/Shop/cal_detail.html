@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <include file="{$web_tplpath}head.html" />
+    <style type="text/css">
+    .cb_con h1{
+        background: none;
+    }
+    </style>
+</head>
+
+<body>
+
+<div class="wrap">
+	<div class="header">
+		<div class="take_code_h">幸运号码</div>
+		<div class="take_code_win">{$period['kaijang_num']}</div>
+		<div class="take_detail"></div>
+	</div>
+	<div class="take_periods">
+			<span>第<i>{$period['no']}</i>期</span>当前参与<em>{$period['total_number']}人次</em>，总计<em>{$period['total_buy_gold']}</em>黄金
+	</div>
+	<div class="taked_out">
+		<div class="take_periods">
+			<span>幸运号码计算公式</span>
+		</div>
+		<div class="taked_method clearfix">
+			<div class="taked_ml">
+				<div class="tml_up">时时彩<i><a href="http://shishicai.cjcp.com.cn/chongqing/kaijiang/">[{$period['kaijiang_issue']}期]</a></i>:{$period['kaijiang_ssc']}</div>
+				<div class="tml_mid">{$period['total_number']}</div>
+				<div class="tml_down">取余数</div>
+			</div>
+			<div class="taked_mm">
+				<div class="tmm_up"></div>
+				<div class="tmm_down"></div>
+			</div>
+			<div class="taked_mr">
+				<div class="tmr_up">100001</div>
+				<div class="tmr_down">基础数值</div>
+			</div>
+		</div>
+	</div>
+	<div class="play_explain">若时时彩异常，未能获取开奖数据，将以提醒消息通知你，系统将随机从11111~99999中间抽取一组5位数字代替时时彩开奖。</div>
+</div>
+
+
+</body>
+</html>

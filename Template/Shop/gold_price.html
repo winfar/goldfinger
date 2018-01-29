@@ -1,0 +1,339 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=yes">
+<meta name="format-detection" content="telephone=no">
+<title>金价资讯</title>
+<style type="text/css">
+@media screen and (min-width: 320px) {  html {    font-size: 14px;  }}
+@media screen and (min-width: 375px) {  html {    font-size: 14px;  }}
+@media screen and (min-width: 414px) {  html {    font-size: 16px;  }}
+@media screen and (min-width: 640px) {  html {    font-size: 24px;  }}
+input,textarea,button,a {  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);  -webkit-appearance: none;  outline: none;}
+body {  margin: 0;  width: 100%;  line-height: 1.5;  color: #000;  background-color: #f5f5f5;  font-family: "黑体";  -webkit-user-select: none;  user-select: none;}
+hr {  width: 100%;  height: 1px;  background-color: #ddd;  border: 0;  margin: 0;}
+font {  font-family: "Helvetica";}
+a:link,a:visited,a:hover,a:active,a {  text-decoration: none !important;  color: #3A3A3A;}
+a,button,input,optgroup,select,textarea {  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);}
+ul,ul li {  list-style: none;}
+body,ul,ul li,p {  padding: 0;  margin: 0;}
+.nav {  line-height: 3rem;  border-bottom: 1px solid #e0e0e0;  font-size: 1.1rem;  position: relative;  color: #000;  width: 100%;}
+.nav2 {  position: fixed;  top: 0;  background-color: #f5f5f5;  z-index: 100;}
+.nav .nav-back {  margin-left: 5%;  position: absolute;  background-image: url(images/back_icon.png);  background-repeat: no-repeat;  background-size: 0.678rem 1.214rem;  width: 0.678rem;  height: 1.214rem;  margin-top: 0.892rem;}
+.nav .nav-title {  width: 100%;  text-align: center;  display: inline-block;background:#fec94a;color:#773b0a;}
+.nav .nav-right {  color: #000;  margin-right: 5%;  position: absolute;  right: 0;  top: 0;}
+html {	font-family: sans-serif;	-ms-text-size-adjust: 100%;	-webkit-text-size-adjust: 100%}
+body {	margin: 0;	background-color: #F5F5F5;	font-family: "黑体";	-webkit-user-select: none;	user-select: none;}
+font {	font-family: "Helvetica";}
+b {	color: #ecac00;	font-weight: normal;}
+#price {	height: 15rem;}
+.toolbar {	height: 33px;	padding: 10px 10px;	background-color: #fff;	border-bottom: 1px solid #e0e0e0;	margin-top:3rem;}
+.toolbar .btn {	background-color: #fff;	color: #565656;	float: left;	width: 32.8%;	text-align: center;	font-size: 15px;	font-weight: bold;	line-height: 40px;}
+.toolbar .active {	border-bottom:3px solid #f2b643;	color: #f2b643;}
+.selected{	height:16px;	line-height:16px;	padding-top:15px;	padding-right:10px;	padding-bottom:8px;	font-size:14px;	color:#565656;	background-color:#fff;}
+.selected .info{	float:right;}
+.selected .info .time{	padding-right:15px;	border-right:1px solid #e0e0e0;}
+.selected .info .price{	margin-left:10px;}
+.title {	border-top: 1px solid #e0e0e0;	border-bottom: 1px solid #e0e0e0;}
+.title .title-text {	display: inline;	line-height: 30px;	font-size: 15px;	margin-left: 8px;	color: #949494;}
+a {	text-decoration: none;	color: #303030;}
+</style>
+<script type="text/javascript">
+Date.prototype.format = function(format) {
+	var o = { 
+		"M+" : this.getMonth()+1, //month 
+		"d+" : this.getDate(), //day 
+		"h+" : this.getHours(), //hour 
+		"m+" : this.getMinutes(), //minute 
+		"s+" : this.getSeconds(), //second 
+		"q+" : Math.floor((this.getMonth()+3)/3), //quarter 
+		"S" : this.getMilliseconds() //millisecond 
+	};
+
+	if(/(y+)/.test(format)) { 
+		format = format.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length)); 
+	} 
+
+	for(var k in o) { 
+		if(new RegExp("("+ k +")").test(format)) { 
+			format = format.replace(RegExp.$1, RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length)); 
+		} 
+	} 
+	return format;
+}
+</script>
+</head>
+<body><nav id="nav" class="nav nav2">
+<!-- <a href="javascript:void(0);" class="nav-back"></a> -->
+<span id="title" class="nav-title"></span></nav>
+	<div class="toolbar">
+		<div type="2" class="btn left active"><font>24</font>小时</div>
+		<div type="1" class="btn"><font>7</font>日</div>
+		<div type="0" class="btn right"><font>30</font>日</div>
+	</div>
+	<div class="selected">
+		<div class="info">
+			<font class="time"></font>
+			<font class="price"></font>
+		</div>
+	</div>
+	<div id="price" data-highcharts-chart="0">
+
+	</div>
+<script type="text/javascript" src="{$web_tplpath}js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="{$web_tplpath}js/highstock-1.2.5.js"></script>
+<script type="text/javascript" src="{$web_tplpath}js/nav.js"></script>
+<script type="text/javascript">
+	Highcharts.setOptions({
+		global: {
+			useUTC: false
+		},
+		lang: {
+			months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+			shortMonths: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+			loading: '正在加载中,请稍后....',
+			rangeSelectorFrom: '从',
+			rangeSelectorTo: '到',
+			rangeSelectorZoom: '缩放',
+			weekdays: ['星期天', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+			resetZoom: "还原缩放",
+			resetZoomTitle: "还原缩放比例至 1:1"
+		}
+	});
+	var winHeight = $(window).height();
+	$(".top").height(winHeight);
+	$("#div2").css('margin-top', (winHeight / 2 - 50)  + 'px');
+</script>
+<script type="text/javascript">
+	var jsonPPath = 'https://m.g-banker.com/';
+	var HideLoadInterval = [], AutoPriceInterval, AutoLoadTime = 60000 * 10;
+
+	function showLoading() {
+		$(".top").show();
+		HideLoadInterval[HideLoadInterval.length] = window.setInterval(function() {
+			hideLoading();
+		}, 10000);
+	}
+	
+	function hideLoading() {
+		$(".top").hide();
+		for(var i = 0; i < HideLoadInterval.length; i++) {
+			window.clearInterval(HideLoadInterval.pop());
+		}
+	}
+	
+	$.ajaxSetup({
+		beforeSend: function() {
+			showLoading();
+			return true;
+		},
+		complete: function() {
+			hideLoading();
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			hideLoading();
+		}
+	});
+	
+	function loadData(_queryFlag) {
+
+		$.getJSON(jsonPPath + 'info/getGoldPriceJsonP?jsoncallback=?', {
+			queryFlag: _queryFlag
+		}, function(_data) {
+			var _d = [];
+			if (_data.success) {
+				for (var j = 0; j < _data.priceArray.length; j++) {
+					_d.push([parseFloat(_data.priceArray[j].x), parseFloat(_data.priceArray[j].y)]);
+				}
+				$(".selected .time").html(new  Date(_d[_d.length-1][0]).format("yyyy-MM-dd hh:mm"));
+				$(".selected .price").html((_d[_d.length-1][1]).toFixed(2)+"元/克");
+				// $("#nav #title").html((_d[_d.length-1][1]).toFixed(2)+"元/克");
+				$("#nav #title").html("{:getGoldPrice()}"+"元/克");
+			}
+			var _tickInterval, _fmt,_ordinal,_min,_max;
+			if (_queryFlag == 0) {
+				// 30天
+				_tickInterval = 7 * 24;
+				_fmt = "dd日";
+				_ordinal = true;
+				_min = null;
+				_max = null;
+			} else if (_queryFlag == 1) {
+				// 7天
+				_tickInterval = 24;
+				_fmt = "dd日";
+				_ordinal = true;
+				_min = null;
+				_max = null;
+			} else if (_queryFlag == 2) {
+				// 小时
+				_tickInterval = 4;
+				_fmt = "hh:mm";
+				_ordinal = false;
+				_min = new Date(_d[_d.length-1][0]).setHours(0,0,0,0);
+				_max = new Date(_d[_d.length-1][0]+1*24*60*60*1000).setHours(0,0,0,0);
+			}
+			new Highcharts.StockChart({
+				chart: {
+					renderTo: 'price',
+					pinchType:'none'
+				},
+				credits: {
+					enabled: false
+				},
+				rangeSelector: {
+					enabled: false,
+				},
+				colors: ['#ff701a'],
+				series: [{
+					name: "金价",
+					//type: 'line',
+					type: 'area',
+					data:  _d,
+					threshold: null,
+					tooltip : {
+	                    valueDecimals : 2
+	                },
+	                fillColor : {
+	                    linearGradient : {
+	                        x1: 0,
+	                        y1: 0,
+	                        x2: 0,
+	                        y2: 1
+	                    },
+	                    stops : [
+	                        [0, "#ffe5d6"],
+	                        [1, Highcharts.Color("#ffe5d6").setOpacity(0).get('rgba')]
+	                    ]
+	                }
+					
+				}],
+				//控制线的宽度
+				plotOptions: {
+					area:{
+						lineWidth: 1,
+						states:{  
+							hover:{
+								lineWidth:1
+							}
+						}
+					}
+					
+				},
+				tooltip: {
+					
+					formatter: function() {
+						$(".selected .time").html(new  Date(this.x).format("yyyy-MM-dd hh:mm"));
+						$(".selected .price").html(this.y.toFixed(2)+"元/克");
+						var vDate = new Date(this.x);
+						var vDate1 = new Date(new Date(this.x).getTime());
+						var weekday = new Array(7);
+						weekday[0] = "星期日";
+						weekday[1] = "星期一";
+						weekday[2] = "星期二";
+						weekday[3] = "星期三";
+						weekday[4] = "星期四";
+						weekday[5] = "星期五";
+						weekday[6] = "星期六";
+						var s = '<span>' + weekday[vDate1.getDay()] + "," + vDate1.format("yyyy-MM-dd hh:mm") + '</span>';
+						$.each(this.points, function(i, point) {
+							s += '<br/><span style="color: ' + this.series.color + '">' + this.series.name + "</span>: <b>" + point.y + "</b>";
+						});
+						return s;
+					},
+					//设置tooltips的位置
+					positioner: function() {
+						return {
+							x: -100,
+							y: -100
+						}
+					}   
+				},
+				navigator: {
+					enabled: false
+				},
+				scrollbar: {
+					enabled: false
+				},
+				legend: {
+					enabled: false
+				},
+				exporting: {
+					enabled: false
+				},
+				xAxis: {
+					tickInterval: _tickInterval*3600*1000,
+					labels: {
+						formatter: function() {
+							var vDate = new Date(this.value);
+							return vDate.format(_fmt);
+							
+						},
+						align: 'center',
+						style:{
+							'font-size':'8px'
+						}
+					},
+					ordinal: _ordinal,
+					min:_min,
+					max:_max
+				},
+				yAxis:{
+					opposite: false
+				}
+			});
+		});
+	}
+	function getParams() {
+		var url = location.search; //获取url中"?"符后的字串
+		var theRequest = new Object();
+		if (url.indexOf("?") != -1) {
+			var str = url.substr(1);
+			strs = str.split("&");
+			for(var i = 0; i < strs.length; i ++) { 
+				theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]); 
+			}
+		}
+		return theRequest; 
+	}
+	function compareVersion(_va, _vb) {
+		var _ra = _va.split(".");
+		var _rb = _vb.split(".");
+		if (!_ra) {
+			return -1;
+		}
+		if (!_rb) {
+			return -1;
+		}
+		var _len = _ra.length < _rb.length ? _ra.length : _rb.length;
+		for (var i = 0; i < _len; i++) {
+			if(_ra[i] != _rb[i]) {
+				return _ra[i] - _rb[i];
+			}
+		}
+		return 0;
+	}
+	function autoLoadPrice() {
+		AutoPriceInterval = window.setInterval(function() {
+			loadData($('.active').attr('type'));
+		}, AutoLoadTime);
+	}
+	$(function() {
+		loadData(2);
+		$(".btn").bind('touchstart', function() {
+			var _me = $(this);
+			$(".btn").removeClass('active');
+			_me.addClass('active');
+			loadData(_me.attr('type'));
+			window.clearInterval(AutoPriceInterval);
+			autoLoadPrice();
+		});
+		loadData(2); //第一次执行loadData函数时候参与未初始化完全，此次默认画24小时曲线图
+
+		autoLoadPrice();
+
+	});
+</script>
+
+</body>
+</html>

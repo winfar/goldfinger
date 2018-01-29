@@ -1,0 +1,255 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <include file="{$web_tplpath}head.html" />
+</head>
+
+<body>
+
+    <div class="wrap">
+
+        <div class="header header_get">
+            <div class="user_own">持有的黄金</div>
+            <div class="user_dia"><i>{$user.gold_balance}</i>克</div>
+            <div class="dia_price">当前金价：<i id="gold_price"></i></div>
+            <div class="dia_operate"><a class="cash_m"><em></em><i class="cash_money"></i></a><a class="cash_weight"><em></em><i>起提克数:{$channel_info.extract_number}毫克/笔</i></a></div>
+        </div>
+        <div class="get_cash">
+            <div class="gt_periods">
+                <a href="{:U('cashlist')}">
+                    <span>可提现至</span><em>提现记录</em>
+                </a>
+            </div>
+            <ul>
+                <li>
+
+                    <span class="channel"><img src="{$web_tplpath}images/wx.png" /></span>
+                    <span class="get_channel">
+					<em>微信</em>
+					<em>限额{$channel_info.extract_number}~<i id="wx_max"></i>毫克</em>
+				</span>
+                    <input type="radio" class="rdo channel_type" name="channel" value="0" checked />
+                </li>
+                <li>
+
+                    <span class="channel"><img src="{$web_tplpath}images/zfb.png" /></span>
+                    <span class="get_channel">
+					<em>支付宝</em>
+					<em>限额{$channel_info.extract_number}~<i id="alipay_max"></i>毫克</em>
+				</span>
+                    <input type="radio" class="rdo channel_type" name="channel" value="1" />
+                </li>
+                <!-- <li class="channel_count">
+				
+				<span class="get_channel gc_wx">
+					<input type="text" placeholder="微信帐号" value=""/>
+					<input type="text" placeholder="微信姓名" value=""/>
+				</span>
+			</li> -->
+                <li class="channel_count channel_pay" style="display: none;">
+                    <span class="get_channel gc_zfb">
+					<input type="text" placeholder="支付宝帐号" id="cash_account" value=""/>
+					<input type="text" placeholder="支付宝姓名" id="cash_name" value=""/>
+				</span>
+                </li>
+            </ul>
+            <div class="gold_weight">
+                <span>黄金提现</span>
+                <span><em class="g"></em><input type="number" placeholder="请输入毫克数" id="number" name="number"/></span>
+            </div>
+
+            <div class="gt_periods gtp_cash">
+                <span>折合人民币<i class="total_money">0</i>元</span><em class="total_cash_submit">全部提现</em>
+            </div>
+        </div>
+        <div class="gt_btn cash_sub"><a href="javascript:;" class="cash_submit">确认提现</a></div>
+    </div>
+    <!-- 提示框 -->
+    <div class="tips_box" style="display: none;">
+        <div class="tpb_con">
+            <p class="content"></p>
+        </div>
+    </div>
+    <div class="loading" style="display: none;"></div>
+
+    <div class="tbox">
+        <div class="dc_fee">
+            <span class="close">×</span>
+            <!-- <p>提现费用</p>  -->
+            <p></p>
+        </div>
+        <div class="dc_w">
+            <span class="close">×</span>
+            <!-- <p>提现克数</p> -->
+            <p></p>
+        </div>
+
+    </div>
+    <script type="text/javascript">
+        $(function() {
+            //当前金价
+            var goldPrice = parseFloat("{:getGoldprice()}");
+            $("#gold_price").html(goldPrice);
+            //起提克数
+            var begin_weight = parseFloat("{$channel_info.extract_number}");
+            //微信最大克数
+            var wx_max = Math.floor(20000 / goldPrice);
+            $("#wx_max").html(wx_max * 1000);
+            //支付宝最大克数
+            var Alipay_max = Math.floor(50000 / goldPrice);
+            $("#alipay_max").html(Alipay_max * 1000);
+            //提现百分比
+            var extractMoney = parseFloat("{$channel_info.extract_money}");
+            //一毫克提取费用 保留两位小数
+            //var money_one = math.ceil((goldPrice/1000)*(extractMoney/100));
+            var money_one = ((goldPrice / 1000) * (extractMoney / 100));
+            var cashMoney = Math.ceil(money_one * 100) / 100;
+            $(".cash_money").html("提现费用:" + cashMoney + "元/毫克");
+            $(".tbox .dc_fee p").html("服务费每毫克为：申请提现实时金价的" + extractMoney + "%。<br>小提示：费用会根据黄金交易所实时金价而变动。")
+            $(".tbox .dc_w p").html("单笔最低黄金提现克数为" + begin_weight + "毫克，微信当前最大" + wx_max + "克/笔，支付宝当前最高" + Alipay_max + "克/笔。<br>小提示：单笔最高提现克数会根据黄金交易所实时金价而变动。")
+            $('.channel_type').change(function() {
+                var type = $(this).val();
+                if (type == 1) {
+                    $(".channel_pay").css('display', 'block');
+                } else {
+                    $(".channel_pay").css('display', 'none');
+                }
+            });
+            //提取费用tips
+            $(".cash_m").click(function() {
+                $(".tbox").css("display", "block");
+                $(".dc_fee").css("display", "block");
+            })
+
+            //起提克数tips
+            $(".cash_weight").click(function() {
+                $(".tbox").css("display", "block");
+                $(".dc_w").css("display", "block");
+            })
+
+
+            //点击
+            $('#number').on('input', function() {
+                //输入的值
+                var number = $(this).val();
+                if ((number == "请输入克数") || (number == "")) {
+                    $(".g").removeClass("g_on");
+                } else {
+                    $(".g").addClass("g_on");
+                }
+                //折合成人民币 - 总钱数 取两位小数 其他舍掉
+                var total = Math.round(((goldPrice / 1000) * number) * 100) / 100;
+                //提金费用- 取两位小数 进一
+                var cash = Math.ceil(((goldPrice / 1000) * (extractMoney / 100) * number) * 100) / 100;
+
+                var totalMoney = (total - cash).toFixed(2);
+                $(".total_money").html(totalMoney);
+            });
+            //提现操作
+            $(".cash_submit").click(function() {
+                //起提克数 mg
+                var extractNumber = parseFloat("{$channel_info.extract_number}");
+                //拥有的黄金数 mg
+                var goldBalance = parseFloat("{$user.gold_balance}") * 1000;
+                //要提的
+                var number = $('#number').val();
+                //折合成人民币 - 总钱数 取两位小数 其他舍掉
+                var total = Math.round(((goldPrice / 1000) * number) * 100) / 100;
+                //提金费用- 取两位小数 进一
+                var cash = Math.ceil(((goldPrice / 1000) * (extractMoney / 100) * number) * 100) / 100;
+                var totalMoney = (total - cash).toFixed(2);
+                //转账类型 0微信1支付宝
+                var type = $("input[name='channel']:checked").val();
+                //账号
+                var cash_account = $('#cash_account').val();
+                //姓名
+                var cash_name = $('#cash_name').val();
+                //最大提现毫克数
+                var max = 50000;
+                if (number < extractNumber) {
+                    $('.content').html("最小起提克数" + extractNumber + "mg");
+                    $('.tips_box').show();
+                    setTimeout(function() {
+                        $(".tips_box").hide();
+                    }, 1000);
+                } else if (number > goldBalance) {
+                    $('.content').html("拥有的黄金不足");
+                    $('.tips_box').show();
+                    setTimeout(function() {
+                        $(".tips_box").hide();
+                    }, 1000);
+                } else if (number > max) {
+                    $('.content').html("一次最多提取" + extractNumber + "mg");
+                    $('.tips_box').show();
+                    setTimeout(function() {
+                        $(".tips_box").hide();
+                    }, 1000);
+                } else if (type == 1 && cash_account.length == 0) {
+                    $('.content').html("支付宝帐号不能为空");
+                    $('.tips_box').show();
+                    setTimeout(function() {
+                        $(".tips_box").hide();
+                    }, 1000);
+                } else if (type == 1 && cash_name.length == 0) {
+                    $('.content').html("支付宝姓名不能为空");
+                    $('.tips_box').show();
+                    setTimeout(function() {
+                        $(".tips_box").hide();
+                    }, 1000);
+                } else {
+                    var url = "{:U('ajaxdrawcash')}";
+                    $.ajax({
+                        type: "POST", //通常会用到两种：GET,POST。默认是：GET
+                        url: url, //(默认: 当前页地址) 发送请求的地址
+                        data: {
+                            goldPrice: goldPrice,
+                            number: number,
+                            total: total,
+                            cash: cash,
+                            cashAccount: cash_account,
+                            cashName: cash_name,
+                            cashType: type
+                        },
+                        dataType: "json", //预期服务器返回的数据类型。
+                        beforeSend: function() {
+                            $(".loading").show();
+                        }, //发送请求
+                        success: function(data) {
+                            $(".loading").hide();
+                            if (data.code == 200) {
+                                // $('.content').html("提现成功!");
+                                // $('.tips_box').show(); 
+                                // setTimeout(function(){$(".tips_box").hide();}, 1000);
+                                setTimeout(function() {
+                                    window.location = "{:U('drawcashsuc')}";
+                                }, 100);
+                            } else {
+                                $('.content').html(data.msg);
+                                $('.tips_box').show();
+                                setTimeout(function() {
+                                    $(".tips_box").hide();
+                                }, 1000);
+                            }
+                        }
+                    });
+                }
+            });
+            //全部提现操作
+            $(".total_cash_submit").click(function() {
+                //输入的值
+                var number = parseFloat("{$user.gold_balance}") * 1000;
+                //折合成人民币 - 总钱数 取两位小数 其他舍掉
+                var total = Math.round(((goldPrice / 1000) * number) * 100) / 100;
+                //提金费用- 取两位小数 进一
+                var cash = Math.ceil(((goldPrice / 1000) * (extractMoney / 100) * number) * 100) / 100;
+
+                var totalMoney = (total - cash).toFixed(2);
+                $("#number").val(number);
+                $(".total_money").html(totalMoney);
+            });
+        });
+    </script>
+</body>
+
+</html>
