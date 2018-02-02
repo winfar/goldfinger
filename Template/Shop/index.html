@@ -104,9 +104,9 @@
             $("#fnTimeCountDown").fnTimeCountDown("", function() {
                 $("#fnTimeCountDown").find('.index_loading').show();
                 var url = '/shop.php' + "?r=" + Math.random();
-                setTimeout(function() {
-                    location.href = url;
-                }, 3000);
+                // setTimeout(function() {
+                //     location.href = url;
+                // }, 3000);
             });
 
             $(".gold_price").click(function(argument) {

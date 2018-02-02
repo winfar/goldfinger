@@ -4,9 +4,8 @@
 // 检测PHP环境
 if(version_compare(PHP_VERSION,'5.3.0','<'))  die('require PHP > 5.3.0 !');
 
-
 // 开启调试模式 建议开发阶段开启 部署阶段注释或者设为false true
-$debug = $_SERVER['HTTP_HOST'] == 'oneshop.busonline.com' ? false : true;
+$debug = $_SERVER['HTTP_HOST'] == 'www.molijinbei.com' ? false : true;
 define('APP_DEBUG',$debug);
 define('BIND_MODULE','Shop');
 

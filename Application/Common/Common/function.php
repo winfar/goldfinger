@@ -795,11 +795,11 @@ function recordLog($data, $msg = '')
 }
 
 function isHostProduct(){
-    return $_SERVER['HTTP_HOST']=='goldfinger.busonline.com';
+    return $_SERVER['HTTP_HOST']=='www.molijinbei.com';
 }
 
 function isHostTest(){
-    return $_SERVER['HTTP_HOST']=='test.goldfinger.busonline.com' || $_SERVER['HTTP_HOST']=='local.goldfinger.busonline.com' || $_SERVER['HTTP_HOST']=='127.0.0.1';
+    return $_SERVER['HTTP_HOST']=='test.goldfinger.molijinbei.com' || $_SERVER['HTTP_HOST']=='local.goldfinger.molijinbei.com' || $_SERVER['HTTP_HOST']=='127.0.0.1';
 }
 
 function isHostOnlineTest(){
@@ -808,7 +808,7 @@ function isHostOnlineTest(){
 
 function getHost(){
     switch ($_SERVER['HTTP_HOST']) {
-        case 'oneshop.busonline.com':
+        case 'www.molijinbei.com':
             return 'product';
             break;
         case 'onlinetest.oneshop.busonline.cn':
@@ -950,7 +950,7 @@ function getUnit($pid){
  * @param $data 返回数据、$code 返回码, $msg 返回信息
  * @return json
  **/
-function returnJson($data=array(), $code = '200', $msg = 'success')
+function returnJson($data=array(), $code = 200, $msg = 'success')
 {
     if($code>1500){
         recordLog($code,$msg);

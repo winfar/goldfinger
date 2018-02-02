@@ -127,7 +127,7 @@ class BaseController extends Controller {
 		// $this->username=$user_auth['username']; 
 
 		//接口访问频率限制
-		$this->rate_limit();
+		// $this->rate_limit();
     }
 
 	/**

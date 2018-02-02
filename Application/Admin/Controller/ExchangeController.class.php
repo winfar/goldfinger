@@ -32,8 +32,40 @@ class ExchangeController extends WebController {
 		}
 
 		$this->assign('info', $info);
-		$this->meta_title = '兑换设置';
+		$this->meta_title = '比例设置';
 		$this->display();
 	}
+
+	public function rechargeconfig(){
+
+		$map = [];
+		$list = $this->lists('ExchangeRecharge', $map);
+        $this->assign('_list', $list);
+		$this->meta_title = '充值设置';
+		$this->display();
+	}
+
+	public function rechargeadd(){
+		$this->meta_title = '新增充值设置';
+		$this->display('rechargedetails');
+	}
+
+	public function rechargeedit($id = null){
+        $exchangeRecharge = D('ExchangeRecharge');
+        if(IS_POST){ //提交表单
+            if(false !== $exchangeRecharge->update()){
+                $this->success('编辑成功！');
+            } else {
+                $error = $exchangeRecharge->getError();
+                $this->error(empty($error) ? '未知错误！' : $error);
+            }
+        } else {
+			$info = $id ? $exchangeRecharge->info($id) : '';
+			// $info.extra = intval($info.extra);
+            $this->assign('info', $info);
+			$this->meta_title = '编辑充值设置';
+            $this->display('rechargedetails');
+        }
+    }
 
 }

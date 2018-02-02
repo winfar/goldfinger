@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="shortcut icon" href="__IMG__/favicon.png">
+<title>{$meta_title}</title>
+<!-- Bootstrap core CSS -->
+<css href="__JS__/bootstrap/dist/css/bootstrap.css" />
+<css href="__FONTS__/font-awesome-4/css/font-awesome.min.css" />
+<!-- Custom styles for this template -->
+<css href="__CSS__/style.css" />
+<block name="style"></block>
+</head>
+<body>
+
+<block name="body"></block>
+
+<js href="__JS__/jquery.js" />
+<js href="__JS__/bootstrap/dist/js/bootstrap.min.js" />
+<js href="__STATIC__/layer/layer.js" />
+<js href="__JS__/behaviour/web.js" />
+
+<script type="text/javascript">
+	$(function(){
+		var index = parent.layer.getFrameIndex(window.name);
+		$('.md-close').click(function(){
+			parent.layer.close(index);
+		});
+		mdclose = function(index){
+			parent.location.reload();
+			parent.layer.close(index);
+		}
+	});
+</script>
+<block name="script"></block>
+</body>
+</html>

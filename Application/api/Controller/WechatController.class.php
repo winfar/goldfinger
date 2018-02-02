@@ -7,35 +7,35 @@ use Think\Controller;
 class WechatController extends BaseController
 {   
     protected $host = '';
-    protected $callbackHost = 'http://1.busonline.com';
+    protected $callbackHost = 'http://www.molijinbei.com';
 	protected $callbackUrl = '/h5/pkshare/index.html';// 回调地址
 
     protected function _initialize()
     {
         parent::_initialize();
-        vendor("weixin.class_weixin_adv");
+        vendor("Wechat.class_weixin_adv");
 
         $this->$host = $_SERVER['HTTP_HOST'];
 
-        if(strpos($_SERVER['HTTP_HOST'],"passport.busonline.com")==0){
-            $this->callbackHost = "http://1.busonline.com";
-        }
-        else{
-            $this->callbackHost = "http://onlinetest.1.busonline.com";
-        }
+        // if(strpos($_SERVER['HTTP_HOST'],"www.molijinbei.com")==0){
+        //     $this->callbackHost = "http://1.busonline.com";
+        // }
+        // else{
+        //     $this->callbackHost = "http://onlinetest.1.busonline.com";
+        // }
 
-        $this->callbackUrl = $this->callbackHost . $this->callbackUrl;
+        // $this->callbackUrl = $this->callbackHost . $this->callbackUrl;
     }
 
     //微信登录回调
-    function oauth2($extras){
+    public function oauth2($code){
         // echo "extras:" . $extras;
+        
+		$weixin= new \class_weixin_adv("wxa6fea15278d6e77a","1d933ea4ddde1da122875951dbc9878d");
 
-		$weixin= new \class_weixin_adv();
-
-		if (isset($_GET['code'])){
+		if ($code){
             
-			$res = $weixin->get_access_token($_GET['code']);
+			$res = $weixin->get_access_token($code);
 
             $res2 = $weixin->check_token($res['access_token'],$res['openid']);
 
@@ -47,24 +47,29 @@ class WechatController extends BaseController
                 if(empty($res3['errcode'])){
                     $res['access_token'] = $res3['access_token'];
                 }else{
-                    returnJson('', 1, '授权出错,请重新授权!');
+                    returnJson('', 401, '授权出错,请重新授权!');
                 }
             }
 
 			$row = $weixin->get_user_info($res['access_token'],$res['openid']); 
 
 			if ($row['openid']) {
-                $url = $this->callbackUrl."?code=200&extras=".$extras."&avatar=".urlencode($row['headimgurl'])."&nickname=".$row['nickname'];
-                // echo "url:" . $url;
-                header("Location: $url");
-
+                // $url = $this->callbackUrl."?code=200&extras=".$extras."&avatar=".urlencode($row['headimgurl'])."&nickname=".$row['nickname'];
+                // // echo "url:" . $url;
+                // header("Location: $url");\
+                
+                return $row;
 			}else{
-                $url = $this->callbackUrl."?&code=401";
-                header('Location: '.$url);
+                // $url = $this->callbackUrl."?&code=401";
+                // header('Location: '.$url);
+
+                returnJson('', 402, '授权出错,用户信息获取错误!');
 			}
         }else{
-            $url = $this->callbackUrl."?&code=402";
-            header('Location: '.$url);
+            // $url = $this->callbackUrl."?&code=402";
+            // header('Location: '.$url);
+            
+            returnJson('', 403, '参数错误');
         }
     }
 }	

@@ -653,6 +653,21 @@ class IndexController extends BaseController {
         $list = D('api/Pay')->pay($pid,$sid,$price,$uid,$type,$gold,$md5);
     }
 
+    public function recharge(){
+        $uid = empty($this->uid) ? 0 : $this->uid;//用户id
+        //用户信息
+        $user = D('api/User')->getUserInfoByUid($uid);
+        if($user){
+            $map = ['status'=>1];
+            $list = M('ExchangeRecharge')->where($map)->select();
+
+            $this->assign('user', $user);
+            $this->assign('_list', $list);
+        }
+
+        $this->display($this->tplpath."recharge.html");
+    }
+
     public function test()
     {
         echo getGoldprice();

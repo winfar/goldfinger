@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <include file="{$web_tplpath}head.html" />
+</head>
+
+<body>
+
+    <div class="wrap">
+        <div class="header">
+            <div class="user"><img class="user_img" src="{$user.headimgurl}" /><span id="notice"><if condition="($notification gt 0)"><i></i></if></span></div>
+            <div class="user_own">剩余{:C("WEB_CURRENCY")}</div>
+            <div class="user_dia"><i>{$user.gold_coupon}</i></div>            
+        </div>
+        <div class="get_num">
+            <span class="gt_tit">请选择充值面额</span>
+            <div class="select_num">
+                <volist name="_list" id="vo">
+                    <span class="cash_g">{$vo['income']|default=0|intval}{:C("WEB_CURRENCY")}<br>￥{$vo['payout']|default=0.00}<br>{:$vo['extra']>0?'送'.intval($vo['extra']).C("WEB_CURRENCY"):''}</span>
+                </volist>
+                <input type="hidden" id="cash_number" value="">
+                <input type="hidden" id="total_cash_gold" value="">
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(function() {
+
+        });
+    </script>
+</body>
+
+</html>

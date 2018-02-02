@@ -4571,6 +4571,8 @@ button::-moz-focus-inner {
   border-radius: 5px;
   -webkit-border-radius: 5px;
   border: 0;
+  -webkit-box-shadow: 0;
+  box-shadow: 0 0 0 rgba(0, 0, 0, .5);
 }
 .custom-width {
   width: 40%;

@@ -179,25 +179,25 @@ class UserModel extends Model
         $data['activation'] = 1;
 
         
-        try{
-            $liveUser = D('api/PlatformApi')->getUserInfo($param['uid']);
-            if($liveUser['code']=='1000'){
-                $data['phone'] = $liveUser['result']['bandPhone'];
-                if(empty($data['phone'])){
-                    if(preg_match("/^1[34578]{1}\d{9}$/",$liveUser['result']['username'])){  
-                        $data['phone'] = $liveUser['result']['username'];
-                    }
-                }
-                $data['spread'] = $liveUser['result']['isAnchor'];//是否主播
-                $data['passport_uid'] = $liveUser['result']['organizationId'];//工会id
-            }
-            else{
-                recordLog(json_decode($liveUser),'同步LIVE用户数据失败');
-            }
-        }
-        catch(Exception $e){
-            recordLog(json_decode($e),'同步LIVE用户数据异常');
-        }
+        // try{
+        //     $liveUser = D('api/PlatformApi')->getUserInfo($param['uid']);
+        //     if($liveUser['code']=='1000'){
+        //         $data['phone'] = $liveUser['result']['bandPhone'];
+        //         if(empty($data['phone'])){
+        //             if(preg_match("/^1[34578]{1}\d{9}$/",$liveUser['result']['username'])){  
+        //                 $data['phone'] = $liveUser['result']['username'];
+        //             }
+        //         }
+        //         $data['spread'] = $liveUser['result']['isAnchor'];//是否主播
+        //         $data['passport_uid'] = $liveUser['result']['organizationId'];//工会id
+        //     }
+        //     else{
+        //         recordLog(json_decode($liveUser),'同步LIVE用户数据失败');
+        //     }
+        // }
+        // catch(Exception $e){
+        //     recordLog(json_decode($e),'同步LIVE用户数据异常');
+        // }
         
 
         $map = array();

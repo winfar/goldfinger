@@ -10,6 +10,10 @@ class BaseController extends Controller {
 
     protected function _initialize(){
 
+		$wechat_appid = "wxa6fea15278d6e77a";
+		$http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';  
+		$wechar_redirect_uri = $http_type . $_SERVER["HTTP_HOST"] ."/shop.php";
+
 		//加密验证
 		// $param['channelid'] = I('cid');
 		
@@ -67,42 +71,59 @@ class BaseController extends Controller {
 			// if (!empty($redis_uid)) {
 			// 	$this->uid = $redis_uid;
 			// }
+
+			$cookie_uid = cookie('bo_uid');
 			if (!empty(cookie('bo_uid'))) {
 				$this->uid = cookie('bo_uid');
 			}
 			else{
-				$this->redirect('Remind/index');
+				// $this->redirect('Remind/index');
 				//header('Location: ./404.php');
-				exit();
-			}
-		}
+				// exit();
 
-		if($this->uid > 0){
-			$sid = $param['sid'];
-			if(!empty($sid)){
-				if($this->uid!=$sid){
-					cookie('bo_uid',null);
-					// $redisCache->rm($this->uid);
+				$code = I('code',0);
+				if($code == 0){
+					$url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=".$wechat_appid."&redirect_uri=".urlencode($wechar_redirect_uri)."&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
+					header('Location: '.$url);
+					exit();
+				}
+				else{					
+					$oauth_res = A('api/Wechat')->oauth2($code);
 
-					$page = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-					header("Refresh: 0; url=$page");
+					if($oauth_res){
+						$userInfo = M('User')->where(['username'=>$oauth_res['openid']])->find();
+
+						if($userInfo){
+							$data['id'] = $userInfo['id'];
+							$data['nickname'] = $oauth_res['nickname'];
+							$data['headimgurl'] = $oauth_res['headimgurl'];	
+							M('User')->save($data);
+
+							$this->uid=$data['id'];
+						}
+						else{
+							// $data['uid'] = ;
+							$data['nickname'] = $oauth_res['nickname'];
+							$data['username'] = $oauth_res['openid'];
+							$data['openid'] = $oauth_res['openid'];
+							// $data['phone'] = $param['phone'];
+							$data['password'] = '7f916d5410154531d90af271570666dc';
+							$data['headimgurl'] = $oauth_res['headimgurl'];	
+							$data['channelid'] = 0;
+							
+							$this->uid = D('api/User')->addUserInfo($data);
+						}
+
+						cookie('uid',$this->uid,array('expire'=>86400,'prefix'=>'bo_','path'=>'/'));
+
+						// $redisCache->set($this->uid, $this->uid, 86400);
+
+						//记录访问日志
+						// D('api/User')->addUserAccessLog($this->uid);
+					}
 				}
 			}
-
-			// if($this->uid > 0){
-			// 	$user = D('api/User')->getUserInfoByUid($this->uid);
-			// 	if($user == null){
-			// 		cookie('bo_uid',null);
-			// 		cookie(null);
-			// 		$page = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-			// 		header("Refresh: 0; url=$page");
-			// 	}
-			// }
-		}
-		else{
-			// header('Location: ./404.php');
-			// exit();
-		}
+		}		
 
 		$config =   S('DB_CONFIG_DATA');
         if(!$config){
@@ -144,6 +165,7 @@ class BaseController extends Controller {
 
 		//访问频率限制
 		//$this->rate_limit();
+		
     }
 
 	private function validate_sign($param,$sign){

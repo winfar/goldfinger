@@ -1,0 +1,90 @@
+<extend name="Public/base" />
+<block name="body">
+    <div>
+        <div class="page-head">
+            <h2>{$meta_title}</h2>
+        </div>
+        <div class="cl-mcont">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="block-flat">
+                        <div class="header">
+                            <h3 class="hthin">{$meta_title}</h3>
+                        </div>
+                        <div class="content">
+                            <div class="col-sm-12">
+                                <div class="pull-right">
+                                    <button type="button" class="btn btn-success btn-rad md-trigger" url="{:U('Exchange/rechargeadd')}" data-modal="form-primary"><i class="fa fa-plus-square"></i> 添加</button>
+                                </div>
+                            </div>
+                            <table class="no-border blue">
+                                <thead class="no-border">
+                                    <tr>
+                                        <th style="width:auto;">支出金额/元</th>
+                                        <th style="width:auto;">收入{:C("WEB_CURRENCY")}/个</th>
+                                        <th style="width:auto;">赠送{:C("WEB_CURRENCY")}/个</th>
+                                        <th style="width:auto;">添加时间</th>
+                                        <th style="width:auto;">更新时间</th>
+                                        <th style="width:auto;">状态</th>
+                                        <th style="width:5%;">操作</th>
+                                    </tr>
+                                </thead>
+                                <notempty name="_list">
+                                    <tbody class="no-border-y">
+                                        <volist name="_list" id="vo">
+                                            <tr>
+                                                <td>{$vo.payout}</td>
+                                                <td>{$vo.income|intval}</td>
+                                                <td>{$vo.extra|intval}</td>
+                                                <td>{$vo.create_time|time_format=###,"Y-m-d H:i:s"}</td>
+                                                <td>{$vo.update_time|time_format=###,"Y-m-d H:i:s"}</td>
+                                                <td>{$vo['status']==1 ? "启用" : "禁用"}</td>
+                                                <td>
+                                                    <a data-placement="left" data-toggle="tooltip" data-original-title="编辑" class="label label-primary  md-trigger" url="{:U('rechargeedit?id='.$vo['id'])}" href="javascript:;"><i class="fa fa-pencil"></i></a>
+                                                    <a id="status" data-placement="left" data-toggle="tooltip" data-original-title="状态" class="label <eq name='vo.status' value='0'>label-default<else/>label-success</eq> no-refresh ajax-get" href="{:U('setStatus?Model=channel&id='.$vo['id'].'&status='.abs(1-$vo['status']))}"><i class="fa <eq name='vo.status' value='0'>fa fa-arrows-v<else/>fa fa-arrows-v</eq>"></i></a>
+                                                </td>
+                                            </tr>
+                                        </volist>
+                                    </tbody>
+                                    <else/>
+                                    <td colspan="6"> aOh! 暂时还没有内容! </td>
+                                </notempty>
+                            </table>
+                            <div class="content col-lg-12 pull-left">
+                                <div class="panel-foot text-center">
+                                    <div class="page">{$_page}</div>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</block>
+<block name="script">
+    <js href="__JS__/jquery.icheck/icheck.min.js"/>
+    <js href="__JS__/bootstrap.datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" />
+    <script type="text/javascript">
+        $(document).ready(function(){
+            highlight_subnav("{:U('Exchange/rechargeconfig')}");
+
+            $(".md-trigger").click(function(){
+                if (target = $(this).attr('url')) {
+                    layer.open({
+                        type: 2,
+                        title: false,
+                        closeBtn: true,
+                        shadeClose: true,
+                        shade: 0.4,
+                        area: ['50%', '70%'],
+                        fix: false,
+                        skin: 'layui-layer-nobg',
+                        content: [target,'auto'],
+                    });
+                }
+            });
+        });
+    </script>
+</block>
+

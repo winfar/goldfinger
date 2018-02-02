@@ -190,6 +190,7 @@ class PeriodModel extends Model {
 				$list['user_number'] =  empty($user_number) ? 0 : $user_number;
 			}
 		}
+		recordLog($list,'获取周期详情');
 		return $list;
 	}
 	/**
