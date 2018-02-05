@@ -9,10 +9,12 @@
 
     <div class="wrap">
         <div class="header">
-            <div class="user"><img class="user_img" src="{$user.headimgurl}" /><span id="notice"><if condition="($notification gt 0)"><i></i></if></span></div>
+            <div class="user"><img class="user_img" src="{$user.headimgurl}" />
+                <!-- <span id="notice"><if condition="($notification gt 0)"><i></i></if></span> -->
+            </div>
             <div class="user_own">{$user.nickname}</div>
             <div class="user_own">拥有的{:C("WEB_CURRENCY")}</div>
-            <div class="user_dia"><i>{$user.gold_coupon}</i></div>            
+            <div class="user_dia"><i>{$user.gold_coupon}</i></div>
         </div>
         <div class="get_num">
             <span class="gt_tit">请选择充值面额</span>
@@ -35,35 +37,34 @@
         });
 
         //获取共享地址
-	function editAddress()
-	{
-		WeixinJSBridge.invoke(
-			'editAddress',
-			<?php echo $editAddress; ?>,
-			function(res){
-				var value1 = res.proviceFirstStageName;
-				var value2 = res.addressCitySecondStageName;
-				var value3 = res.addressCountiesThirdStageName;
-				var value4 = res.addressDetailInfo;
-				var tel = res.telNumber;
-				
-				alert(value1 + value2 + value3 + value4 + ":" + tel);
-			}
-		);
-	}
-	
-	window.onload = function(){
-		if (typeof WeixinJSBridge == "undefined"){
-		    if( document.addEventListener ){
-		        document.addEventListener('WeixinJSBridgeReady', editAddress, false);
-		    }else if (document.attachEvent){
-		        document.attachEvent('WeixinJSBridgeReady', editAddress); 
-		        document.attachEvent('onWeixinJSBridgeReady', editAddress);
-		    }
-		}else{
-			editAddress();
-		}
-	};
+        function editAddress() {
+            WeixinJSBridge.invoke(
+                'editAddress',
+                <?php echo $editAddress; ?>,
+                function(res) {
+                    var value1 = res.proviceFirstStageName;
+                    var value2 = res.addressCitySecondStageName;
+                    var value3 = res.addressCountiesThirdStageName;
+                    var value4 = res.addressDetailInfo;
+                    var tel = res.telNumber;
+
+                    alert(value1 + value2 + value3 + value4 + ":" + tel);
+                }
+            );
+        }
+
+        window.onload = function() {
+            if (typeof WeixinJSBridge == "undefined") {
+                if (document.addEventListener) {
+                    document.addEventListener('WeixinJSBridgeReady', editAddress, false);
+                } else if (document.attachEvent) {
+                    document.attachEvent('WeixinJSBridgeReady', editAddress);
+                    document.attachEvent('onWeixinJSBridgeReady', editAddress);
+                }
+            } else {
+                editAddress();
+            }
+        };
     </script>
 </body>
 

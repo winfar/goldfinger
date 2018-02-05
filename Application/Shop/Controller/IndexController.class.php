@@ -10,16 +10,16 @@ class IndexController extends BaseController {
 
         // vendor("phpexcel.Classes.PHPExcel");
 
-        vendor("Wechat.Pay.WxPay.JsApiPay");
+        // vendor("Wechat.Pay.WxPay.JsApiPay");
         // vendor("Wechat.Pay.log");
 
         // require_once "../lib/WxPay.Api.php";
         // require_once "WxPay.JsApiPay.php";
-        require_once '/ThinkPHP/Library/Vendor/Wechat/Pay/log.php';
+        // require_once '/ThinkPHP/Library/Vendor/Wechat/Pay/log.php';
 
         //初始化日志
-        $logHandler= new CLogFileHandler("../logs/".date('Y-m-d').'.log');
-        $log = Log::Init($logHandler, 15);
+        // $logHandler= new CLogFileHandler("../logs/".date('Y-m-d').'.log');
+        // $log = Log::Init($logHandler, 15);
     }
 
     /**
@@ -300,7 +300,7 @@ class IndexController extends BaseController {
         // $gold = empty($pay['data']['amount_coin']) ? 0 : $pay['data']['amount_coin'];
         //用户信息
         $user = D('api/User')->getUserInfoByUid($this->uid);
-        $channel_id = 0;
+        $channel_id = 1000;
         if (!empty($user['channelid'])) {
             $channel_id = $user['channelid'];
         }
