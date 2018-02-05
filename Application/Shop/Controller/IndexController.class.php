@@ -2,6 +2,26 @@
 namespace Shop\Controller;
 class IndexController extends BaseController {
 
+    public function _initialize()
+    {
+        parent::_initialize();
+
+        ini_set('date.timezone','Asia/Shanghai');
+
+        // vendor("phpexcel.Classes.PHPExcel");
+
+        vendor("Wechat.Pay.WxPay.JsApiPay");
+        vendor("Wechat.Pay.log");
+
+        // require_once "../lib/WxPay.Api.php";
+        // require_once "WxPay.JsApiPay.php";
+        // require_once 'log.php';
+
+        //初始化日志
+        $logHandler= new CLogFileHandler("../logs/".date('Y-m-d').'.log');
+        $log = Log::Init($logHandler, 15);
+    }
+
     /**
      * 用户头部钻石公共页面
      * 
