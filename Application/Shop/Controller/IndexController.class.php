@@ -11,11 +11,11 @@ class IndexController extends BaseController {
         // vendor("phpexcel.Classes.PHPExcel");
 
         vendor("Wechat.Pay.WxPay.JsApiPay");
-        vendor("Wechat.Pay.log");
+        // vendor("Wechat.Pay.log");
 
         // require_once "../lib/WxPay.Api.php";
         // require_once "WxPay.JsApiPay.php";
-        // require_once 'log.php';
+        require_once '/ThinkPHP/Library/Vendor/Wechat/Pay/log.php';
 
         //初始化日志
         $logHandler= new CLogFileHandler("../logs/".date('Y-m-d').'.log');
