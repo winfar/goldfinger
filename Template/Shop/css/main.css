@@ -125,9 +125,9 @@ input{ -webkit-user-select:auto; /*webkit浏览器*/    }
 
 .get_num{margin-bottom:10px;background:#fff;}
 .get_num .gt_tit{display:block;height:46px;line-height:50px;text-align:center;color:#7f7f7f;}
-.select_num{width:100%;height:auto;margin:0 auto;position:relative;left:2%;}
-.select_num .cash_g{display:block;color:#fff;float:left;text-align:center;width:45%;border-radius:5px;margin:6px 6px;padding:15px 0; background-image: url(../images/coin_item_bg.png);background-size: 100% 100%;}
-.select_num .cash_g.on{background:#fec94a;color:#fff;}
+.select_num{width:88%;height:88px;margin:0 auto 10px;}
+.select_num span{display:block;float:left;height:30px;line-height:30px;text-align:center;color:#7f7f7f;border:1px #fec94a solid;width:16%;border-radius:5px;margin:6px 4.1%;}
+.select_num span.on{background:#fec94a;color:#fff;}
 .gt_periods{height:50px;line-height:50px;color:#aeaeae;border-top:1px #f2f2f2 solid;}
 .gt_periods a{display:block;height:50px;}
 .gt_periods a.dia_total{float:right;padding-right:10px;background:url(../images/gray_rt_bg.png) right center no-repeat;background-size: auto 10px;color:#aeaeae;margin-right:8px;}
