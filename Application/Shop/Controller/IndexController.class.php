@@ -344,7 +344,7 @@ class IndexController extends BaseController {
         $gold = empty($pay['data']['amount_coin']) ? 0 : $pay['data']['amount_coin'];
         //用户信息
         $user = D('api/User')->getUserInfoByUid($this->uid);
-        $channel_id = 0;
+        $channel_id = 1000;
         if (!empty($user['channelid'])) {
             $channel_id = $user['channelid'];
         }
@@ -674,18 +674,34 @@ class IndexController extends BaseController {
     }
 
     public function recharge(){
+        $this->web_title = "充值";
+
         $uid = empty($this->uid) ? 0 : $this->uid;//用户id
         //用户信息
         $user = D('api/User')->getUserInfoByUid($uid);
         if($user){
             $map = ['status'=>1];
-            $list = M('ExchangeRecharge')->where($map)->select();
+            $list = M('ExchangeRecharge')->where($map)->select(); 
 
             $this->assign('user', $user);
             $this->assign('_list', $list);
         }
 
         $this->display($this->tplpath."recharge.html");
+    }
+
+    public function pay(){  
+        $order_sn = "R".date('YmdHis').mt_rand(1000,9999);  
+        $openId = '';  
+
+        // echo $order_sn."|".$_GET['fee'];exit();
+
+        $jsApiParameters = wechat_pay($openId,'充值',$order_sn,1);  
+        $this->assign(array(  
+            'data' => $jsApiParameters  
+        ));  
+        
+        $this->display($this->tplpath."pay.html"); 
     }
 
     public function test()

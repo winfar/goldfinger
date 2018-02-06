@@ -394,6 +394,11 @@ input{ -webkit-user-select:auto; /*webkit浏览器*/    }
 .gold_list ul li span.gl_wei{width:60px;height:50px;color:#ff9600;font-size:14px;font-weight:bold;line-height:68px;text-align:right;padding-right:10px;position:absolute;right:10px;top:15px;}
 .gold_list ul li span.gl_btn{width:64px;height:24px;line-height:24px;text-align:center;position:absolute;right:10px;top:36px;background:#fec94a;border-radius:12px;font-size:12px;color:#fff;}
 
+/*充值*/
+.recharge_items{width:100%;height:88px;margin:0 auto 10px;}
+.recharge_items .recharge_item{display:block;float:left;text-align:center;color:#fff;margin:2%;background-image: url(../images/coin_item_bg.png); background-repeat:no-repeat; background-size:100% 100%;-moz-background-size:100% 100%;;width:46%;padding: 3% 0;}
+.recharge_items .recharge_item.on{background:#fec94a;color:#fff;}
+
 /*loading*/
 .loading{margin:2.5rem auto 3rem; width:100%;background:url(../images/loading.gif) center center no-repeat;background-size:7% auto;padding-top:15rem;}
 .loading_bottom{margin:0 auto; width:100%;background: url(../images/loading_bottom.gif) center center no-repeat;background-size:10% auto;padding-top:15px;}

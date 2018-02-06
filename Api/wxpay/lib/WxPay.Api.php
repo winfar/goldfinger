@@ -57,9 +57,14 @@ class WxPayApi
 		//签名
 		$inputObj->SetSign();
 		$xml = $inputObj->ToXml();
+
+		// var_dump($xml);exit();
 		
 		$startTimeStamp = self::getMillisecond();//请求开始时间
 		$response = self::postXmlCurl($xml, $url, false, $timeOut);
+
+		// var_dump($response);exit();
+
 		$result = WxPayResults::Init($response);
 		self::reportCostTime($url, $startTimeStamp, $result);//上报请求花费时间
 		
@@ -534,8 +539,8 @@ class WxPayApi
 			curl_setopt($ch,CURLOPT_PROXYPORT, WxPayConfig::CURL_PROXY_PORT);
 		}
 		curl_setopt($ch,CURLOPT_URL, $url);
-		curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,TRUE);
-		curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,2);//严格校验
+		curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,FALSE);
+		curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,FALSE);//严格校验
 		//设置header
 		curl_setopt($ch, CURLOPT_HEADER, FALSE);
 		//要求结果为字符串且输出到屏幕上

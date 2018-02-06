@@ -10,7 +10,7 @@ class BaseController extends Controller {
 
     protected function _initialize(){
 
-		$wechat_appid = "wxa6fea15278d6e77a";
+		$wechat_appid = C('WECHAT_APP_ID');
 		$http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';  
 		$wechar_redirect_uri = $http_type . $_SERVER["HTTP_HOST"] ."/shop.php";
 

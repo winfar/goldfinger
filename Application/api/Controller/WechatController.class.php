@@ -31,7 +31,7 @@ class WechatController extends BaseController
     public function oauth2($code){
         // echo "extras:" . $extras;
         
-		$weixin= new \class_weixin_adv("wxa6fea15278d6e77a","1d933ea4ddde1da122875951dbc9878d");
+		$weixin= new \class_weixin_adv(C('WECHAT_APP_ID'),C('WECHAT_APP_SECRET'));
 
 		if ($code){
             
@@ -47,6 +47,7 @@ class WechatController extends BaseController
                 if(empty($res3['errcode'])){
                     $res['access_token'] = $res3['access_token'];
                 }else{
+                    var_dump($res3);
                     returnJson('', 401, '授权出错,请重新授权!');
                 }
             }
