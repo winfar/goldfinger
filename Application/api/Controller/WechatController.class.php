@@ -111,16 +111,31 @@ class WechatController extends BaseController
             if ($result) {
                 // 验证成功 修改数据库的订单状态等 $result['out_trade_no']为订单号
 
-                $map['trade_no'] = $result['out_trade_no'];
+                $map['order_id'] = $result['out_trade_no'];
 
-                $rechargeOrder = M('ShopOrder')->where($map)->find();
+                $rechargeOrder = M('shop_order')->where($map)->find();
+
+                recordLog($rechargeOrder,'微信支付回调订单查询');
 
                 if($rechargeOrder && $rechargeOrder['recharge']==1 && $rechargeOrder['order_status']==0){
                     $rechargeOrder['msg'] = '充值成功';
                     $rechargeOrder['code'] = 'OK';
                     $rechargeOrder['order_status'] = 1;
                     $rechargeOrder['order_status_time'] .= ','. time();
-                    $rs = M('ShopOrder')->save($rechargeOrder);
+                    $rechargeOrder['exchange_transaction'] = $result['transaction_id'];
+                    $rs = M('shop_order')->save($rechargeOrder);
+
+                    recordLog($rs,'微信支付回调订单更新');
+
+                    if($rs){
+                        $rs_gcoupon_record = D('Admin/GcouponRecord')->addRecord($rechargeOrder['uid'],$activity_type=0,$rechargeOrder['gold'],0,0,$result['transaction_id']);
+                        $rs_user = M('user')->where(array('id'=>$rechargeOrder['uid']))->setInc('gold_coupon',$rechargeOrder['gold']);
+
+                        if($rs_gcoupon_record && $rs_user){
+                            recordLog($rs_gcoupon_record,'微信支付回调用户增加虚拟币明细');
+                            recordLog($rs_user,'微信支付回调用户增加虚拟币');
+                        }
+                    }
                 }
             }
 
