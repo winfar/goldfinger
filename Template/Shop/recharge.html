@@ -21,7 +21,7 @@
         </div>
         <div class="recharge_items">
             <volist name="_list" id="vo">
-                <div class="recharge_item" onclick="pay({$vo['payout']})">
+                <div class="recharge_item" onclick="pay({$vo['id']})">
                     <div>{$vo['income']|default=0|intval}{:C("WEB_CURRENCY")} <img src="{$web_tplpath}/images/coin_icon.png" alt="" style="width:15px;"></div>
                     <div>￥{$vo['payout']|default=0.00}{:$vo['extra']>0?'送'.intval($vo['extra']).C("WEB_CURRENCY"):''}</div>
                 </div>
@@ -36,9 +36,8 @@
 
         });
 
-        function pay($amount){
-            // alert("{:U('Index/pay/fee/"+$amount*100+"')}")
-            window.location.href = "{:U('Index/pay/fee/"+$amount*100+"')}"
+        function pay($rid){
+            window.location.href = "{:U('Index/perpay/rid/"+$rid+"')}";
         }
     </script>
 </body>

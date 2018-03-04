@@ -18,37 +18,39 @@
         <div class="get_num">
             <span class="gt_tit">请选择充值面额</span>
         </div> -->
-        <div class="">
+
+        <!-- <div class="">
                 <font color="#9ACD32"><b>该笔订单支付金额为<span style="color:#f00;font-size:50px">1分</span>钱</b></font><br/><br/>
                 <div align="center">
                     <button style="width:210px; height:50px; border-radius: 15px;background-color:#FE6714; border:0px #FE6714 solid; cursor: pointer;  color:white;  font-size:16px;" type="button" onclick="callpay()" >立即支付</button>
                 </div>
-        </div>
+        </div> -->
     </div>
 
     <script type="text/javascript">
-        $(function() {
-
-        });
 
         //调用微信JS api 支付  
         function jsApiCall()  
         {  
             var data={$data};  
+
             WeixinJSBridge.invoke(  
                 'getBrandWCPayRequest', data,   
                 function(res){  
                     WeixinJSBridge.log(res.err_msg);  
-                    //alert('err_code:'+res.err_code+'err_desc:'+res.err_desc+'err_msg:'+res.err_msg);  
-                    //alert(res.err_code+res.err_desc+res.err_msg);  
-                    //alert(res);  
+                    // alert('err_code:'+res.err_code+'err_desc:'+res.err_desc+'err_msg:'+res.err_msg);  
+                    // alert(res.err_code+res.err_desc+res.err_msg);  
+                    // alert(res); 
+
                     if(res.err_msg == "get_brand_wcpay_request:ok"){    
                         alert("支付成功!");  
-                        window.location.href='{U("Index/WxPayResult")}';  
+                        window.location.href='{:U("Index/recharge")}';  
                     }else if(res.err_msg == "get_brand_wcpay_request:cancel"){    
-                        alert("用户取消支付!");    
+                        alert("取消支付!");   
+                        // window.location.href='{:U("Index/recharge")}';  
                     }else{    
                         alert("支付失败!");    
+                        // window.location.href='{:U("Index/recharge")}'; 
                     }    
                 }  
             );  
@@ -66,7 +68,11 @@
             }else{  
                 jsApiCall();  
             }  
-        }  
+        } 
+
+        $(function() {
+            callpay();
+        }); 
     </script>
 </body>
 

@@ -673,6 +673,11 @@ class IndexController extends BaseController {
         $list = D('api/Pay')->pay($pid,$sid,$price,$uid,$type,$gold,$md5);
     }
 
+    /**
+     * 充值
+     *
+     * @return void
+     */
     public function recharge(){
         $this->web_title = "充值";
 
@@ -682,26 +687,127 @@ class IndexController extends BaseController {
         if($user){
             $map = ['status'=>1];
             $list = M('ExchangeRecharge')->where($map)->select(); 
-
-            $this->assign('user', $user);
-            $this->assign('_list', $list);
         }
 
+        $this->assign('user', $user);
+        $this->assign('_list', $list);
         $this->display($this->tplpath."recharge.html");
     }
 
+    public function perpay(){
+        $uid = empty($this->uid) ? 0 : $this->uid;//用户id
+        $rechargeid = isset($_GET['rid'])?$_GET['rid']:0;//充值id
+
+        if($uid && $rechargeid){
+            $openId = '';  
+            $trade_no = "R".msectime().mt_rand(1000,9999);  
+
+            // echo $order_sn."|".$_GET['fee'];exit();
+
+            $recharge = M('exchange_recharge')->where(['id'=>$rechargeid])->find();
+            if($recharge){
+                
+                $addRechargeOrderResult = D('api/ShopOrder')->addRechargeOrder($uid,$trade_no,$recharge);
+
+                if($addRechargeOrderResult){
+    
+                    $fee = 1;//测试1分
+                    // $fee = $recharge['payout']*100;
+
+                    // 此处根据实际业务情况生成订单 然后拿着订单去支付
+
+                    // 用时间戳虚拟一个订单号  （请根据实际业务更改）
+                    // $out_trade_no=time();
+
+                    // 组合url
+                    $url=U('Index/pay',array('trade_no'=>$trade_no,'fee'=>$fee));
+                    // 前往支付
+                    redirect($url);
+                }
+                else{
+                    echo "新增充值订单错误";
+                }
+            }
+            else{
+                echo "充值错误";
+            }
+        }
+        else{
+            echo "请重新登录";
+        }
+    }
+
+    /**
+     * 微信支付
+     *
+     * @return void
+     */
     public function pay(){  
-        $order_sn = "R".date('YmdHis').mt_rand(1000,9999);  
+
         $openId = '';  
+        $trade_no = I('trade_no');
+        $fee = I('fee');
 
-        // echo $order_sn."|".$_GET['fee'];exit();
+        //common function
+        $jsApiParameters = wechat_pay($openId,'充值',$trade_no,$fee);  
 
-        $jsApiParameters = wechat_pay($openId,'充值',$order_sn,1);  
         $this->assign(array(  
             'data' => $jsApiParameters  
         ));  
         
         $this->display($this->tplpath."pay.html"); 
+
+        /*            
+        $uid = empty($this->uid) ? 0 : $this->uid;//用户id
+        $rechargeid = isset($_GET['fee'])?$_GET['fee']:0;//充值id
+
+        if($uid && $rechargeid){
+            $openId = '';  
+            $trade_no = "R".msectime().mt_rand(1000,9999);  
+
+            // echo $order_sn."|".$_GET['fee'];exit();
+
+            $recharge = M('exchange_recharge')->where(['id'=>$rechargeid])->find();
+            if($recharge){
+                
+                $addRechargeOrderResult = D('api/ShopOrder')->addRechargeOrder($uid,$trade_no,$recharge);
+
+                if($addRechargeOrderResult){
+    
+                    $fee = 1;//测试1分
+                    // $fee = $recharge['payout']*100;
+
+                    // 此处根据实际业务情况生成订单 然后拿着订单去支付
+
+                    // 用时间戳虚拟一个订单号  （请根据实际业务更改）
+                    // $out_trade_no=time();
+
+                    // 组合url
+                    $url=U('Api/Weixinpay/pay',array('out_trade_no'=>$trade_no));
+                    // 前往支付
+                    redirect($url);
+    
+                    //common function
+                    // $jsApiParameters = wechat_pay($openId,'充值',$trade_no,$fee);  
+
+                    // $this->assign(array(  
+                    //     'data' => $jsApiParameters  
+                    // ));  
+                    
+                    // $this->display($this->tplpath."pay.html"); 
+                }
+                else{
+                    echo "新增充值订单错误";
+                }
+            }
+            else{
+                echo "充值错误";
+            }
+        }
+        else{
+            echo "请重新登录";
+        }
+        */
     }
 
     public function test()

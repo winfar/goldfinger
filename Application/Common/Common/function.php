@@ -1,5 +1,12 @@
 <?php
 
+//返回当前的毫秒时间戳
+function msectime() {
+    list($msec, $sec) = explode(' ', microtime());
+    $msectime =  (float)sprintf('%.0f', (floatval($msec) + floatval($sec)) * 1000);
+    return $msectime;
+}
+
 function param_signature($method, $normalized, $secret="08DD1A44B8426B65"){
 
     $methodPart = strtoupper($method); //"GET" "POST"
@@ -786,7 +793,7 @@ function get_activityTypeName($activity_type) {
  **/
 function recordLog($data, $msg = '')
 {
-    if ( !$data ) return;
+    if ( !$data ) $data='';
     if ( is_array($data) ) {
         $data = print_r($data, true);
     }
@@ -1198,11 +1205,13 @@ function wechat_pay($openId,$goods,$order_sn,$total_fee,$attach){
     $input->SetTime_expire(date("YmdHis", time() + 600));//支付超时  
     // $input->SetGoods_tag("testtag");  
     //$input->SetNotify_url("http://".$_SERVER['HTTP_HOST']."/payment.php");  //支付回调验证地址  
-    $input->SetNotify_url("http://".$_SERVER['HTTP_HOST']."/shop.php?s=Index/wxcallbacknotify");  
+    $input->SetNotify_url("https://".$_SERVER['HTTP_HOST']."/wx_notify_url.php");  
     $input->SetTrade_type("JSAPI");              //支付类型  
     $input->SetOpenid($openId);                  //用户openID  
 
     // var_dump($input);exit();
+
+    $log::INFO($input);
 
     $order = WxPayApi::unifiedOrder($input);    //统一下单  
       
@@ -1210,3 +1219,21 @@ function wechat_pay($openId,$goods,$order_sn,$total_fee,$attach){
       
     return $jsApiParameters;  
 }  
+
+function wechat_notify(){
+    require getcwd()."/Api/wxpay/lib/WxPay.Api.php";  
+    require getcwd().'/Api/wxpay/lib/WxPay.Notify.php';
+    require getcwd().'/Api/wxpay/payment/log.php'; 
+
+    //初始化日志
+    $logHandler= new CLogFileHandler(__ROOT__."/Api/wxpay/logs/".date('Y-m-d').'.log');
+    $log = Log::Init($logHandler, 15);
+
+    // $result = WxPayApi::notify($callback, $msg);
+
+    Log::DEBUG("begin notify");
+    $notify = new WxPayNotify();
+    $result = $notify->Handle(false);
+
+    echo $result;
+}

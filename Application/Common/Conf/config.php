@@ -21,8 +21,16 @@ return array(
 
 'IMG_URL_CDN' =>'http://img1.oneshop.busonline.com',//CDN图片地址
 
-'WECHAT_APP_ID' => 'wx05fd5e570f8b7b42',//test:wxa6fea15278d6e77a,product:wx05fd5e570f8b7b42
-'WECHAT_APP_SECRET' => '16282b078b0f4d0e9b070565fdb1cef1',//test:1d933ea4ddde1da122875951dbc9878d,product:16282b078b0f4d0e9b070565fdb1cef1
-'WECHAT_MCHID' => '1494530772',
-'WECHAT_KEY' => '4d47e8954d984eecf3c1f58b4f321351',
+// 'WECHAT_APP_ID' => 'wx05fd5e570f8b7b42',//test:wxa6fea15278d6e77a,product:wx05fd5e570f8b7b42
+// 'WECHAT_APP_SECRET' => '16282b078b0f4d0e9b070565fdb1cef1',//test:1d933ea4ddde1da122875951dbc9878d,product:16282b078b0f4d0e9b070565fdb1cef1
+// 'WECHAT_MCHID' => '1494530772',
+// 'WECHAT_KEY' => '4d47e8954d984eecf3c1f58b4f321351',
+
+'WEIXINPAY_CONFIG'       => array(
+    'APPID'              => 'wx05fd5e570f8b7b42', // 微信支付APPID
+    'MCHID'              => '1494530772', // 微信支付MCHID 商户收款账号
+    'KEY'                => '4d47e8954d984eecf3c1f58b4f321351', // 微信支付KEY
+    'APPSECRET'          => '16282b078b0f4d0e9b070565fdb1cef1',  //公众帐号secert
+    'NOTIFY_URL'         => 'https://www.molijinbei.com/wx_notify_url.php', // 接收支付状态的连接 http://baijunyao.com/Api/WeixPay/notify/order_number/
+    ),
 );

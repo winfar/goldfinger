@@ -13,7 +13,6 @@ class WechatController extends BaseController
     protected function _initialize()
     {
         parent::_initialize();
-        vendor("Wechat.class_weixin_adv");
 
         $this->$host = $_SERVER['HTTP_HOST'];
 
@@ -30,8 +29,10 @@ class WechatController extends BaseController
     //微信登录回调
     public function oauth2($code){
         // echo "extras:" . $extras;
+
+        vendor("Wechat.class_weixin_adv");
         
-		$weixin= new \class_weixin_adv(C('WECHAT_APP_ID'),C('WECHAT_APP_SECRET'));
+		$weixin= new \class_weixin_adv(C('WEIXINPAY_CONFIG')['APPID'],C('WEIXINPAY_CONFIG')['APPSECRET']);
 
 		if ($code){
             
@@ -72,5 +73,60 @@ class WechatController extends BaseController
             
             returnJson('', 403, '参数错误');
         }
+    }
+
+    /**
+     * 暂且不用
+     * 公众号支付 必须以get形式传递 out_trade_no 参数
+     * 示例请看 /Application/Home/Controller/IndexController.class.php
+     * 中的weixinpay_js方法
+     */
+    public function pay(){
+        // 导入微信支付sdk
+        Vendor('Wechat.Pay.Weixinpay');
+        $wxpay=new \Weixinpay();
+        // 获取jssdk需要用到的数据
+        $data=$wxpay->getParameters();
+        // 将数据分配到前台页面
+        $assign=array(
+            'data'=>json_encode($data)
+            );
+        $this->assign($assign);
+        $this->display();
+    }
+
+    //微信jsapi支付回调
+    public function wxcallbacknotify(){
+        // wechat_notify();
+
+        try{
+
+            // 导入微信支付sdk
+            Vendor('Wechat.Pay.Weixinpay');
+            $wxpay=new \Weixinpay();
+            $result=$wxpay->notify();
+
+            recordLog($result,'微信支付回调结果');
+
+            if ($result) {
+                // 验证成功 修改数据库的订单状态等 $result['out_trade_no']为订单号
+
+                $map['trade_no'] = $result['out_trade_no'];
+
+                $rechargeOrder = M('ShopOrder')->where($map)->find();
+
+                if($rechargeOrder && $rechargeOrder['recharge']==1 && $rechargeOrder['order_status']==0){
+                    $rechargeOrder['msg'] = '充值成功';
+                    $rechargeOrder['code'] = 'OK';
+                    $rechargeOrder['order_status'] = 1;
+                    $rechargeOrder['order_status_time'] .= ','. time();
+                    $rs = M('ShopOrder')->save($rechargeOrder);
+                }
+            }
+
+        }catch(\Exception $e){
+            recordLog($e->getMessage(),'微信支付回调异常');
+        }
+        // echo 'result:'.$result;
     }
 }	
