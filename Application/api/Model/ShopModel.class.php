@@ -611,7 +611,7 @@ class ShopModel extends Model
                 $list[$k]['uid'] = $v['uid'];
                 $list[$k]['nickname'] = get_user_name($v['uid']);
                 $list[$k]["img"] = get_user_pic_passport($v['uid']);
-                $list[$k]['kaijang_date'] = date("m.d H:i:s",$v['kaijang_time']);
+                $list[$k]['kaijang_date'] = date("Y.m.d H:i:s",$v['kaijang_time']);
                 $list[$k]['down_date'] = date("Y-m-d H:i:s",$v['kaijang_time']-C('KAIJANG_TIME')*60);
                 $list[$k]['total_buy_gold'] /= 1000;
             }

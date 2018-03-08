@@ -41,7 +41,7 @@
                                                 <td>{$vo['status']==1 ? "启用" : "禁用"}</td>
                                                 <td>
                                                     <a data-placement="left" data-toggle="tooltip" data-original-title="编辑" class="label label-primary  md-trigger" url="{:U('rechargeedit?id='.$vo['id'])}" href="javascript:;"><i class="fa fa-pencil"></i></a>
-                                                    <a id="status" data-placement="left" data-toggle="tooltip" data-original-title="状态" class="label <eq name='vo.status' value='0'>label-default<else/>label-success</eq> no-refresh ajax-get" href="{:U('setStatus?Model=channel&id='.$vo['id'].'&status='.abs(1-$vo['status']))}"><i class="fa <eq name='vo.status' value='0'>fa fa-arrows-v<else/>fa fa-arrows-v</eq>"></i></a>
+                                                    <a id="status" data-placement="left" data-toggle="tooltip" data-original-title="状态" class="label <eq name='vo.status' value='0'>label-default<else/>label-success</eq> no-refresh ajax-get" href="{:U('setStatus?Model=exchange_recharge&url=rechargeconfig&id='.$vo['id'].'&status='.abs(1-$vo['status']))}"><i class="fa <eq name='vo.status' value='0'>fa fa-arrows-v<else/>fa fa-arrows-v</eq>"></i></a>
                                                 </td>
                                             </tr>
                                         </volist>

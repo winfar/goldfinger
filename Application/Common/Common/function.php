@@ -771,6 +771,7 @@ function get_tradeTypearr() {
 function get_activityType() {
     return array(
 //        1=大转盘 2=牛气冲天 3=系统赠送
+        array('activity_type'=>'0','name'=>'充值'),
         array('activity_type'=>'1','name'=>'大转盘'),
         array('activity_type'=>'2','name'=>'牛气冲天'),
         array('activity_type'=>'3','name'=>'系统赠送'),

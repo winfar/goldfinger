@@ -13,7 +13,7 @@
             <div class="user"><img class="user_img" src="{$user.headimgurl}" /><span id="notice"><if condition="($notification gt 0)"><i></i></if></span></div>
             <div class="user_own">持有的黄金</div>
             <div class="user_dia"><i>{$user.gold_balance}</i>克</div>
-            <div class="dia_info"><a href="{:U('Index/recharge')}"><span class="amount">我的{:C("WEB_CURRENCY")}<i>{$gold}</i></span></a><span class="gold_price">当前金价<i>{:getGoldprice()}</i></span></div>
+            <div class="dia_info"><a href="{:U('Index/recharge')}" style="color:#b07400;"><span class="amount">我的{:C("WEB_CURRENCY")}<i>{$gold}</i></span></a><span class="gold_price">当前金价<i>{:getGoldprice()}</i></span></div>
         </div>
         <div class="menu_box">
             <ul class="mb_ul">
@@ -104,9 +104,9 @@
             $("#fnTimeCountDown").fnTimeCountDown("", function() {
                 $("#fnTimeCountDown").find('.index_loading').show();
                 var url = '/shop.php' + "?r=" + Math.random();
-                // setTimeout(function() {
-                //     location.href = url;
-                // }, 3000);
+                setTimeout(function() {
+                    location.href = url;
+                }, 3000);
             });
 
             $(".gold_price").click(function(argument) {

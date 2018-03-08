@@ -287,7 +287,7 @@ input{ -webkit-user-select:auto; /*webkit浏览器*/    }
 .announce ul li span.ul_user h1{color:#ff662d;height:25px;overflow:hidden;white-space:nowrap; text-overflow:ellipsis;width:98%;}
 .announce ul li span.ul_user p{line-height:20px;color:#7f7f7f;}
 .announce ul li span.ul_user p i{color:#ff662d;padding-left:0;height:20px; }
-.announce ul li span.ul_info{position:absolute;display:block;top:61px;right:10px;width:88px;height:40px;font-size:12px;text-align:right;color:#999;line-height:20px;}
+.announce ul li span.ul_info{position:absolute;display:block;top:61px;right:10px;width:115px;height:40px;font-size:12px;text-align:right;color:#999;line-height:20px;}
 .announce ul li span.ul_info i{color:#aeaeae;}
 .announce ul li span.ul_info a,.ul_info a:link{color:#ff9600;line-height:20px;font-size:14px;padding-right:8px;background:url(../images/rt_bg.png) right center no-repeat;background-size:auto 10px;}
 .announce ul li span.seal {display:block;height:45px;width:52px;background:url(../images/seal.png) center center  no-repeat;background-size:52px 45px;position:absolute;top:41px;right:28%;}

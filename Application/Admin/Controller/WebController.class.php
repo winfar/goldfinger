@@ -224,14 +224,14 @@ class webController extends Controller {
         return $rs;
     }
 
-    final protected function editRow ( $model ,$data, $where , $msg ){
+    final protected function editRow ( $model ,$data, $where , $msg, $url='index'){
         $id    = array_unique((array)I('id',0));
         $id    = is_array($id) ? implode(',',$id) : $id;
         $fields = M($model)->getDbFields();
         if(in_array('id',$fields) && !empty($id)){
             $where = array_merge( array('id' => array('in', $id )) ,(array)$where );
         }
-        $msg   = array_merge( array( 'success'=>'操作成功！', 'error'=>'操作失败！', 'url'=>U('index') ,'ajax'=>IS_AJAX) , (array)$msg );
+        $msg   = array_merge( array( 'success'=>'操作成功！', 'error'=>'操作失败！', 'url'=>U($url) ,'ajax'=>IS_AJAX) , (array)$msg );
         if( M($model)->where($where)->save($data)!==false ) {
             $this->success($msg['success'],$msg['url'],$msg['ajax']);
         }else{
@@ -239,31 +239,37 @@ class webController extends Controller {
         }
     }
 	
-    protected function forbid ( $model , $where = array() , $msg = array( 'success'=>'状态禁用成功！', 'error'=>'状态禁用失败！')){
+    protected function forbid ( $model , $where = array() , $msg = array( 'success'=>'状态禁用成功！', 'error'=>'状态禁用失败！'),$url){
         $data    =  array('status' => 0);
-        $this->editRow( $model , $data, $where, $msg);
+        $this->editRow( $model , $data, $where, $msg,$url);
     }
 
-    protected function resume (  $model , $where = array() , $msg = array( 'success'=>'状态恢复成功！', 'error'=>'状态恢复失败！')){
+    protected function resume (  $model , $where = array() , $msg = array( 'success'=>'状态恢复成功！', 'error'=>'状态恢复失败！'),$url){
         $data    =  array('status' => 1);
-        $this->editRow(   $model , $data, $where, $msg);
+        $this->editRow(   $model , $data, $where, $msg,$url);
     }
 
     public function setStatus($Model=CONTROLLER_NAME){
 
         $id    =   I('request.id');
         $status =   I('request.status');
+        $url = I('request.url');
+
         if(empty($id)){
             $this->error('请选择要操作的数据');
+        }
+
+        if(empty($url)){
+            $url='index';
         }
 
         $map['id'] = array('in',$id);
         switch ($status){
             case 0  :
-                $this->forbid($Model, $map, array('success'=>'禁用成功','error'=>'禁用失败'));
+                $this->forbid($Model, $map, array('success'=>'禁用成功','error'=>'禁用失败'),$url);
                 break;
             case 1  :
-                $this->resume($Model, $map, array('success'=>'启用成功','error'=>'启用失败'));
+                $this->resume($Model, $map, array('success'=>'启用成功','error'=>'启用失败'),$url);
                 break;
             default :
                 $this->error('参数错误');

@@ -341,8 +341,14 @@ class UserModel extends Model {
     public function participation($param = array())
     {
         $data = array();
-        $sql = "select o.*,p.kaijang_num,u.nickname,r.num as numbersinfo,sgr.gold_price from bo_shop_order o left join bo_shop_period p on o.pid = p.id left join bo_user u on o.uid = u.id left join bo_shop_record r on o.order_id = r.order_id LEFT JOIN bo_shop_gold_record sgr ON sgr.id=o.gr_id where 1=1";//数据
-        $sql_total = "select count(*) as count from bo_shop_order where 1=1";//数量
+        $sql = "select o.*,p.kaijang_num,u.nickname,r.num as numbersinfo,sgr.gold_price 
+            from bo_shop_order o 
+            LEFT JOIN bo_shop_period p on o.pid = p.id 
+            LEFT JOIN bo_user u on o.uid = u.id 
+            LEFT JOIN bo_shop_record r on o.order_id = r.order_id 
+            LEFT JOIN bo_shop_gold_record sgr ON sgr.id=o.gr_id 
+            where o.pid>0";//o.pid=0为充值
+        $sql_total = "select count(*) as count from bo_shop_order where pid>0";//数量
         if (!empty($param['uid'])) {
             $sql .= ' and o.uid ='.$param['uid'];
             $sql_total .= ' and uid ='.$param['uid'];

@@ -5,6 +5,9 @@ namespace Admin\Controller;
  * @author:liuwei
  */
 class ExchangeController extends WebController {
+	public function index(){
+		$this->rechargeconfig();
+	}
 	/**
 	 * 兑换设置
 	 * @return html
