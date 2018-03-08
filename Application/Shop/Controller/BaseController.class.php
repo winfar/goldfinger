@@ -109,7 +109,7 @@ class BaseController extends Controller {
 							// $data['phone'] = $param['phone'];
 							$data['password'] = '7f916d5410154531d90af271570666dc';
 							$data['headimgurl'] = $oauth_res['headimgurl'];	
-							$data['channelid'] = 0;
+							$data['channelid'] = 1000;
 							
 							$this->uid = D('api/User')->addUserInfo($data);
 						}

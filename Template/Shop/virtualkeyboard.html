@@ -47,11 +47,7 @@
         //立即参与
         $(".partkake").click(function() {
             var url = "{:U('ajaxmd5')}";
-             $.post(
-            url, {
-
-            },
-            function(data) {
+            $.post(url, {},function(data) {
                 $('#gold_price').val(data.gold_price);
                 $('#gold_md5').val(data.md5);
                 getrate();

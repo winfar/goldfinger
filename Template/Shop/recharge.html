@@ -8,7 +8,7 @@
 <body>
 
     <div class="wrap">
-        <div class="header">
+        <div class="header"style="margin-bottom:0;">
             <div class="user"><img class="user_img" src="{$user.headimgurl}" />
                 <!-- <span id="notice"><if condition="($notification gt 0)"><i></i></if></span> -->
             </div>
@@ -17,7 +17,7 @@
             <div class="user_dia"><i>{$user.gold_coupon}</i></div>
         </div>
         <div class="get_num">
-            <span class="gt_tit">请选择充值面额</span>
+            <span class="gt_tit" style="height: 35px;line-height: 35px;" >请选择充值面额</span>
         </div>
         <div class="recharge_items">
             <volist name="_list" id="vo">

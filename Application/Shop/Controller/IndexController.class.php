@@ -629,7 +629,7 @@ class IndexController extends BaseController {
         $uid = empty($this->uid) ? 0 : $this->uid;//用户id
         //用户信息
         $user = D('api/User')->getUserInfoByUid($this->uid);
-        $channel_id = 0;
+        $channel_id = 1000;
         if (!empty($user['channelid'])) {
             $channel_id = $user['channelid'];
         }
