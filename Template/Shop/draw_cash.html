@@ -29,7 +29,7 @@
 					<em>微信</em>
 					<em>限额{$channel_info.extract_number}~<i id="wx_max"></i>毫克</em>
 				</span>
-                    <input type="radio" class="rdo channel_type" name="channel" value="0" checked />
+                    <input type="radio" class="rdo channel_type" name="channel" value="0"  />
                 </li>
                 <li>
 
@@ -38,7 +38,7 @@
 					<em>支付宝</em>
 					<em>限额{$channel_info.extract_number}~<i id="alipay_max"></i>毫克</em>
 				</span>
-                    <input type="radio" class="rdo channel_type" name="channel" value="1" />
+                    <input type="radio" class="rdo channel_type" name="channel" value="1" checked/>
                 </li>
                 <!-- <li class="channel_count">
 				
@@ -56,7 +56,7 @@
             </ul>
             <div class="gold_weight">
                 <span>黄金提现</span>
-                <span><em class="g"></em><input type="number" placeholder="请输入毫克数" id="number" name="number"/></span>
+                <span><em class="g"></em><input type="number" min="1" placeholder="请输入毫克数" id="number" name="number"/></span>
             </div>
 
             <div class="gt_periods gtp_cash">
@@ -109,13 +109,28 @@
             $(".tbox .dc_fee p").html("服务费每毫克为：申请提现实时金价的" + extractMoney + "%。<br>小提示：费用会根据黄金交易所实时金价而变动。")
             $(".tbox .dc_w p").html("单笔最低黄金提现克数为" + begin_weight + "毫克，微信当前最大" + wx_max + "克/笔，支付宝当前最高" + Alipay_max + "克/笔。<br>小提示：单笔最高提现克数会根据黄金交易所实时金价而变动。")
             $('.channel_type').change(function() {
-                var type = $(this).val();
+                var $this = $(this);
+                var type = $this.val();
                 if (type == 1) {
                     $(".channel_pay").css('display', 'block');
                 } else {
-                    $(".channel_pay").css('display', 'none');
+                    // $(".channel_pay").css('display', 'none');
+
+                    $(".channel_pay").css('display', 'block');
+
+                    $this
+                    $(".channel_type[value='1']").prop("checked", "checked");
+
+                    $('.content').html("暂未开启！");
+                    $('.tips_box').show("normal",function(){
+                        setTimeout(function() {
+                            $(".tips_box").hide();
+                        }, 2500);
+                    });
                 }
             });
+            $(".channel_pay").css('display', 'block');
+
             //提取费用tips
             $(".cash_m").click(function() {
                 $(".tbox").css("display", "block");

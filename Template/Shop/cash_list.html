@@ -41,9 +41,9 @@
                 if (data != "") {
                     for (var i in data ) {
                     	html += '<li>';
-            					html += '<h1><span>黄金提现</span><i>'+data[i].create_date+'</i></h1>';
-            					html += '<p>您发起的提现业务已受理,系统将在24小时内转账(流水号'+data[i].order_no+')</p>';
-            					html += '</li>';
+                        html += '<h1><span>黄金提现</span><i>'+data[i].create_date+'</i></h1>';
+                        html += '<p>您发起的提现业务已受理,系统将在24小时内转账(流水号'+data[i].order_no+')</p>';
+                        html += '</li>';
                     }
                 	   $('.notice_list').html(html);
 

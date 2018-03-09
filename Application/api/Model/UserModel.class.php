@@ -2443,6 +2443,7 @@ class UserModel extends Model
     {
         $data = array();
         $data['total_money'] = M('user_extract')->where('uid='.$uid)->sum("total_money");
+        if($data['total_money']==null){$data['total_money']=0;}
         $number = M('user_extract')->where('uid='.$uid)->sum("number");
         $data['total_number'] = empty($number) ? 0.000 : substr(sprintf("%.4f", ($number/ 1000)),0,-1);
         $data_list = array();
