@@ -2462,14 +2462,14 @@ class UserModel extends Model
     }
 
     /**
-     * 获取金券总额
+     * 获取虚拟币总额
      */
     public function getGcouponAmount(){
        return $this->sum('gold_coupon');
     }
 
     /**
-     * 扣减指定用户的金券
+     * 扣减指定用户的虚拟币
      * @param $uid
      * @param $num
      * @return bool

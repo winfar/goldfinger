@@ -82,7 +82,7 @@ class GoldModel extends Model
                                     try{
 
                                         M()->startTrans();
-                                        //减去金券用量
+                                        //减去虚拟币用量
                                         $rs_u_coupon = M('user')->where($map_user)->setDec('gold_coupon',$cost);
                                         //减去黄金余量
                                         $rs_u = M('user')->where($map_user)->setDec('gold_balance',$gold*1000);

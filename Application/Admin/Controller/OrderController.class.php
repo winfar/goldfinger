@@ -43,7 +43,7 @@ class OrderController extends WebController
         $total_info = array();
         $total_info['total_page'] = $total;//总记录数
         $total_info['total_buy_gold'] = 0;//黄金成交量
-        $total_info['total_gold_price'] = 0;//金券总额
+        $total_info['total_gold_price'] = 0;//虚拟币总额
         $total_info['total_price'] = 0;//现金
         if (!empty($list)) {
             $total_info['total_buy_gold'] = array_sum(array_column($list, 'total_buy_gold'));
@@ -154,7 +154,7 @@ class OrderController extends WebController
         $total_info = array();
         $total_info['total_page'] = $total;//总记录数
         $total_info['total_buy_gold'] = 0;//黄金成交量
-        $total_info['total_gold_price'] = 0;//金券总额
+        $total_info['total_gold_price'] = 0;//虚拟币总额
         $total_info['total_price'] = 0;//现金
         $all_list = $model->getNewShops($map);
         if (!empty($all_list)) {
@@ -317,7 +317,7 @@ class OrderController extends WebController
         $total_info = array();
         $total_info['total_number'] = $total;//总记录数
         $total_info['all_number'] = 0;//用户购买总数量
-        $total_info['total'] = 0;//总支付金券
+        $total_info['total'] = 0;//总支付虚拟币
         if (!empty($all_list)) {
             //用户购买总数量
             $total_info['all_number'] = array_sum(array_column($all_list, 'total_number'));
@@ -502,7 +502,7 @@ class OrderController extends WebController
         $total_info = array();
         $total_info['total_number'] = $total;//总记录数
         $total_info['all_number'] = 0;//用户购买总数量
-        $total_info['total'] = 0;//总支付金券
+        $total_info['total'] = 0;//总支付虚拟币
         if (!empty($list)) {
             //用户购买总数量
             $total_info['all_number'] = array_sum(array_column($list, 'total_number'));
@@ -615,12 +615,12 @@ class OrderController extends WebController
         //总条数
         $total = D('Order')->getNewActivityTotal($map);
         $total_info = array();
-        $total_info['total_price'] = 0;//金券总额
+        $total_info['total_price'] = 0;//虚拟币总额
         $total_info['total_buy_gold'] = 0;//黄金成交量
         $total_info['total_count'] = 0;//总期数
         $all_list = D('Order')->getNewActivity($map);
         if (!empty($all_list)) {
-            $total_info['total_price'] = array_sum(array_column($all_list, 'total_price'));//金券总额
+            $total_info['total_price'] = array_sum(array_column($all_list, 'total_price'));//虚拟币总额
             $total_info['total_buy_gold'] = array_sum(array_column($all_list, 'total_buy_gold'));//黄金成交量
             $total_info['total_count'] = array_sum(array_column($all_list, 'total_count'));//总期数
         }
@@ -682,12 +682,12 @@ class OrderController extends WebController
         //总条数
         $total = D('Order')->getNewActivityTotal($map);
         $total_info = array();
-        $total_info['total_price'] = 0;//金券总额
+        $total_info['total_price'] = 0;//虚拟币总额
         $total_info['total_buy_gold'] = 0;//黄金成交量
         $total_info['total_count'] = 0;//总期数
         $list = D('Order')->getNewActivity($map);
         if (!empty($all_list)) {
-            $total_info['total_price'] = array_sum(array_column($list, 'total_price'));//金券总额
+            $total_info['total_price'] = array_sum(array_column($list, 'total_price'));//虚拟币总额
             $total_info['total_buy_gold'] = array_sum(array_column($list, 'total_buy_gold'));//黄金成交量
             $total_info['total_count'] = array_sum(array_column($list, 'total_count'));//总期数
         }

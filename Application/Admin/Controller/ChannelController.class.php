@@ -111,7 +111,7 @@ class ChannelController extends WebController
         $contact = I('contact');
         //联系电话
         $tel = I('tel');
-        //金券兑换比例
+        //虚拟币兑换比例
         $proportion = I('proportion');
         //起拍数量
         $starting_number = I('starting_number');

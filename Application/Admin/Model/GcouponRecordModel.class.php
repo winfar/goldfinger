@@ -3,7 +3,7 @@ namespace Admin\Model;
 use Think\Model;
 
 /**
- * 金券记录明细
+ * 虚拟币记录明细
  * Class GcouponRecordModel
  * @package Admin\Model
  */

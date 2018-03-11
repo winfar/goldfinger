@@ -315,7 +315,7 @@ class FinanceController extends WebController
     }
 
     /**
-     * 查看金券明细
+     * 查看虚拟币明细
      * @param $model
      * @param $id
      */
@@ -348,7 +348,7 @@ class FinanceController extends WebController
     }
 
     /**
-     * 金券明细导出
+     * 虚拟币明细导出
      * @param $model
      * @param $id
      */
@@ -390,7 +390,7 @@ class FinanceController extends WebController
             $i++;
         }
 
-        $outputFileName = '金券发放明细 '.date("Y年-m月-d日") . '.csv';
+        $outputFileName = C("WEB_CURRENCY").'发放明细 '.date("Y年-m月-d日") . '.csv';
         //  $xlsWriter = new PHPExcel_Writer_Excel5($resultPHPExcel);
         $xlsWriter = \PHPExcel_IOFactory::createWriter($resultPHPExcel, 'Excel5');
         //ob_start(); ob_flush();
@@ -444,10 +444,10 @@ class FinanceController extends WebController
 //        $month_end = strtotime(date("Y-m-d",strtotime("$month_start_f +1 month -1 day")));
         $month_end = strtotime(date("Y-m-01",strtotime($curr_month)));
 
-        //金券收入
+        //虚拟币收入
         $item['income_gcoupon'] = M('gcoupon_record')->where(      array('num'=>array('gt',0),'create_time'=> array(array('gt',$month_start),array('lt',$month_end  ) )))->sum('num');
 
-        //金券消耗
+        //虚拟币消耗
         $item['expend_gcoupon'] = M('gcoupon_record')->where(      array('num'=>array('lt',0),'create_time'=> array(array('gt',$month_start),array('lt',$month_end  ) )))->sum('num');
 
         $item['curr_surplus']  = M('user')->sum('gold_coupon');
@@ -1005,7 +1005,7 @@ class FinanceController extends WebController
         $total_info = array();
         $total_info['total_number'] = $total;//总记录数
         $total_info['all_number'] = 0;//用户购买总数量
-        $total_info['total'] = 0;//总支付金券
+        $total_info['total'] = 0;//总支付虚拟币
         $all_list = D('Finance')->newfundsflowlist($map);
         if (!empty($all_list)) {
             //用户购买总数量
@@ -1542,7 +1542,7 @@ class FinanceController extends WebController
         $total_info = array();
         $total_info['total_number'] = $total;//总记录数
         $total_info['all_number'] = 0;//用户购买总数量
-        $total_info['total'] = 0;//总支付金券
+        $total_info['total'] = 0;//总支付虚拟币
         if (!empty($list)) {
             //用户购买总数量
             $total_info['all_number'] = array_sum(array_column($list, 'number'));

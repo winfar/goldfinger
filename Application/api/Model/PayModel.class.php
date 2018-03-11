@@ -75,7 +75,7 @@ class PayModel extends Model
 			}
 
 			//购买的总金额校验
-			// 实时金价*参与黄金毫克数*人民币和金券的兑换比例*（1+溢价百分比）
+			// 实时金价*参与黄金毫克数*人民币和虚拟币的兑换比例*（1+溢价百分比）
 			$_amount_gold =ceil ($gold_price / 10000 * $_starting_number * (100+$_premium) * $price)  ;
 			if($gold_do != $_amount_gold){
 				returnJson('', 403, '金价'.C("WEB_CURRENCY").'金额校验失败');
@@ -532,7 +532,7 @@ class PayModel extends Model
 	}
 
 	/**
-	 * 检查金券是否足够
+	 * 检查虚拟币是否足够
 	 * @param $amount
 	 * @param $uid
 	 * @return bool
@@ -897,7 +897,7 @@ class PayModel extends Model
 		if(!$rs_amount){
 			return false;
 		}
-		 //直接扣减用户的金券数量
+		 //直接扣减用户的虚拟币数量
 		$rs  = D('api/user')->discountGCoupon($uid,$coin_count);
 		if($rs){
 			return true;

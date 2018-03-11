@@ -329,7 +329,7 @@ class PublicController extends BaseController
     }
 
     /**
-     * 增加金券记录
+     * 增加虚拟币记录
      * @activity_type 1=大转盘 2=牛气冲天 3=系统赠送
      *
      */
@@ -344,7 +344,7 @@ class PublicController extends BaseController
     }
 
     /**
-     * 系统增加金券记录
+     * 系统增加虚拟币记录
      * @activity_type 1=大转盘 2=牛气冲天 3=系统赠送
      *
      */
