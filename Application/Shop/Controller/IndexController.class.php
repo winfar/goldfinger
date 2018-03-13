@@ -694,6 +694,11 @@ class IndexController extends BaseController {
         $this->display($this->tplpath."recharge.html");
     }
 
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function perpay(){
         $uid = empty($this->uid) ? 0 : $this->uid;//用户id
         $rechargeid = isset($_GET['rid'])?$_GET['rid']:0;//充值id
@@ -711,8 +716,8 @@ class IndexController extends BaseController {
 
                 if($addRechargeOrderResult){
     
-                    $fee = 1;//测试1分
-                    // $fee = $recharge['payout']*100;
+                    // $fee = 1;//测试1分
+                    $fee = $recharge['payout']*100;
 
                     // 此处根据实际业务情况生成订单 然后拿着订单去支付
 
@@ -748,8 +753,10 @@ class IndexController extends BaseController {
         $trade_no = I('trade_no');
         $fee = I('fee');
 
-        //common function
-        $jsApiParameters = wechat_pay($openId,'充值',$trade_no,$fee);  
+        if($trade_no && $fee){
+            //common function
+            $jsApiParameters = wechat_pay($openId,'充值',$trade_no,$fee);  
+        }
 
         $this->assign(array(  
             'data' => $jsApiParameters  
