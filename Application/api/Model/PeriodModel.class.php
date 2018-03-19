@@ -140,7 +140,7 @@ class PeriodModel extends Model {
 	public function periodInfo($param = array())
 	{
 		$map = array();
-		$sql = "select period.state,period.id as pid,period.uid,period.kaijang_num,period.kaijiang_ssc,period.kaijiang_issue,period.no,period.kaijang_time,period.number as total_number,(select (case when sum(buy_gold) is NUll then 0 else ABS(sum(buy_gold)) end ) from bo_shop_order where pid = period.id) as total_buy_gold from bo_shop_period period  where 1 = 1";
+		$sql = "select period.state,period.id as pid,period.uid,period.kaijang_num,period.kaijiang_ssc,period.kaijiang_issue,period.no,period.kaijang_time,period.end_time,period.number as total_number,(select (case when sum(buy_gold) is NUll then 0 else ABS(sum(buy_gold)) end ) from bo_shop_order where pid = period.id) as total_buy_gold from bo_shop_period period  where 1 = 1";
 		//商品
 		if ( isset($param['sid'])) {
 			$sql .=" and period.sid=".$param['sid'];

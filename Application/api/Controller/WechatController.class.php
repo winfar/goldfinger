@@ -223,7 +223,7 @@ class WechatController extends BaseController
             $options['lucky_num'] = $period['kaijang_num'];
             $options['nickname'] = get_user_name($period['uid']);
             $options['buy_times'] = $period['user_number'].'次';//中奖人购买次数
-            $options['date'] = date("Y年m月d日 H:i:s",$period['kaijang_time']);
+            $options['date'] = date("Y年m月d日 H:i:s",intval($period['end_time']/1000));
 
             //循环购买人，逐个通知
             // select u.uid,u.nickname,sum(o.number) buy_times 
