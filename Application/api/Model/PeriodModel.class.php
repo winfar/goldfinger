@@ -140,7 +140,7 @@ class PeriodModel extends Model {
 	public function periodInfo($param = array())
 	{
 		$map = array();
-		$sql = "select period.state,period.id as pid,period.kaijang_num,period.kaijiang_ssc,period.kaijiang_issue,period.no,period.kaijang_time,period.number as total_number,(select (case when sum(buy_gold) is NUll then 0 else ABS(sum(buy_gold)) end ) from bo_shop_order where pid = period.id) as total_buy_gold from bo_shop_period period  where 1 = 1";
+		$sql = "select period.state,period.id as pid,period.uid,period.kaijang_num,period.kaijiang_ssc,period.kaijiang_issue,period.no,period.kaijang_time,period.number as total_number,(select (case when sum(buy_gold) is NUll then 0 else ABS(sum(buy_gold)) end ) from bo_shop_order where pid = period.id) as total_buy_gold from bo_shop_period period  where 1 = 1";
 		//商品
 		if ( isset($param['sid'])) {
 			$sql .=" and period.sid=".$param['sid'];
@@ -182,7 +182,7 @@ class PeriodModel extends Model {
 			$list['ssc_date'] = $list['kaijang_time']+$time.'000';
 			$list['down_time'] = $list['kaijang_time']-time();//倒计时结束时间
 			$list['ssc_time'] = $list['kaijang_time']+$time-time();//倒计时结束时间
-			$list['now_time'] = date("Y-m-d H:i:s", NOW_TIME); 
+			$list['now_time'] = date("Y-m-d H:i:s", NOW_TIME);
 			$list['last_no'] = M('shop_period')->where('state=0')->order('id desc')->getField('id');
 			if (isset($param['uid'])) {
 				$uid = $param['uid'];
@@ -385,10 +385,16 @@ class PeriodModel extends Model {
 		
 			if($rs_user && $rs_period && $rs_msg){
 				M()->commit();
+
+				recordLog($rs_period,'开奖成功！');
+
+				//微信公众号通知
+				A('api/Wechat')->sendTplMsgLottery($pid,$winner);
 				echo '开奖成功！';
 			}
 			else{
 				M()->rollback();
+				recordLog('[rs_user='.$rs_user.' rs_period='.$rs_period.' rs_msg='.$rs_msg.']','开奖失败');
 				echo '开奖失败[rs_user='.$rs_user.' rs_period='.$rs_period.' rs_msg='.$rs_msg.']';
 				return false;
 			}

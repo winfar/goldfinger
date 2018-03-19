@@ -317,11 +317,11 @@ function get_millisecond()
     
     $msec=round($usec*1000);  
     if(strlen($msec) == 2) {
-    $msec = '0'.$msec;
+        $msec = '0'.$msec;
     } else if(strlen($msec) == 1) {
-    $msec = '00'.$msec;
+        $msec = '00'.$msec;
     } else if(strlen($msec) == 0){
-    $msec = '000';
+        $msec = '000';
     }
     return $msec;  
 } 
@@ -815,6 +815,17 @@ function isHostOnlineTest(){
 }
 
 function getHost(){
+    $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';  
+    $host = $http_type . $_SERVER["HTTP_HOST"];
+
+    // recordLog($_SERVER['HTTPS'],'$_SERVER["HTTPS"]');
+    // recordLog($_SERVER['HTTP_X_FORWARDED_PROTO'],'$_SERVER["HTTP_X_FORWARDED_PROTO"]');
+    // recordLog($_SERVER["HTTP_HOST"],'$_SERVER["HTTP_HOST"]');
+    // recordLog($host,'host');
+    return $host;
+}
+
+function getHostEnv(){
     switch ($_SERVER['HTTP_HOST']) {
         case 'www.molijinbei.com':
             return 'product';
@@ -907,10 +918,10 @@ function getLoginTypeByPassportUid($passport_uid){
     $context = stream_context_create($opts);
 
     $host = $_SERVER['HTTP_HOST'];
-    if(getHost() == 'test'){
+    if(getHostEnv() == 'test'){
         $host = 'test.passport.busonline.com';
     }
-    else if(getHost() == 'onlinetest'){
+    else if(getHostEnv() == 'onlinetest'){
         $host = 'onlinetest.passport.busonline.com';
     }
     else{
