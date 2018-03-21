@@ -250,7 +250,7 @@ class WechatController extends BaseController
                 $dataParams['keyword3'] = ['value' => $options['nickname'], 'color' => $color];//昵称 XXX
                 $dataParams['keyword4'] = ['value' => $options['buy_times'], 'color' => $color];//次数 23
                 $dataParams['keyword5'] = ['value' => $options['date'], 'color' => $color];//揭晓时间 2014年7月21日 18:36
-                $dataParams['remark'] = ['value' => '请登录公众号查看参与详情。', 'color' => $color];
+                $dataParams['remark'] = ['value' => '请点击查看参与详情。', 'color' => $color];
 
                 $data['touser'] = $options['openid'];//openid
                 $data['template_id'] = self::MSG_TEMPLATE_ID_LOTTERY;//模板ID

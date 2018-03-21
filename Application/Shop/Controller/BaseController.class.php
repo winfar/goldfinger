@@ -74,6 +74,11 @@ class BaseController extends Controller {
 			$cookie_uid = cookie('bo_uid');
 			if (!empty(cookie('bo_uid'))) {
 				$this->uid = cookie('bo_uid');
+				$userInfo = M('User')->find($this->uid);
+				if(!$userInfo){
+					cookie('bo_uid',null);
+					header('Location: '. getHost() . $_SERVER["REQUEST_URI"]);
+				}
 			}
 			else{
 				// $this->redirect('Remind/index');

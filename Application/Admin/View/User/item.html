@@ -1,19 +1,21 @@
 <extend name="Public/base" />
 <block name="style">
-    <css href="__JS__/jquery.icheck/skins/square/blue.css"/>
+    <css href="__JS__/jquery.icheck/skins/square/blue.css" />
     <css href="__JS__/bootstrap.datetimepicker/css/bootstrap-datetimepicker.min.css" />
     <style type="text/css">
-        .col-sm-3{
-            width:185px;
+        .col-sm-3 {
+            width: 185px;
         }
-        .title{
+
+        .title {
             font-size: 16px;
             background-color: #dadada;
-            border:10px solid #dadada;
-            cursor:pointer;
+            border: 10px solid #dadada;
+            cursor: pointer;
         }
+
         .on {
-        	color: red;
+            color: red;
         }
     </style>
 </block>
@@ -29,136 +31,146 @@
                         </div>
                         <div class="content">
                             <div class="col-sm-12">
-                               <span class="title banner1" tid='1'>参与详情</span> <span class="title banner2" tid='2'>中奖纪录</span> <span class="title banner3" tid='3'>提金记录</span>
+                                <span class="title banner1" tid='1'>参与详情</span>
+                                <span class="title banner2" tid='2'>中奖纪录</span>
+                                <span class="title banner3" tid='3'>提金记录</span>
                             </div>
                             <table class="no-border blue">
-                            <if condition="$tid eq 1">
-                                <thead class="no-border">
-                                    <tr>
-                                        <th style="width:5%;">订单号</th>
-                                        <th style="width:5%;">用户ID</th>
-                                        <th style="width:8%;">用户名</th>
-                                        <th style="width:8%;">购买数量（mg）</th>
-                                        <!-- <th style="width:8%;">参与{:C("WEB_CURRENCY")}(充值)</th>
-                                        <th style="width:8%;">参与{:C("WEB_CURRENCY")}(活动)</th> -->
-                                        <th style="width:8%;">总参与{:C("WEB_CURRENCY")}</th>
-                                        <th style="width:8%;">实时金价</th>
-                                        <th style="width:8%;">开奖号码</th>
-                                        <th style="width:8%;">参与号码</th>
-                                        <th style="width:8%;">注册时间</th>
-                                    </tr>
-                                </thead>
-                                <notempty name="_list">
-                                    <tbody class="no-border-y">
-                                        <volist name="_list" id="vo">
-                                            <tr>
-                                                <td>{$vo.order_id}</td>
-                                                <td>{$vo.uid}</td>
-                                                <td>{$vo.nickname}</td>
-                                                <td>{$vo.number}</td>
-                                                <!-- <td>{$vo.top_diamond}</td>
-                                                <td>{$vo.recharge_activity}</td> -->
-                                                <td>{$vo.gold}</td>
-                                                <td>{$vo.gold_price}</td>
-                                                <td>{$vo.kaijang_num}</td>
-                                                <td>
-												<!-- Modal -->
-                                              <div class="modal fade" id="myModals{$vo['order_id']}" tabindex="-1" role="dialog" aria-labelledby="myModalLabels{$vo['order_id']}">
-                                                  <div class="modal-dialog" role="document">
-                                                      <div class="modal-content" style="margin-top: 45%;">
-                                                          <div class="modal-header">
-                                                              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                              <!--<h4 class="modal-title" id="myModalLabels">购买号码ttt</h4>-->
-                                                          </div>
-                                                          <div class="modal-body">
-                                                              {$vo['numbersinfo']}
-                                                          </div>
-                                                          <div class="modal-footer">
-                                                              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                                          </div>
-                                                      </div>
-                                                  </div>
-                                              </div>
-
-                                                <a href="#"  data-toggle="modal" data-target="#myModals{$vo['order_id']}">查看</a></td>
-                                                <td>{:$vo['create_time']>0 ? date("Y-m-d H:i:s",$vo['create_time']) : ''}</td>
-                                            </tr>
-                                        </volist>
-                                    </tbody>
-                                    <else/>
-                                    <td colspan="4"> aOh! 暂时还没有内容! </td>
-                                </notempty>
-                            <elseif condition="$tid eq 2"/> 
-                            	<thead class="no-border">
-                                    <tr>
-                                        <th style="width:5%;">订单号</th>
-                                        <th style="width:5%;">用户ID</th>
-                                        <th style="width:8%;">用户名</th>
-                                        <th style="width:8%;">购买数量（mg）</th>
-                                       <!-- <th style="width:8%;">参与{:C("WEB_CURRENCY")}(充值)</th>
-                                        <th style="width:8%;">参与{:C("WEB_CURRENCY")}(活动)</th> -->
-                                        <th style="width:8%;">总参与{:C("WEB_CURRENCY")}</th>
-                                        <th style="width:8%;">实时金价</th>
-                                        <th style="width:8%;">开奖总数量/mg</th>
-                                        <th style="width:8%;">用户总支付金额</th>
-                                        <th style="width:8%;">注册时间</th>
-                                    </tr>
-                                </thead>
-                                <notempty name="_list">
-                                    <tbody class="no-border-y">
-                                        <volist name="_list" id="vo">
-                                            <tr>
-                                                <td>{$vo.order_id}</td>
-                                                <td>{$vo.uid}</td>
-                                                <td>{$vo.nickname}</td>
-                                                <td>{$vo.number}</td>
-                                                <!-- <td>{$vo.top_diamond}</td>
-                                                <td>{$vo.recharge_activity}</td> -->
-                                                <td>{$vo.gold}</td>
-                                                <td>{$vo.gold_price}</td>
-                                                <td>{$vo.number}</td>
-                                                <td>{$vo.total}</td>
-                                                <td>{:$vo['create_time']>0 ? date("Y-m-d H:i:s",$vo['create_time']) : ''}</td>
-                                            </tr>
-                                        </volist>
-                                    </tbody>
-                                    <else/>
-                                    <td colspan="4"> aOh! 暂时还没有内容! </td>
-                                </notempty> 
-                            <elseif condition="$tid eq 3"/>  
-                            	<thead class="no-border">
-                                    <tr>
-                                        <th style="width:5%;">订单号</th>
-                                        <th style="width:5%;">用户ID</th>
-                                        <th style="width:8%;">用户名</th>
-                                        <th style="width:8%;">购买数量（mg）</th>
-                                        <th style="width:8%;">手续费(充值)</th>
-                                        <th style="width:8%;">手续费(活动)</th>
-                                        <th style="width:8%;">剩余黄金</th>
-                                        <th style="width:8%;">提现时间</th>
-                                        <th style="width:8%;">操作</th>
-                                    </tr>
-                                </thead>
-                                <notempty name="_list">
-                                    <tbody class="no-border-y">
-                                        <volist name="_list" id="vo">
-                                            <tr>
-                                                <td>{$vo.order_id}</td>
-                                                <td>{$vo.uid}</td>
-                                                <td>{$vo.nickname}</td>
-                                                <td>{$vo.number}</td>
-                                                <td>{$vo.top_diamond}</td>
-                                                <td>{$vo.recharge_activity}</td>
-                                                <td>{$vo.gold_balance}</td>
-                                                <td>{:$vo['create_time']>0 ? date("Y-m-d H:i:s",$vo['create_time']) : ''}</td>
-                                                <td><a href="{:U('Finance/orderinfo?display=1&id='.$vo['id'])}">查看</a></td>
-                                            </tr>
-                                        </volist>
-                                    </tbody>
-                                    <else/>
-                                    <td colspan="4"> aOh! 暂时还没有内容! </td>
-                                </notempty> 
-                            </if>    
+                                <if condition="$tid eq 1">
+                                    <thead class="no-border">
+                                        <tr>
+                                            <th style="width:5%;">用户ID</th>
+                                            <th style="width:5%;">昵称</th>
+                                            <th style="width:5%;">期号</th>
+                                            <th style="width:5%;">订单号</th>
+                                            <th style="width:5%;">人次</th>
+                                            <th style="width:5%;">购买数量（mg）</th>
+                                            <!-- <th style="width:8%;">参与{:C("WEB_CURRENCY")}(充值)</th>
+                                            <th style="width:8%;">参与{:C("WEB_CURRENCY")}(活动)</th> -->
+                                            <th style="width:5%;">总参与{:C("WEB_CURRENCY")}</th>
+                                            <th style="width:5%;">实时金价</th>
+                                            <th style="width:5%;">开奖号码</th>
+                                            <th style="width:5%;">参与号码</th>
+                                            <th style="width:8%;">时间</th>
+                                        </tr>
+                                    </thead>
+                                    <notempty name="_list">
+                                        <tbody class="no-border-y">
+                                            <volist name="_list" id="vo">
+                                                <tr>
+                                                    <td>{$vo.uid}</td>
+                                                    <td>{$vo.nickname}</td>
+                                                    <td>{$vo.pid}</td>
+                                                    <td>{$vo.order_id}</td>
+                                                    <td>{$vo.number}</td>
+                                                    <td>{$vo.buy_gold}</td>
+                                                    <!-- <td>{$vo.top_diamond}</td>
+                                                    <td>{$vo.recharge_activity}</td> -->
+                                                    <td>{$vo.gold}</td>
+                                                    <td>{$vo.gold_price}</td>
+                                                    <td>{$vo.kaijang_num}</td>
+                                                    <td>
+                                                        <!-- Modal -->
+                                                        <div class="modal fade" id="myModals{$vo['order_id']}" tabindex="-1" role="dialog" aria-labelledby="myModalLabels{$vo['order_id']}">
+                                                            <div class="modal-dialog" role="document">
+                                                                <div class="modal-content" style="margin-top: 45%;">
+                                                                    <div class="modal-header">
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                        <!--<h4 class="modal-title" id="myModalLabels">购买号码ttt</h4>-->
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        {$vo['numbersinfo']}
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <a href="#" data-toggle="modal" data-target="#myModals{$vo['order_id']}">查看</a>
+                                                    </td>
+                                                    <td>{:$vo['create_time']>0 ? date("Y-m-d H:i:s",$vo['create_time']) : '-'}</td>
+                                                </tr>
+                                            </volist>
+                                        </tbody>
+                                        <else/>
+                                        <td colspan="4"> aOh! 暂时还没有内容! </td>
+                                    </notempty>
+                                    <elseif condition="$tid eq 2" />
+                                    <thead class="no-border">
+                                        <tr>
+                                            <th style="width:5%;">用户ID</th>
+                                            <th style="width:5%;">昵称</th>
+                                            <th style="width:5%;">订单号</th>
+                                            <th style="width:5%;">购买数量（mg）</th>
+                                            <!-- <th style="width:8%;">参与{:C("WEB_CURRENCY")}(充值)</th>
+                                            <th style="width:8%;">参与{:C("WEB_CURRENCY")}(活动)</th> -->
+                                            <th style="width:5%;">总参与{:C("WEB_CURRENCY")}</th>
+                                            <th style="width:5%;">实时金价</th>
+                                            <th style="width:5%;">开奖总数量/mg</th>
+                                            <th style="width:5%;">用户总支付金额</th>
+                                            <th style="width:8%;">时间</th>
+                                        </tr>
+                                    </thead>
+                                    <notempty name="_list">
+                                        <tbody class="no-border-y">
+                                            <volist name="_list" id="vo">
+                                                <tr>
+                                                    <td>{$vo.uid}</td>
+                                                    <td>{$vo.nickname}</td>
+                                                    <td>{$vo.order_id}</td>
+                                                    <td>{$vo.buy_gold}</td>
+                                                    <!-- <td>{$vo.top_diamond}</td>
+                                                    <td>{$vo.recharge_activity}</td> -->
+                                                    <td>{$vo.gold}</td>
+                                                    <td>{$vo.gold_price}</td>
+                                                    <td></td>
+                                                    <td>{$vo.total}</td>
+                                                    <td>{:$vo['create_time']>0 ? date("Y-m-d H:i:s",$vo['create_time']) : ''}</td>
+                                                </tr>
+                                            </volist>
+                                        </tbody>
+                                        <else/>
+                                        <td colspan="4"> aOh! 暂时还没有内容! </td>
+                                    </notempty>
+                                    <elseif condition="$tid eq 3" />
+                                    <thead class="no-border">
+                                        <tr>
+                                            <th style="width:5%;">用户ID</th>
+                                            <th style="width:8%;">昵称</th>
+                                            <th style="width:5%;">订单号</th>
+                                            <th style="width:8%;">购买数量（mg）</th>
+                                            <th style="width:8%;">手续费(充值)</th>
+                                            <th style="width:8%;">手续费(活动)</th>
+                                            <th style="width:8%;">剩余黄金</th>
+                                            <th style="width:8%;">提现时间</th>
+                                            <th style="width:8%;">操作</th>
+                                        </tr>
+                                    </thead>
+                                    <notempty name="_list">
+                                        <tbody class="no-border-y">
+                                            <volist name="_list" id="vo">
+                                                <tr>
+                                                    <td>{$vo.uid}</td>
+                                                    <td>{$vo.nickname}</td>
+                                                    <td>{$vo.order_id}</td>
+                                                    <td>{$vo.number}</td>
+                                                    <td>{$vo.top_diamond}</td>
+                                                    <td>{$vo.recharge_activity}</td>
+                                                    <td>{$vo.gold_balance}</td>
+                                                    <td>{:$vo['create_time']>0 ? date("Y-m-d H:i:s",$vo['create_time']) : ''}</td>
+                                                    <td>
+                                                        <a href="{:U('Finance/orderinfo?display=1&id='.$vo['id'])}">查看</a>
+                                                    </td>
+                                                </tr>
+                                            </volist>
+                                        </tbody>
+                                        <else/>
+                                        <td colspan="4"> aOh! 暂时还没有内容! </td>
+                                    </notempty>
+                                </if>
                             </table>
                             <div class="content col-lg-12 pull-left">
                                 <div class="panel-foot text-center">
@@ -178,15 +190,15 @@
 </block>
 <block name="script">
     <script type="text/javascript">
-        $(document).ready(function() {
-        	var t = ".banner"+"{$tid}";
-        	$(t).addClass('on');
-        	$('.title').click(function() {
-        		var tid = $(this).attr("tid");
-        		var uid = "{$uid}";
-        		var url = "{:U('User/item')}";
-        		window.location.href = url + '/uid/' + uid +'/tid/' + tid;
-        	});
+        $(document).ready(function () {
+            var t = ".banner" + "{$tid}";
+            $(t).addClass('on');
+            $('.title').click(function () {
+                var tid = $(this).attr("tid");
+                var uid = "{$uid}";
+                var url = "{:U('User/item')}";
+                window.location.href = url + '/uid/' + uid + '/tid/' + tid;
+            });
         });
     </script>
 </block>

@@ -698,10 +698,15 @@ class FinanceModel extends Model
      */
     public function newfundsflowtotal($param = array())
     {
-        $sql = " select count(*) count from ( select  so.order_id  from bo_shop_order as so 
-	LEFT JOIN (  select sp.id as spid , s.`name`,sp.sid,sp.state,sp.kaijang_time,s.fictitious,s.periodnumber,sp.iscommon from bo_shop_period sp LEFT JOIN bo_shop s ON sp.sid = s.id GROUP BY sp.id ) b ON so.pid = b.spid  
-    LEFT JOIN bo_user user ON so.uid=user.id 
-	WHERE  1=1   ";
+        $sql = "select count(*) count from ( 
+                    select  so.order_id  
+                    from bo_shop_order as so 
+                    LEFT JOIN (
+                        select sp.id as spid , s.`name`,sp.sid,sp.state,sp.kaijang_time,s.fictitious,s.periodnumber,sp.iscommon 
+                        from bo_shop_period sp 
+                        LEFT JOIN bo_shop s ON sp.sid = s.id GROUP BY sp.id) b ON so.pid = b.spid  
+                    LEFT JOIN bo_user user ON so.uid=user.id 
+                    WHERE  1=1   ";
         //活动状态
         if ( isset($param['state']) ) {
             $state = $param['state'];

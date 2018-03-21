@@ -1042,7 +1042,7 @@ function post($url, $param=array()){
  * post method 通过拼装的方式  如：app=request&version=beta
  */
 function post_str($url, $param=array(),$timeout=10){
-
+    
     if(!is_array($param)){
         throw new Exception("参数必须为array");
     }
@@ -1082,6 +1082,7 @@ function post_str($url, $param=array(),$timeout=10){
     M('accessdo_log')->where('id='.$log_id)->save(array('response'=>$result['data'],'code'=>$result['code'],'update_time'=>time()));
 
     return $result;
+    
 }
 
 function get($url) {

@@ -184,10 +184,11 @@
                 }
                 //中奖者
                 if (winList.length != '') {
+					var txt = '{$uid}' == winList.uid ? '您已参与' : '参与人次';
                 	winHtml += '<ul>';
 					winHtml += '<li>';
 					winHtml += '<span class="ul_img"><img src="'+winList.img+'" /><em></em></span>';
-					winHtml += '<span class="ul_user"><h1>'+winList.nickname+'</h1><p>您已参与：<i>'+winList.number+'人次</i></p></span>';
+					winHtml += '<span class="ul_user"><h1>'+winList.nickname+'</h1><p>'+txt+'：<i>'+winList.number+'人次</i></p></span>';
 					winHtml += '<span class="ul_info"><br><a href="javascript:void(0);" onclick="getrecordsnumbers('+winList.uid+',0)">参与号码</a></span>';
 					winHtml += '<span class="seal"></span>';
 					winHtml += '</li>';
@@ -201,7 +202,7 @@
                 	for (var i in list ) {
                 		html += '<li>';
 						html += '<span class="ul_img"><img src="'+list[i].img+'" /></span>';
-						html += '<span class="ul_user"><h1>'+list[i].nickname+'</h1><p>参与人次：<i>'+list[i].number+'</i></p></span>';
+						html += '<span class="ul_user"><h1>'+list[i].nickname+'</h1><p>参与人次：<i>'+list[i].number+'人次</i></p></span>';
 						html += '<span class="ul_info"><i>'+list[i].create_date+'</i><br><a href="javascript:void(0);" onclick="getrecordsnumbers('+list[i].uid+',\''+list[i].order_id+'\')">参与号码</a></span>';
 						html += '</li>';
                 	}

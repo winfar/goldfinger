@@ -22,7 +22,7 @@
         <div class="recharge_items">
             <volist name="_list" id="vo">
                 <div class="recharge_item" onclick="pay({$vo['id']})">
-                    <div>{$vo['income']|default=0|intval}{:C("WEB_CURRENCY")} <img src="{$web_tplpath}/images/coin_icon.png" alt="" style="width:15px;"></div>
+                    <div>{$vo['income']+$vo['extra']}{:C("WEB_CURRENCY")} <img src="{$web_tplpath}/images/coin_icon.png" alt="" style="width:15px;"></div>
                     <div>￥{$vo['payout']|default=0.00}{:$vo['extra']>0?'送'.intval($vo['extra']).C("WEB_CURRENCY"):''}</div>
                 </div>
             </volist>

@@ -364,7 +364,7 @@ class PayModel extends Model
 				$period['state'] = 0;
 				//$period['no']=$info['no']+1;
 				$max_no = M('shop_period')->where('sid=' . $info['sid'])->max('no');
-				$period['no'] = $max_no + 1;
+				$period['no'] = ($max_no == 0 ? 100000 : $max_no) + 1;
 
 				D('api/Period')->addShopAction($period, (intval($info['periodnumber']) + 100000), $info['shopstock'], 1, $id);
 			}

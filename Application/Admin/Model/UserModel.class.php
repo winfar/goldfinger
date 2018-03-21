@@ -370,7 +370,17 @@ class UserModel extends Model {
     public function winlist($param = array())
     {
         $data = array();
-        $sql = "select u.nickname,u.gold_balance,o.*,(SELECT (case when SUM(number) is NUll then 0 else ABS(SUM(number)) end ) FROM bo_shop_order WHERE o.uid = uid and o.id = pid) as number,(SELECT (case when SUM(top_diamond+recharge_activity) is NUll then 0 else ABS(SUM(top_diamond+recharge_activity)) end ) FROM bo_shop_order WHERE o.uid = uid and o.id = pid) as total,sgr.gold_price from bo_shop_period p join bo_user u on p.uid = u.id left join bo_shop_order o on p.id = o.pid  LEFT JOIN bo_shop_gold_record sgr ON sgr.id=o.gr_id   where 1=1  and p.state = 2";//数据
+        $sql = "select u.nickname,u.gold_balance,o.*,
+                    (SELECT (case when SUM(number) is NUll then 0 else ABS(SUM(number)) end) 
+                        FROM bo_shop_order WHERE o.uid = uid and o.id = pid) as number,
+                    (SELECT (case when SUM(top_diamond+recharge_activity) is NUll then 0 else ABS(SUM(top_diamond+recharge_activity)) end) 
+                        FROM bo_shop_order WHERE o.uid = uid and o.id = pid) as total,
+                    sgr.gold_price 
+                    from bo_shop_period p 
+                    join bo_user u on p.uid = u.id 
+                    LEFT JOIN bo_shop_order o on p.id = o.pid 
+                    LEFT JOIN bo_shop_gold_record sgr ON sgr.id=o.gr_id 
+                    where 1=1 and p.state=2";//数据
         $sql_total = "select count(*) as count from bo_shop_period where 1=1 and state = 2";//数量
         if (!empty($param['uid'])) {
             $sql .= ' and p.uid ='.$param['uid'];
@@ -380,7 +390,7 @@ class UserModel extends Model {
         $count = $this->query($sql_total, false);
         $data['count'] = $count[0]['count'];
         $sql .= " group by p.id order by p.id  desc limit " . $param['pageindex'] . "," . $param['pagesize'];
-        $data['list'] = $this->query($sql, false);
+        $data['list'] = $this->query($sql, false); 
         return $data;
     }
     /**
