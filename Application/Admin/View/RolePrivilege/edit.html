@@ -1,11 +1,16 @@
 <extend name="Public/base" />
 <block name="style">
     <css href="__JS__/bootstrap.datetimepicker/css/bootstrap-datetimepicker.min.css" />
+    <style>
+        .items{
+            margin-bottom:0;list-style:none;
+        }
+    </style>
 </block>
 <block name="body">
     <div>
         <div class="page-head">
-            <h2>权限管理</h2>
+            <h4>权限管理</h4>
         </div>
         <div class="cl-mcont">
             <div class="row">
@@ -13,12 +18,13 @@
                 <div class="col-md-12">
                     <div class="block-flat">
                         <div class="header">
-                            <h3 class="hthin">{$meta_title}</h3>
+                            <h4 class="hthin">{$meta_title}</h4>
                         </div>
                         <div class="content">
                             <div class="tab-container">
                                 <form action="{:U()}" class="form-horizontal" method="post">
                                     <volist name="_list" id="vo">
+                                        <div class="{$vo.icon}" style="background-color:#eee; font-size:14px; font-weight:bold;" >{$vo.title}</div>
                                         <table class="no-border blue">
                                             <notempty name="_list">
                                                 <volist name="vo['child']" id="sub1">
@@ -26,16 +32,20 @@
                                                         <tr>
                                                             <!--<td style="width:10%;><input name="tables[]" type="checkbox" value="{$vo.id}"></td>-->
                                                             <td style="width:10%;">
-                                                                <input class="baseCheckbox" name="tables[]" type="checkbox" value="{$sub1.id}" <?php if($sub1[checked]) echo( "checked");?> >{$sub1.title}
-                                                                <ul style="margin-bottom:0;">
+                                                                <div>
+                                                                    <input class="baseCheckbox" name="tables[]" type="checkbox" value="{$sub1.id}" <?php if($sub1[checked]) echo( "checked");?> >
+                                                                    <span class="{$sub1.icon}">{$sub1.title}</span> 
+                                                                </div>
+                                                                <ul class="items">
                                                                     <volist name="sub1['child']" id="menu1">
-                                                                        <li style="list-style:none;">
-                                                                            <input class="childeCheckbox" name="tables[]" type="checkbox" value="{$menu1.id}" <?php if($menu1[checked]) echo( "checked");?> ></input>{$menu1.title}
+                                                                        <li>
+                                                                            <input class="childeCheckbox" name="tables[]" type="checkbox" value="{$menu1.id}" <?php if($menu1[checked]) echo( "checked");?> ></input>
+                                                                            <span class="{$menu1.icon}">{$menu1.title}</span>
+                                                                            <span>{$menu1.url}</span>
                                                                         </li>
                                                                     </volist>
                                                                 </ul>
                                                             </td>
-                                                            <td style="width:20%;">{$menu1.url}</td>
                                                         </tr>
                                                     </tbody>
                                                 </volist>
@@ -75,13 +85,14 @@
             $(".datetime").datetimepicker({
                 autoclose: true
             });
-            highlight_subnav("{:U('RolePrivilege/edit')}"); <present name = "info.id" >
-                highlight_subnav("{:U('RolePrivilege/edit')}");
-            setValue("category", {
-                $info.category |
-                default = 1
-            }); <else />
-            highlight_subnav("{:U('News/add')}"); </present>	
+
+            highlight_subnav("{:U('RolePrivilege/edit')}"); 
+            <present name = "info.id" >
+            highlight_subnav("{:U('RolePrivilege/edit')}");
+            setValue("category", "{$info.category|default = 1}"); 
+            <else />
+            highlight_subnav("{:U('News/add')}"); 
+            </present>	
 
             $(".baseCheckbox").on("click", function() {
                 $(this).next("ul").find(":checkbox").prop("checked", $(this).prop("checked"));

@@ -7,18 +7,18 @@ use Think\Model;
 class GoldRecordModel extends Model
 {
     //注册
-    public function register($uid,$gift_gold){
+    public function register($uid,$createTime,$giftGold){
 
         $typeid = 11;
 
-        $user = M('user u')->table('__CHANNEL__ c')->field('u.*,c.channel_name')->where('u.channelid=c.id and id='.$uid)->find();
+        // $user = M('user u')->table('__CHANNEL__ c')->field('u.*,c.channel_name')->where('u.channelid=c.id and id='.$uid)->find();
 
-        if($user){
+        if($uid && $giftGold){
             $remarkArr=array();
-            $remarkArr["注册时间"]=date("Y-m-d H:i:s",$user['create_time']);
-            $remarkArr["所属渠道"]=$user['channel_name'];
+            $remarkArr["注册时间"]=date("Y-m-d H:i:s",$createTime);
+            $remarkArr["赠送虚拟币数量"]=$giftGold;
 
-            $rs = $this->addGoldRecord($uid,$typeid,$gift_gold,$remarkArr,0);
+            $rs = $this->addGoldRecord($uid,$typeid,$giftGold,$remarkArr,0);
             return $rs;
         }
     }
@@ -90,16 +90,16 @@ class GoldRecordModel extends Model
     }
 
     //充值
-    public function recharge($uid,$amount,$total_gold,$gift_gold){
+    public function recharge($uid,$amount,$totalGold,$giftGold){
 
         $typeid = 9;
 
         $remarkArr=array();
         $remarkArr["充值时间"]=date("Y-m-d H:i:s",time());
         $remarkArr["充值金额"]=$amount;
-        $remarkArr["赠送金币数量"]=$gift_gold;
+        $remarkArr["赠送金币数量"]=$giftGold;
 
-        $rs = $this->addGoldRecord($uid,$typeid,$total_gold,$remarkArr,0);
+        $rs = $this->addGoldRecord($uid,$typeid,$totalGold,$remarkArr,0);
         return $rs;
     }
 
@@ -123,7 +123,7 @@ class GoldRecordModel extends Model
         $data["typeid"]=$typeid;
         $data["gold"]=$gold;
         $data["create_time"]=time();
-        $data["remark"]=json_encode($remarkArr,JSON_UNESCAPED_UNICODE);;
+        $data["remark"]=json_encode($remarkArr,JSON_UNESCAPED_UNICODE);
         $data["pid"]=$pid;
 
         // $remarkArr=array();
@@ -176,7 +176,7 @@ class GoldRecordModel extends Model
         //         break;
         //     case 11:
         //         //注册
-        //         $remark='{"充值时间": "2016/08/17 15:00:00","充值金额": "99","赠送金币数量": "1"}';
+        //         $remark='{"注册时间": "2016/08/17 15:00:00","所属渠道": "1"}';
         //         break;
         //     case 12:
         //         //晒单
@@ -191,11 +191,11 @@ class GoldRecordModel extends Model
         $model->startTrans();
 
         if(abs($gold)>0){
-            $rs_gold = M('User')->where('id=' . $uid)->setInc('black', $gold);
-            $rs_gold_record = $model->add($data);
+            $rsGold_record = $model->add($data);
+            $rsGold = M('User')->where('id=' . $uid)->setInc('gold_coupon', $gold);
         }
 
-        if($rs_gold>0 && $rs_gold_record>0){
+        if($rsGold>0 && $rsGold_record>0){
             $model->commit();
             return true;
         }
@@ -247,8 +247,8 @@ class GoldRecordModel extends Model
         $gold = floor($result[0]['buy_price']*($rate/100)) ;
 
         //商品已经兑换过
-        $status_gold = M('shop_period')->where('id=' . $param['pid'] )->getField('status_gold');
-        if ( $status_gold > 0 ) {
+        $statusGold = M('shop_period')->where('id=' . $param['pid'] )->getField('statusGold');
+        if ( $statusGold > 0 ) {
             returnJson('', 400, '此商品已经兑换过！');
         }
 
@@ -267,7 +267,7 @@ class GoldRecordModel extends Model
         $shopinfo = M('shop')->where('id=' . $shopid)->find();
         $shopinfo['shopstock'] = intval($shopinfo['shopstock']) + 1;//修改库存
         $rs_shop = M('shop')->save($shopinfo);
-        $rs_period = M('shop_period')->where('id=' . $param['pid'] )->setField('status_gold','1');
+        $rs_period = M('shop_period')->where('id=' . $param['pid'] )->setField('statusGold','1');
         //修改虚拟卡状态，将激活的卡密改回可获得的状态
         $rs_card = M('card')->where('id=' . $shopperiod['card_id'])->setField('status',0);
 
@@ -285,16 +285,16 @@ class GoldRecordModel extends Model
         $remarkArr["商品期号"]= $shopperiod['no'];
 
         $data['remark'] = json_encode($remarkArr,JSON_UNESCAPED_UNICODE);
-        $rs_gold_record = $this->add($data);
+        $rsGold_record = $this->add($data);
 
         $param['order_status'] = '102'; //设置为已收货
         $rs_order = D("Shop")->updateOrderStatus($user["uid"],$param["pid"],$param['order_status']);
 
-        if ( count($rs_user) && count($rs_shop) && count($rs_period) && count($rs_card) && count($rs_gold_record) && count($rs_order) ) {
+        if ( count($rs_user) && count($rs_shop) && count($rs_period) && count($rs_card) && count($rsGold_record) && count($rs_order) ) {
             $this->commit();
             return true;
         } else {
-            recordLog('rs_user:'.$rs_user.' rs_shop:'.$rs_shop.' rs_period:'.$rs_period.' rs_card:'.$rs_card.' rs_gold_record:'.$rs_gold_record.' rs_order:'.$rs_order,'addGoldByUid');
+            recordLog('rs_user:'.$rs_user.' rs_shop:'.$rs_shop.' rs_period:'.$rs_period.' rs_card:'.$rs_card.' rsGold_record:'.$rsGold_record.' rs_order:'.$rs_order,'addGoldByUid');
             $this->rollback();
             return false;
         }
@@ -307,7 +307,7 @@ class GoldRecordModel extends Model
         if ( !$user ) {
             returnJson('', 100, '请登录！');
         }
-        $sql = "SELECT gold.create_time time, tradetype.`name` content,tradetype.id type,gold.gold FROM hx_gold_record gold INNER JOIN hx_trade_type tradetype ON gold.typeid=tradetype.id where gold.uid=" . $user['uid']." order by gold.id desc";
+        $sql = "SELECT gold.create_time time, tradetype.`name` content,tradetype.id type,gold.gold FROM hxGold_record gold INNER JOIN hx_trade_type tradetype ON gold.typeid=tradetype.id where gold.uid=" . $user['uid']." order by gold.id desc";
         $goldInfo = $this->query($sql, false);
         if ( $goldInfo ) {
             foreach ( $goldInfo as $key => $item ) {

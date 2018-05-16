@@ -3,9 +3,14 @@
 namespace api\Controller;
 
 class WechatController extends BaseController
-{
+{   
+    
+    //注册送虚拟币通知-模板ID
+    const MSG_TEMPLATE_ID_RIGISTER = '6LQgYow55ax3iFBULOeTznlxqEwfkOH95CEst31UHjo';
+    // const MSG_TEMPLATE_ID_RIGISTER = 'lLf6dNXBdoMJrmMD_hSX9iCwjEnWr7q8vZqqsejhG24';
     //充值通知-模板ID
     const MSG_TEMPLATE_ID_RECHARGE = 'TyQNnLbXKCWMLgRr-Vonhz8qGSHAQWzjHLSpOhTcbUU';
+    //中奖通知-模板ID
     const MSG_TEMPLATE_ID_LOTTERY = 'JNGbnNQNuv6CBScG0fnAKkxfGrG42wSThs7SujAlmqU';
 
     protected $host = '';
@@ -133,16 +138,12 @@ class WechatController extends BaseController
 
                     if($rs){
                         $rs_gcoupon_record = D('Admin/GcouponRecord')->addRecord($rechargeOrder['uid'],$activity_type=0,$rechargeOrder['gold'],0,0,$result['transaction_id']);
-                        $rs_user = M('user')->where(array('id'=>$rechargeOrder['uid']))->setInc('gold_coupon',$rechargeOrder['gold']);
 
-                        if($rs_gcoupon_record && $rs_user){
-
-                            recordLog($rs_gcoupon_record,'微信支付回调用户增加虚拟币明细');
-                            recordLog($rs_user,'微信支付回调用户增加虚拟币');
+                        if($rs_gcoupon_record){
+                            // recordLog($rs_gcoupon_record,'微信支付回调用户增加虚拟币明细');
 
                             //发送微信公众号模板消息-充值
                             $rs_msg =  $this->sendTplMsgRecharge($rechargeOrder);
-
                             recordLog(json_encode($rs_msg),'发送微信公众号模板消息结果');
                         }
                     }
@@ -152,6 +153,49 @@ class WechatController extends BaseController
             recordLog($e->getMessage(),'微信支付回调异常');
         }
         // echo 'result:'.$result;
+    }
+
+    /**
+     * 微信公众号模板消息-注册送虚拟币
+     * https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1433751277
+     *
+     * {{first.DATA}}
+     * 会员ID：{{keyword1.DATA}}
+     * 时间：{{keyword2.DATA}}
+     * {{remark.DATA}}
+     *
+     * 欢迎成为我们的会员。
+     * ...
+     * 赠送80金贝，点击免费参与黄金点金。
+     * 
+     * @param $rechargeOrder [uid,cash,msg,remark]
+     * @return mixed
+     */
+    public function sendTplMsgRigister($userId,$quantity){
+        $color = '#173177';
+
+        if($userId && $quantity){
+
+            $user = M('user')->where(array('id'=>$userId))->find();
+            if($user) {
+                $dataParams['first'] = ['value' => '欢迎成为我们的会员。', 'color' => $color];
+                $dataParams['keyword1'] = ['value' => $user['id'], 'color' => $color];
+                $dataParams['keyword2'] = ['value' => date('Y年m月d日 H:i:s'), 'color' => $color];
+                $dataParams['remark'] = ['value' => '赠送'.$quantity.C("WEB_CURRENCY").'，点击免费参与黄金点金。', 'color' => $color];
+
+                $data['touser'] = $user['username'];//openid
+                $data['template_id'] = self::MSG_TEMPLATE_ID_RIGISTER;//模板ID
+                $data['url'] = getHost() . '/shop.php';//模板跳转链接
+                // $data['url'] = 'http://www.molijinbei.com/shop.php';//模板跳转链接
+                $data['data'] = $dataParams;
+
+                $rs = D('api/Wechat')->sendTemplateMessage($data);
+
+                return $rs;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -173,17 +217,17 @@ class WechatController extends BaseController
 
         $user = M('user')->where(array('id'=>$rechargeOrder['uid']))->find();
         if($user) {
-            $dataRechargeMsg['first'] = ['value' => '您好，您已成功进行'.C("WEB_CURRENCY").'充值。', 'color' => $color];
-            $dataRechargeMsg['accountType'] = ['value' => '用户'];
-            $dataRechargeMsg['account'] = ['value' => $user['nickname'], 'color' => $color];
-            $dataRechargeMsg['amount'] = ['value' => $rechargeOrder['cash'].'元', 'color' => $color];
-            $dataRechargeMsg['result'] = ['value' => $rechargeOrder['msg'], 'color' => $color];
-            $dataRechargeMsg['remark'] = ['value' => '备注：如有疑问，请致电18500395177联系我们。', 'color' => $color];
+            $dataParams['first'] = ['value' => '您好，您已成功进行'.C("WEB_CURRENCY").'充值。', 'color' => $color];
+            $dataParams['accountType'] = ['value' => '用户'];
+            $dataParams['account'] = ['value' => $user['nickname'], 'color' => $color];
+            $dataParams['amount'] = ['value' => $rechargeOrder['cash'].'元', 'color' => $color];
+            $dataParams['result'] = ['value' => $rechargeOrder['msg'], 'color' => $color];
+            $dataParams['remark'] = ['value' => '备注：如有疑问，请致电18500395177联系我们。', 'color' => $color];
 
             $data['touser'] = $user['username'];//openid
             $data['template_id'] = self::MSG_TEMPLATE_ID_RECHARGE;//模板ID
             //$data['url'] = '';//模板跳转链接
-            $data['data'] = $dataRechargeMsg;
+            $data['data'] = $dataParams;
 
             $rs = D('api/Wechat')->sendTemplateMessage($data);
 

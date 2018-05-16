@@ -775,6 +775,7 @@ function get_activityType() {
         array('activity_type'=>'1','name'=>'大转盘'),
         array('activity_type'=>'2','name'=>'牛气冲天'),
         array('activity_type'=>'3','name'=>'系统赠送'),
+        array('activity_type'=>'10','name'=>'注册赠送'),
     );
 }
 

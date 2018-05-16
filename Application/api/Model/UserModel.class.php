@@ -220,22 +220,22 @@ class UserModel extends Model
 
             $new_uid = M('User')->add($data);
 
-            if ( $new_uid ) {
-                //注册送金币,等运营配置，暂时不上,commit记得判断
-                //$goldRecord_rs = D('GoldRecord')->register($new_uid, 1);
+            if($new_uid>0){
+
+                $model->commit();
+
+                //注册送虚拟币,需运营配置
+                $events_rs = D('api/Events')->activate('register',$new_uid);
+                recordLog(json_decode($events_rs), '用户注册事件');
 
                 //注册送积分
                 //$pointRs = D('Point')->addPointByUid(1000, 101, $new_uid);
-            } else {
-                recordLog(json_decode($data), '同步用户数据失败-addUserInfo');
-            }
 
-            if($new_uid>0){
-                $model->commit();
                 return $new_uid;
             }
             else {
                 $model->rollback();
+                recordLog(json_decode($data), '同步用户数据失败-addUserInfo');
                 return false;
             }
         } else {

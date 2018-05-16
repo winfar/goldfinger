@@ -1,5 +1,10 @@
 <extend name="Public/base" />
 <block name="style">
+    <style>
+        ul {
+            padding-left: 15px;
+        }
+    </style>
 </block>
 <block name="body">
     <div>
@@ -18,50 +23,65 @@
                                 <form id="defaultForm" action="{:U()}" class="form-horizontal" method="post">
                                     <input type="hidden" name="id" value="{$info.id|default=''}">
                                     <div class="form-group">
-                                        <label class="col-xs-2 control-label">活动名称 <span class="text-danger">*</span></label>
+                                        <label class="col-xs-2 control-label">活动类型
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <div class="col-xs-4">
+                                            <select class="form-control" id="type" name="type" onchange="">
+                                                <volist name=":getSaleArr()" id="vo">
+                                                    <option value="{$vo.type}" <if condition="$info.type eq $vo['type']">selected</if>>{$vo.name}</option>
+                                                </volist>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">活动范围
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <div class="col-xs-4">
+                                            <select class="form-control" id="range" name="range" onchange="">
+                                                <volist name=":getSaleRangeArr()" id="vo">
+                                                    <option value="{$vo.type}" <if condition="$info.range eq $vo['type']">selected</if>>{$vo.name}</option>
+                                                </volist>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">活动名称
+                                            <span class="text-danger">*</span>
+                                        </label>
                                         <div class="col-xs-4">
                                             <input type="text" name="name" class="form-control" value="{$info.name|default=''}" placeholder="活动名称" />
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-xs-2 control-label">开始时间 <span class="text-danger">*</span></label>
+                                        <label class="col-xs-2 control-label">开始时间
+                                            <span class="text-danger">*</span>
+                                        </label>
                                         <div class="col-xs-4">
-                                            <input type="text" name="begin_time" class="form-control starttime" value="{$info.begin_time|default=time()|date='Y-m-d H:i',###}" placeholder="开始时间" />
+                                            <input type="text" name="begin_time" class="form-control starttime" value="{$info.begin_time|default=time()|date='Y-m-d H:i',###}"
+                                                placeholder="开始时间" />
                                             <!--<span class="form-control-static btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>-->
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-xs-2 control-label">结束时间 <span class="text-danger">*</span></label>
+                                        <label class="col-xs-2 control-label">结束时间
+                                            <span class="text-danger">*</span>
+                                        </label>
                                         <div class="col-xs-4">
-                                            <input type="text" name="end_time" class="form-control endtime" value="{$info.end_time|default=time()+24*60*60*30|date='Y-m-d H:i',###}" placeholder="结束时间" />
+                                            <input type="text" name="end_time" class="form-control endtime" value="{$info.end_time|default=time()+24*60*60*30|date='Y-m-d H:i',###}"
+                                                placeholder="结束时间" />
                                             <!--<span class="form-control-static btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>-->
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label class="col-xs-2 control-label">活动类型</label>
-                                        <div class="col-xs-4">
-                                            <select class="form-control" id="type" name="type" onchange="">
-                                            <volist name=":getSaleArr()" id="vo">
-                                                <option value="{$vo.type}" <if condition="$info.type eq $vo['type']">selected</if>>{$vo.name}</option>
-                                            </volist> 
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-xs-2 control-label">活动范围</label>
-                                        <div class="col-xs-4">
-                                            <select class="form-control" id="range" name="range" onchange="">
-                                            <volist name=":getSaleRangeArr()" id="vo">
-                                                <option value="{$vo.type}" <if condition="$info.range eq $vo['type']">selected</if>>{$vo.name}</option>
-                                            </volist>
-                                            </select>
-                                        </div>
-                                    </div>
+
                                     <div class="form-group">
                                         <label class="col-xs-2 control-label">分类/品牌/商品 id集合(注册不必填写)</label>
                                         <div class="col-xs-4">
                                             <textarea name="range_ids" class="range_ids" rows="3" cols="70">{$info.range_ids|default=''}</textarea>
-                                            (分类/品牌/商品的id集合以逗号分隔,比如:9,10)
+                                            <ul>
+                                                <li>分类/品牌/商品的id集合以逗号分隔(比如:9,10)</li>
+                                            </ul>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -72,13 +92,17 @@
                                             </volist>
                                         </div>
                                     </div>
-                                     <div class="form-group">
-                                        <label class="col-xs-2 control-label">金额下限/优惠金额/赠送金币/赠送积分<span class="text-danger">*</span></label>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label">金额下限/优惠金额/赠送{:C("WEB_CURRENCY")}/赠送积分
+                                            <span class="text-danger">*</span>
+                                        </label>
                                         <div class="col-xs-4">
                                             <textarea name="remark" class="remark" rows="3" cols="70">{$info.remark_content|default=''}</textarea>
-                                            (1.满减时: 金额下限和优惠金额必须填上 规则:单个时候-金额下限/优惠金额,多个时候:金额下限/优惠金额,金额下限/优惠金额<br>
-                                            2.满赠时: 金额下限,赠送金币和赠送积分必须填上 规则:单个时候-金额下限/赠送金币/赠送积分,多个时候:金额下限/赠送金币/赠送积分,金额下限/赠送金币/赠送积分<br>
-                                            3.注册时: 赠送金币和赠送积分必须填上 规则:赠送金币/赠送积分 只有单个没有多个)
+                                            <ul>
+                                                <li>满减时: 金额下限和优惠金额必须填上 规则:单个时候-金额下限/优惠金额,多个时候:金额下限/优惠金额,金额下限/优惠金额</li>
+                                                <li>满赠时: 金额下限,赠送{:C("WEB_CURRENCY")}和赠送积分必须填上 规则:单个时候-金额下限/赠送{:C("WEB_CURRENCY")}/赠送积分,多个时候:金额下限/赠送{:C("WEB_CURRENCY")}/赠送积分,金额下限/赠送{:C("WEB_CURRENCY")}/赠送积分</li>
+                                                <li>注册时: 赠送{:C("WEB_CURRENCY")}和赠送积分必须填上 规则:赠送{:C("WEB_CURRENCY")}/赠送积分 只有单个没有多个</li>
+                                            </ul>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -100,10 +124,10 @@
 </block>
 <block name="script">
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
             highlight_subnav("{:U('Sale/add')}");
 
-            $('#btnRefresh').click(function() {
+            $('#btnRefresh').click(function () {
                 $('form')[0].reset();
             });
 
@@ -168,7 +192,7 @@
                         message: 'The remark is not valid',
                         validators: {
                             notEmpty: {
-                                message: '金额下限/优惠金额/赠送金币/赠送积分不能为空'
+                                message: '金额下限/优惠金额/赠送{:C("WEB_CURRENCY")}/赠送积分不能为空'
                             }
                         }
                     }

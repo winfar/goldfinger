@@ -71,6 +71,40 @@ class SaleController extends WebController
 	public function add()
 	{
 		try{
+			if (!empty(IS_POST)) {
+				$post = $_POST;
+				$range_status = 0;//分类/品牌/商品 id集合是否必填 1是 0否
+				$red_status = 0;//红包是否必填 1是 0否
+				if (empty($post['name'])) {
+					$this->error("活动名称不能为空");
+					exit();
+				}
+				if (empty($post['begin_time'])) {
+					$this->error("开始时间不能为空");
+					exit();
+				}
+				if (empty($post['end_time'])) {
+					$this->error("结束时间不能为空");
+					exit();
+				}
+				if ($post['end_time'] <= $post['begin_time']) {
+					$this->error("结束时间不能小于开始时间");
+					exit();
+				}
+				if (empty($post['type'])) {
+					$this->error("活动类型");
+					exit();
+				}
+				
+				$rs = D('SalesPromotion')->update($post);
+				if($rs ==200){
+					$this->success('成功！', U('index'));
+				} else {
+					$error = D('SalesPromotion')->getError();
+					$this->error(empty($error) ? '金额下限/优惠金额/赠送金币/赠送积分格式不正确！' : $error);
+				}
+			}
+
 			$type_list = M('category')->where(['status'=>1])->field('id,title')->order('create_time desc,sort asc')->select();//分类列表
         	$brand_list = M('brand')->where(['status'=>1])->field('id,title')->order('create_time desc,sort asc')->select();//分类列表
         	$shop_list = M('shop')->where(['status'=>1])->field('id,name')->order('create_time desc')->select();//商品列表
@@ -82,39 +116,7 @@ class SaleController extends WebController
 			}
 			$time = time();//现在时间
 			$red_list = M('red_envelope')->where('status=1 and end_time>'.$time)->field('id,name')->order('create_time desc')->select();
-			if (!empty(IS_POST)) {
-					$post = $_POST;
-					$range_status = 0;//分类/品牌/商品 id集合是否必填 1是 0否
-					$red_status = 0;//红包是否必填 1是 0否
-					if (empty($post['name'])) {
-						$this->error("活动名称不能为空");
-	                    exit();
-					}
-					if (empty($post['begin_time'])) {
-						$this->error("开始时间不能为空");
-	                    exit();
-					}
-					if (empty($post['end_time'])) {
-						$this->error("结束时间不能为空");
-	                    exit();
-					}
-					if ($post['end_time'] <= $post['begin_time']) {
-						$this->error("结束时间不能小于开始时间");
-	                    exit();
-					}
-					if (empty($post['type'])) {
-						$this->error("活动类型");
-	                    exit();
-					}
-					
-					$rs = D('SalesPromotion')->update($post);
-					if($rs ==200){
-	                	$this->success('成功！', U('index'));
-		            } else {
-		                $error = D('SalesPromotion')->getError();
-		                $this->error(empty($error) ? '金额下限/优惠金额/赠送金币/赠送积分格式不正确！' : $error);
-		            }
-			}
+			
 
 			$this->assign('type_list', $type_list);
 			$this->assign('brand_list', $brand_list);
