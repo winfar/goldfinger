@@ -19,17 +19,28 @@ class EventsModel extends Model {
                 if($userId){
                     $sp = M('sales_promotion')->where(['status'=>1,'type'=>3])->order('create_time desc')->find();
                     $now = time();
-                    if($sp &&  $now >= $sp['begin_time'] && $now < $sp['end_time']){
+                    if($sp &&  $now >= $sp['begin_time'] && $now <= $sp['end_time']){
+
+                        $map['activity_type'] = 10;
+                        $map['create_time'] = array('between',array(intval($sp['begin_time']),$sp['end_time']+1));
+                        $total = M('gcoupon_record')->where($map)->sum('num');
+                        // $sql = M('gcoupon_record')->getLastSql();
+                        if($total==null) $total=0;
+
                         $items = json_decode($sp['remark'],true);
-                        if($items[0]['gold']>0){
+                        $gold = $items['rules'][0]['gold'];
 
-                            // $goldRecord_rs = D('api/GoldRecord')->register($userId,$createTime,$items[0]['gold']);
+                        if(($total+$gold) <= $items['total_gold']){
+                            if($gold >0){
 
-                            $rs_gcoupon_record = D('Admin/GcouponRecord')->addRecord($userId,$activity_type=10,$items[0]['gold']);
+                                // $goldRecord_rs = D('api/GoldRecord')->register($userId,$createTime,$gold );
 
-                            A('api/Wechat')->sendTplMsgRigister($userId,$items[0]['gold']);
+                                $rs_gcoupon_record = D('Admin/GcouponRecord')->addRecord($userId,$activity_type=10,$gold);
 
-                            return $goldRecord_rs;
+                                A('api/Wechat')->sendTplMsgRigister($userId,$gold);
+
+                                return $rs_gcoupon_record;
+                            }
                         }
                     }
                 }

@@ -2,7 +2,7 @@
 <block name="style">
     <style>
         ul {
-            padding-left: 15px;
+            padding-left: 0;
         }
     </style>
 </block>
@@ -93,15 +93,15 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-xs-2 control-label">金额下限/优惠金额/赠送{:C("WEB_CURRENCY")}/赠送积分
+                                        <label class="col-xs-2 control-label">总量/金额下限/优惠金额/赠送{:C("WEB_CURRENCY")}/赠送积分
                                             <span class="text-danger">*</span>
                                         </label>
                                         <div class="col-xs-4">
                                             <textarea name="remark" class="remark" rows="3" cols="70">{$info.remark_content|default=''}</textarea>
                                             <ul>
-                                                <li>满减时: 金额下限和优惠金额必须填上 规则:单个时候-金额下限/优惠金额,多个时候:金额下限/优惠金额,金额下限/优惠金额</li>
-                                                <li>满赠时: 金额下限,赠送{:C("WEB_CURRENCY")}和赠送积分必须填上 规则:单个时候-金额下限/赠送{:C("WEB_CURRENCY")}/赠送积分,多个时候:金额下限/赠送{:C("WEB_CURRENCY")}/赠送积分,金额下限/赠送{:C("WEB_CURRENCY")}/赠送积分</li>
-                                                <li>注册时: 赠送{:C("WEB_CURRENCY")}和赠送积分必须填上 规则:赠送{:C("WEB_CURRENCY")}/赠送积分 只有单个没有多个</li>
+                                                <li><span class="text-red">满减</span>: 金额下限和优惠金额必须填上 规则:单个时候-金额下限/优惠金额,多个时候:金额下限/优惠金额,金额下限/优惠金额</li>
+                                                <li><span class="text-red">满赠</span>: 金额下限,赠送{:C("WEB_CURRENCY")}和赠送积分必须填上 规则:单个时候-金额下限/赠送{:C("WEB_CURRENCY")}/赠送积分,多个时候:金额下限/赠送{:C("WEB_CURRENCY")}/赠送积分,金额下限/赠送{:C("WEB_CURRENCY")}/赠送积分</li>
+                                                <li><span class="text-red">注册规则：总{:C("WEB_CURRENCY")}|总积分$赠送{:C("WEB_CURRENCY")}/赠送积分</span>，只有单个没有多个，例如：1000|500$200/10</li>
                                             </ul>
                                         </div>
                                     </div>

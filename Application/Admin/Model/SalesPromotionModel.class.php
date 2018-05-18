@@ -41,7 +41,7 @@ class SalesPromotionModel extends Model
             } else {
                 $data['range_ids'] = "";
             }
-            $data['remark'] = $remark_result['list'];
+            $data['remark'] = $remark_result['data'];
 	        if (empty($params['id'])) {//添加活动
 	        	$data['create_time'] = time();
 	        	$result = $this->add($data);
@@ -68,8 +68,25 @@ class SalesPromotionModel extends Model
      */
     protected  function remark_list($type, $params)
     {
-    	$count = 1;
-    	$list = explode(',', $params);
+        $count = 1;
+
+        $remark['total_gold'] = 0;
+        $remark['total_point'] = 0;
+
+        $list_root = explode('$', $params);
+        if(count($list_root)>1){
+            $total_arr = explode('|', $list_root[0]);
+            if(count($total_arr)>1){
+                $remark['total_gold'] = $total_arr[0];
+                $remark['total_point'] = $total_arr[1];
+            }
+
+            $list = explode(',', $list_root[1]);
+        }
+        else{
+            $list = explode(',', $params);
+        }
+
     	$data = array();
     	if ($type==3 and count($list)>1) {
     		$count = 0;
@@ -81,8 +98,8 @@ class SalesPromotionModel extends Model
     				if (count($array)==2) {
     					$data[$key]['amount_limit'] = $array[0];
 	    				$data[$key]['money'] = $array[1];
-	    				$data[$key]['gold'] = '';
-	    				$data[$key]['point'] = '';
+	    				$data[$key]['gold'] = 0;
+                        $data[$key]['point'] = 0;
 	    				$count *= 1;
     				} else {
     					$count *= 0;
@@ -91,30 +108,31 @@ class SalesPromotionModel extends Model
     			} elseif ($type ==2) {
     				if (count($array)==3) {
 	    				$data[$key]['amount_limit'] = $array[0];
-	    				$data[$key]['money'] = '';
+	    				$data[$key]['money'] = 0;
 	    				$data[$key]['gold'] = $array[1];
-	    				$data[$key]['point'] = $array[2];
+                        $data[$key]['point'] = $array[2];
     					$count *= 1;
     				} else {
     					$count *= 0;
     				}
-    			} else {
+    			} elseif($type == 3) {//注册
     				if (count($array)==2) {
-	    				$data[$key]['amount_limit'] = '';
-	    				$data[$key]['money'] = '';
+	    				$data[$key]['amount_limit'] = 0;
+	    				$data[$key]['money'] = 0;
 	    				$data[$key]['gold'] = $array[0];
-	    				$data[$key]['point'] = $array[1];
+                        $data[$key]['point'] = $array[1];
     					$count *= 1;
     				} else {
     					$count *= 0;
     				}
-    			}
-
-    		}
+                }
+            }
+            
+            $remark['rules'] = $data;
     	}
     	$return_data = array();
     	$return_data['code'] = $count;
-    	$return_data['list'] = empty($data) ? '' : json_encode($data);
+    	$return_data['data'] = json_encode($remark);
     	return $return_data;
     }
 
@@ -135,13 +153,16 @@ class SalesPromotionModel extends Model
         if (!empty($item['remark'])) {
             $remark = json_decode($item['remark'], true);
             if (!empty($remark)) {
+
+                $t = $remark['total_gold'] . '|' . $remark['total_point'];
+
                 $data = array();
-                foreach ($remark as $key => $value) {
+                foreach ($remark['rules'] as $key => $value) {
                     $array = array_filter($value);
                     $data[] = implode('/', $array);
 
                 }
-                $item['remark_content'] = implode(',', $data);
+                $item['remark_content'] = $t .'$'. implode(',', $data);
             }
         }
         return $item;

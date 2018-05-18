@@ -20,7 +20,7 @@ class GcouponRecordModel extends Model {
      * @param integer $sn
      * @return void
      */
-    public function addRecord($uid,$activity_type,$num,$d_recharge=0,$d_active=0,$sn=0){
+    public function addRecord($uid,$activity_type,$num,$d_recharge=0,$d_active=0,$sn=null){
         $map['uid'] = $uid;
         $map['activity_type'] = $activity_type;
         $map['num'] = $num;
@@ -33,6 +33,7 @@ class GcouponRecordModel extends Model {
 
         if(abs($num)>0){
             $data =  $this->add($map);
+            $sql = $this->getLastSql();
             $rsGoldCoupon = M('User')->where('id=' . $uid)->setInc('gold_coupon', $num);
             recordLog($data,'添加虚拟币明细结果');
         }

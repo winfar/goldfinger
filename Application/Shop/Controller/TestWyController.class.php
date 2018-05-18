@@ -155,7 +155,8 @@ class TestWyController extends \Think\Controller {
 	public function send(){
         // echo 'send';
     //    A('api/Wechat')->sendTplMsgRecharge(['uid'=>7001010,'cash'=>20,'msg'=>'充值成功']);
-       $r = A('api/Wechat')->sendTplMsgRigister(28,80);
+
+    //    $r = A('api/Wechat')->sendTplMsgRigister(28,80);
 
        returnJson($r);
     }
@@ -172,7 +173,7 @@ class TestWyController extends \Think\Controller {
         // $uid = D('api/User')->addUserInfo($data);
         echo $uid;
 
-        $events_rs = D('api/Events')->activate('register',7001019);
+        $events_rs = D('api/Events')->activate('register',7001010);
 
         echo $events_rs;
     }

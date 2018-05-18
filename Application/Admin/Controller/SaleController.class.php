@@ -140,10 +140,10 @@ class SaleController extends WebController
 			if (!empty($item)) {
 				$list = json_decode($item['remark'], ture);
 			}
-
 		}
 
-		$this->assign('list', $list);
+		$this->assign('item', $list);
+		$this->assign('list', $list['rules']);
 		$this->display('detail');
 	}
 

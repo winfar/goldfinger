@@ -337,9 +337,13 @@ class FinanceController extends WebController
 //        $list = $this->lists($Model, $map,'create_time desc',$rows=0,$base = array('status'=>array('egt',0)),'a.id,a.create_time,a.remark,a.gold,u.username,u.nickname,u.id uid,u.phone,t.name');
         $list = $this->lists('GcouponRecord', $map ,'create_time desc', $rows=0,$base = array());
 
+        $list_gold_total = M('GcouponRecord')->where($map)->sum('num');
+        $list_gold_total == null ? 0 : $list_gold_total;
+
         $gcouponAmount = D('api/user')->getGcouponAmount();
         
         $this->assign('_list',       $list);
+        $this->assign('_list_gold_total',       $list_gold_total);
         $this->assign('conditionarr', json_encode($conditionarr));
         $this->assign('gcouponAmount', $gcouponAmount);
         $this->meta_title = C("WEB_CURRENCY").'发放';

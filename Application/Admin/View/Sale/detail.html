@@ -25,15 +25,16 @@
 	<div class="col-md-12">
 		<div class="nano nscroller" style="height:500px;">
 			<div class="content">
+				<div>总{:C("WEB_CURRENCY")}：{$item['total_gold']} 总积分：{$item.total_point}</div>
 				<table class="no-border blue">
 					<thead class="no-border">
                         <tr>
                             <th style="width:auto;">金额下限</th>
                             <th style="width:auto;">优惠金额</th>
-                            <th style="width:auto;">赠送金币</th>
+                            <th style="width:auto;">赠送{:C("WEB_CURRENCY")}</th>
                             <th style="width:auto;">赠送积分</th>
                         </tr>
-                        </thead>
+                    </thead>
 					<notempty name="list">
 					<tbody class="no-border-y">
 					<volist name="list" id="vo">

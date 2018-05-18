@@ -57,6 +57,9 @@ blockquote p {
 ul {
   padding-left: 30px;
 }
+.text-red{
+  color:red;
+}
 .overflow-hidden {
   overflow: hidden;
 }
@@ -640,7 +643,7 @@ body.modal-open,
   background-color: #F6F6F6;
   color: inherit;
   font-size: 13px;
-  font-weight: 200;
+  font-weight: normal;
   line-height: 21px;
   padding: 10px 15px;
   margin-top: 0;
