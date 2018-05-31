@@ -41,8 +41,8 @@ class GoldRecordModel extends Model
 
         //echo M()->getLastSql();exit();
 
-        // select o.uid,s.`name`,p.`no`,o.number,o.`code`,gold,cash,CONVERT((gold+cash)/unit,SIGNED) cnt,(CONVERT(((gold+cash)/unit-o.number),SIGNED)) fail_cnt,(CONVERT(((gold+cash)/unit-o.number)*unit,SIGNED)) backgold
-        // from hx_shop_order o,hx_shop_period p,hx_shop s,hx_ten ten
+        // select o.uid,p.id pid,s.`name`,p.`no`,o.number,o.`code`,gold,cash,CONVERT((gold+cash)/unit,SIGNED) cnt,(CONVERT(((gold+cash)/unit-o.number),SIGNED)) fail_cnt,(CONVERT(((gold+cash)/unit-o.number)*unit,SIGNED)) backgold
+        // from bo_shop_order o,bo_shop_period p,bo_shop s,bo_ten ten
         // where o.pid=p.id and s.id=p.sid and s.ten=ten.id
         // //购买失败条件
         // and (CONVERT(((gold+cash)/unit-o.number),SIGNED))>0 and (CONVERT(((gold+cash)/unit-o.number)*unit,SIGNED))>0
@@ -57,13 +57,17 @@ class GoldRecordModel extends Model
 
             if($order['code']=='OK'){
                 //购买成功或者成功一半
-                $remarkArr["现金支付金额"]=$order["cash"]-$order["backgold"];
-                $remarkArr["购买成功金额"]=$order["cash"];
-                $remarkArr["购买失败金额"]=$order["backgold"];
+                // $remarkArr["现金支付金额"]=$order["cash"]-$order["backgold"];
+                // $remarkArr["购买成功金额"]=$order["cash"];
+                // $remarkArr["购买失败金额"]=$order["backgold"];
 
-                if($order["backgold"]>0){
-                    $rs_inc = $this->addGoldRecord($uid,1,$order["backgold"],$remarkArr,$pid);
-                }
+                $remarkArr["现金支付金额"]=$order["cash"];
+                $remarkArr["购买成功金额"]=$order["cash"];
+                $remarkArr["购买失败金额"]=0;
+
+                // if($order["backgold"]>0){
+                //     $rs_inc = $this->addGoldRecord($uid,1,$order["backgold"],$remarkArr,$pid);
+                // }
 
                 if($order["gold"]>0){
                     $rs_dec = $this->addGoldRecord($uid,5,0-$order["gold"],$remarkArr,$pid);
@@ -187,6 +191,10 @@ class GoldRecordModel extends Model
         //         break;
         // }
 
+        if(!$this->checkGoldcoupon($gold,$uid)){
+            returnJson($gold,401,'虚拟币不够');
+        }
+
         $model = M('gold_record');
         $model->startTrans();
 
@@ -204,6 +212,22 @@ class GoldRecordModel extends Model
             return false;
         }
     }
+
+    /**
+	 * 检查虚拟币是否足够
+	 * @param $amount
+	 * @param $uid
+	 * @return bool
+	 */
+	protected function checkGoldcoupon($amount, $uid)
+	{
+		$black = M('User')->where('id=' . $uid)->getField('gold_coupon');
+		if ($black >= $amount) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
     /** 商品兑换单独使用
      * @param $uid 用户id

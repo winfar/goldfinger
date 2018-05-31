@@ -375,16 +375,17 @@ class PayModel extends Model
 
 		//TODO 调用支付接口扣减钻石
 		$billid = 'zssc-' . think_md5(microtime(), $uid);
-								//		$uid, $billid,$order_no,$coin_a,$coin_b,
-		$rs_discount = $this->discountGcoupon( $uid, $billid,$sn ,$amount);
-		$j_discount = json_decode($rs_discount);
-		if (!$rs_discount) return false;
-		    $point_do_active 	= $j_discount->data->expend_recharge_coin; 		//钻石-充值数量
-			$point_do_exchange 	= $j_discount->data->expend_gift_coin; 	//钻石-活动数量
+
+		//调用接口检查金钻的余额
+		$rs_amount = $this->checkPrice4GC($amount, $uid);
+
+		if(!$rs_amount){
+			return false;
+		}
 
 		$data['exchange_transaction'] = $billid;
-		$data['top_diamond'] = $point_do_active;
-		$data['recharge_activity'] = $point_do_exchange;
+		$data['top_diamond'] = 0;
+		$data['recharge_activity'] = 0;
 		$data['gold'] = $amount;
 
 		//通过uid 获取渠道对应的 单位配置
@@ -898,12 +899,14 @@ class PayModel extends Model
 			return false;
 		}
 		 //直接扣减用户的虚拟币数量
-		$rs  = D('api/user')->discountGCoupon($uid,$coin_count);
-		if($rs){
-			return true;
-		}else{
-			return false;
-		}
+		// $rs  = D('api/user')->discountGCoupon($uid,$coin_count);
+		// if($rs){
+		// 	return true;
+		// }else{
+		// 	return false;
+		// }
+
+		return true;
 	}
 
 

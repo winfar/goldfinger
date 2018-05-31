@@ -119,21 +119,25 @@
 								
 								<thead class="no-border">
 								<tr>
-									<td colspan="12">共:  {$total_info.total_number}  条记录,用户购买总数量:  {$total_info.all_number}g,总支付{:C("WEB_CURRENCY")}:{$total_info.total}</td>
+									<th colspan="12">
+										共: {$total_info.total_number} 条记录
+										用户购买总数量:  {$total_info.all_number}g
+										总支付{:C("WEB_CURRENCY")}:{$total_info.total}
+									</th>
   								</tr>
 								<tr>
-									<th style="width:5%">期号</th>
-									<th style="width:8%">ID-渠道</th>
-									<th style="width:8%">订单号</th>
-									<th style="width:5%;">用户ID</th>
-									<th style="width:8%">用户名</th>
-									<th style="width:6%;">购买数量/mg</th>
-									<th style="width:8%;color:blue;">总参与{:C("WEB_CURRENCY")}</th>
-									<th style="width:8%;">实时金价</th>
-									<th style="width:8%;">活动状态</th>
-									<th style="width:6%;">开奖时间</th>
-									<th style="width:8%;">参与时间</th>
-									<th style="width:5%;">操作</th>
+									<th style="width:auto;">期号</th>
+									<th style="width:auto;">ID-渠道</th>
+									<th style="width:auto;">订单号</th>
+									<th style="width:auto;">用户ID</th>
+									<th style="width:auto;">用户名</th>
+									<th style="width:auto;">购买数量/mg</th>
+									<th style="width:auto;color:blue;">总参与{:C("WEB_CURRENCY")}</th>
+									<th style="width:auto;">实时金价</th>
+									<th style="width:auto;">活动状态</th>
+									<th style="width:auto;">开奖时间</th>
+									<th style="width:auto;">参与时间</th>
+									<th style="width:auto;">操作</th>
   								</tr>
 
 								</thead>
@@ -153,7 +157,7 @@
 											<td><empty name="vo.kaijang_time" > ---<else/> {$vo.kaijang_time|date="Y-m-d H:i:s",###}</empty></td>
 											<td>{$vo.order_time|date="Y-m-d H:i:s",###}</td>											
 											<td>
-												<!-- Modal -->
+											  	<!-- Modal -->
                                               <div class="modal fade" id="myModals{$vo['order_id']}" tabindex="-1" role="dialog" aria-labelledby="myModalLabels{$vo['order_id']}">
                                                   <div class="modal-dialog" role="document">
                                                       <div class="modal-content" style="margin-top: 45%;">
@@ -169,9 +173,8 @@
                                                           </div>
                                                       </div>
                                                   </div>
-                                              </div>
-
-                                                <a href="#"  data-toggle="modal" data-target="#myModals{$vo['order_id']}">查看</a></td>										
+											  </div>
+											  <a href="#"  data-toggle="modal" data-target="#myModals{$vo['order_id']}">查看</a></td>										
 										</tr>
 									</volist>
 									</tbody>
@@ -201,7 +204,7 @@
 			$(".endtime").datetimepicker({autoclose: true,language: 'zh-CN'});
 			$(".kstarttime").datetimepicker({autoclose: true,language: 'zh-CN'});
 			$(".kendtime").datetimepicker({autoclose: true,language: 'zh-CN'});
-			highlight_subnav('{:U('Finance/fundsflowlist')}');
+			highlight_subnav("{:U('Finance/fundsflowlist')}");
 			//搜索功能
 			$("#search").click(function () {
 				var url = $(this).attr('url');
